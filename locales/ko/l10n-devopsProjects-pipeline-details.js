@@ -225,5 +225,5 @@ module.exports = {
   // detail page // Create Pipeline modal // add step modal
   IMPORT_FROM_CODE_REPO: '코드 저장소에서 가져오기',
   // detail page // parameters tab
-  NO_BUILD_PARAMETERS: '빌드 파라미터를 찾지 못하였습니다.'
-};
+  NO_BUILD_PARAMETERS: '빌드 파라미터를 찾지 못하였습니다.',
+}
