@@ -23,6 +23,7 @@ import { syncHistoryWithStore } from 'mobx-react-router'
 import React, { Component } from 'react'
 import { Router } from 'react-router'
 import 'scss/main.scss'
+import 'scss/custom_theme.css'
 
 import RootStore from 'stores/root'
 import { lazy } from 'utils'

@@ -32,6 +32,7 @@ import { get } from 'lodash'
 
 import { Base64 } from 'js-base64'
 import styles from './index.scss'
+import '../../../scss/custom_theme.css'
 
 function encrypt(salt, str) {
   return mix(salt, Base64.encode(str))
@@ -145,14 +146,12 @@ export default class Login extends Component {
 
     return (
       <div className={styles.loginContainer}>
-        <a href="/" className={styles.logo}>
-          <img src="/assets/logo.svg" alt="" />
-        </a>
         <div className={styles.login}>
-          <div className={styles.header}>
-            {showKS
-              ? t('WELCOME')
-              : t('TITLE_USERNAME', { title: currentServer.title })}
+	  <div className="top_logo">
+            <a href="/" className={styles.logo}>
+              <img src="/assets/logo.svg" alt="" />
+            </a>
+            <div className={styles.header}>{t('WELCOME')}</div>
           </div>
           <div className={styles.divider}></div>
           {showKS &&

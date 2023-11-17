@@ -55,6 +55,7 @@ const config = smp.wrap({
             options: {
               importLoaders: 2,
               modules: true,
+	      localIdentName: '[path][name]__[local]',
             },
           },
           {
