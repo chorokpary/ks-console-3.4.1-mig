@@ -1,71 +1,78 @@
 @charset "UTF-8";
-
 /*********** color custom : T-theme : Purple ***********/
 /****** common ******/
 body,
 html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    background-color: #e8f0f6 !important;
-    border: 1px solid #e8f0f6 !important;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-color: #e8f0f6 !important;
+  border: 1px solid #e8f0f6 !important;
+}
+
+.ks-page-body {
+  background-color: #e8f0f6 !important;
 }
 
 .button-control {
-    color: #ffffff;
-    border: 1px solid #3617ce;
-    background-color: #3617ce;
+  color: #ffffff;
+  border: 1px solid #3617ce;
+  background-color: #3617ce;
 }
 
 a:hover {
-    color: #3617ce !important;
+  color: #3617ce !important;
 }
 
 /* scroll bar */
 * {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(24, 29, 40, 0.2) transparent;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(24, 29, 40, 0.2) transparent;
 }
 
 *::-webkit-scrollbar {
-    width: 6px;
+  width: 6px;
 }
 
 *::-webkit-scrollbar-track {
-    background: transparent;
+  background: transparent;
 }
 
 ::-webkit-scrollbar:horizontal {
-    height: 6px;
+  height: 6px;
 }
 
 *::-webkit-scrollbar-thumb {
-    border-radius: 3px;
-    background: rgba(24, 29, 40, 0.2);
-    width: 6px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  background: rgba(24, 29, 40, 0.2);
+  width: 6px;
 }
 
 .scroll-gray * {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(24, 29, 40, 0.2) transparent;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(24, 29, 40, 0.2) transparent;
 }
 
 .scroll-gray::-webkit-scrollbar {
-    width: 6px;
+  width: 6px;
 }
 
 .scroll-gray::-webkit-scrollbar-track {
-    background: transparent;
+  background: transparent;
 }
 
 .scroll-gray::-webkit-scrollbar:horizontal {
-    height: 6px;
+  height: 6px;
 }
 
 .scroll-gray::-webkit-scrollbar-thumb {
-    border-radius: 3px;
-    background: rgb(209, 210, 212);
-    width: 6px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  background: rgb(209, 210, 212);
+  width: 6px;
 }
 
 /* 인풋/셀렉트/텍스트에리어 테마색 적용 */
@@ -74,80 +81,82 @@ a:hover {
 .textarea:focus,
 textarea:focus,
 input.input:focus {
-    border: 1px solid #3617ce !important;
-    box-shadow: 0px 4px 4px 0px rgba(86, 128, 236, 0.3) !important;
+  border: 1px solid #3617ce !important;
+  box-shadow: 0px 4px 4px 0px rgba(86, 128, 236, 0.3) !important;
 }
 
-.input-search>input:focus {
-    border: 1px solid #79879c !important;
-    box-shadow: none !important;
+.input-search > input:focus {
+  border: 1px solid #79879c !important;
+  box-shadow: none !important;
 }
 
 .src-components-Tables-Base-FilterInput-index__wrapper input:focus {
-    border: none !important;
-    box-shadow: none !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 /* 셀렉트 hover background 색삭제 */
 .icon-clickable:hover {
-    background-color: transparent !important;
+  background-color: transparent !important;
 }
 
 /* 마우스 드래그시 텍스트 선택 색상 */
-::-moz-selection {
-    background: #79879c !important;
-}
-
 ::selection {
-    background: #79879c !important;
+  background: #79879c !important;
 }
 
 /* 버튼 색상 */
 .button-control {
-    color: #ffffff;
-    border: 1px solid #3744b9 !important;
-    background-color: #3744b9 !important;
+  color: #ffffff;
+  border: 1px solid #3744b9 !important;
+  background-color: #3744b9 !important;
 }
 
 /* 모달 닫기 버튼 */
 .src-components-Base-Modal-index__header .src-components-Base-Modal-index__close {
-    background-color: #404e68 !important;
-    width: 30px;
-    height: 30px;
-    display: flex !important;
+  background-color: #404e68 !important;
+  width: 30px;
+  height: 30px;
+  display: flex !important;
 }
 
 /* 탭라디오 목록 스타일 색상 */
 .radio-group-button label.radio-button.checked {
-    background-color: #6371e8 !important;
+  background-color: #6371e8 !important;
 }
 
 /* 탭라디오 생성 스타일 색상 */
-.tabs-container .tabs.tabs-button>ul>li.is-active {
-    background-color: #6371e8 !important;
+.tabs-container .tabs.tabs-button > ul > li.is-active {
+  background-color: #6371e8 !important;
 }
 
 .radio-group label.radio-button.checked {
-    background-color: #6371e8 !important;
+  background-color: #6371e8 !important;
 }
 
 /* 탭라디오 태그 색상 : [클러스터 설정] > [시스템 구성 요소] 상단 Running 개수 색상 */
 .radio-group-button .label-value .tag.tag-default {
-    background: #0fa1e3 !important;
-    box-shadow: none !important;
+  background: #0fa1e3 !important;
+  box-shadow: none !important;
+}
+
+/* 탭라디오 개수 태그 색상 공통 */
+.badge-wrapper > span.badge.is-success {
+  background: #0fa1e3 !important;
 }
 
 /* 토글 스위치 색상 */
-.toggle.checked:hover {
-    background-color: #250ba6 !important;
+.toggle.checked:hover,
+.toggle.checked:active {
+  background-color: #250ba6 !important;
 }
 
 .toggle.checked {
-    background-color: #3617ce !important;
+  background-color: #3617ce !important;
 }
 
 .toggle:hover {
-    background-color: #4726e9 !important;
+  background-color: #4726e9 !important;
 }
 
 /* check, radio */
@@ -157,40 +166,40 @@ label.checkbox.indeterminate:before,
 label.checkbox.indeterminate:hover:before,
 label.checkbox.checked:before,
 label.checkbox.checked:hover:before {
-    background-color: #5680ec !important;
+  background-color: #5680ec !important;
 }
 
 /* slider */
 .slider-track,
 .slider-handler::after {
-    background-color: #5680ec !important;
+  background-color: #5680ec !important;
 }
 
 .slider-handler {
-    border: 1px solid #5680ec !important;
-    box-shadow: 0px 4px 4px 0px rgba(86, 128, 236, 0.3) !important;
+  border: 1px solid #5680ec !important;
+  box-shadow: 0px 4px 4px 0px rgba(86, 128, 236, 0.3) !important;
 }
 
 /* 캘린더 */
 div.flatpickr-calendar .flatpickr-innerContainer .flatpickr-days .dayContainer .flatpickr-day.selected:hover,
 div.flatpickr-calendar .flatpickr-innerContainer .flatpickr-days .dayContainer .flatpickr-day.selected {
-    background: #5680ec !important;
+  background: #5680ec !important;
 }
 
 .src-components-Cards-Monitoring-Controller-TimeSelector-Range-index__default ul li:hover,
 .src-components-Cards-Monitoring-Controller-TimeSelector-Range-index__default ul li.src-components-Cards-Monitoring-Controller-TimeSelector-Range-index__cur {
-    color: #3617ce !important;
+  color: #3617ce !important;
 }
 
 div.flatpickr-calendar .flatpickr-months .flatpickr-month .flatpickr-dropdown .dropdown-month-menu span.is-active,
 div.flatpickr-calendar .flatpickr-months .flatpickr-month .flatpickr-dropdown .dropdown-year-menu span.is-active {
-    color: #3617ce !important;
+  color: #3617ce !important;
 }
 
 /* icon-coloured */
 .kubed-icon-coloured {
-    color: #3617ce !important;
-    fill: #3617ce !important;
+  color: #3617ce !important;
+  fill: #3617ce !important;
 }
 
 /****** layout & navi text ******/
@@ -198,615 +207,641 @@ div.flatpickr-calendar .flatpickr-months .flatpickr-month .flatpickr-dropdown .d
 .ks-page-side,
 .src-components-Layout-Header-index__header:not(.src-components-Layout-Header-index__inAppsPage),
 .src-core-layouts-Base-index__main {
-    background-color: #e8f0f6 !important;
-    border: 1px solid #e8f0f6 !important;
+  background-color: #e8f0f6 !important;
+  border: 1px solid #e8f0f6 !important;
+}
+
+.ks-page-side {
+  top: 68px !important;
+  padding-top: 20px !important;
 }
 
 /* header 탑메뉴 정렬 및 색상 */
 .src-components-Layout-Header-index__navs {
-    display: flex !important;
+  display: flex !important;
 }
-
-.src-components-Layout-Header-index__navs>button.button-flat.button-size-normal.has-icon {
-    display: flex !important;
+.src-components-Layout-Header-index__navs > button.button-flat.button-size-normal.has-icon {
+  display: flex !important;
 }
-
-.src-components-Layout-Header-index__navs>button.button-flat.button-size-normal.has-icon:hover {
-    background: #e3e9ef !important;
+.src-components-Layout-Header-index__navs > button.button-flat.button-size-normal.has-icon:hover {
+  background: #e3e9ef !important;
 }
 
 /* 좌메뉴 타이틀 박스 */
 .src-pages-projects-components-Selector-index__titleWrapper,
 .src-pages-workspaces-components-Selector-index__titleWrapper,
 .src-pages-clusters-components-Selector-index__titleWrapper {
-    background-color: #3617ce !important;
+  background-color: #3617ce !important;
 }
 
 /* 좌메뉴 아이콘, 텍스트 */
-.src-pages-apps-containers-Home-index__cates .src-pages-apps-containers-Home-index__group .src-pages-apps-containers-Home-index__menu>.src-pages-apps-containers-Home-index__item:hover,
-.src-components-Layout-Nav-index__subNav>ul>li>a:hover,
-.src-components-Layout-Nav-index__subNav>ul>li .src-components-Layout-Nav-index__title:hover {
-    color: #3617ce !important;
-    fill: #3617ce !important;
+.src-pages-apps-containers-Home-index__cates .src-pages-apps-containers-Home-index__group .src-pages-apps-containers-Home-index__menu > .src-pages-apps-containers-Home-index__item:hover,
+.src-components-Layout-Nav-index__subNav > ul > li > a:hover,
+.src-components-Layout-Nav-index__subNav > ul > li .src-components-Layout-Nav-index__title:hover {
+  color: #3617ce !important;
+  fill: #3617ce !important;
 }
 
-.src-components-Layout-Nav-index__subNav>ul>li.src-components-Layout-Nav-index__select>a .kubed-icon,
-.src-components-Layout-Nav-index__subNav>ul>li.src-components-Layout-Nav-index__open>a .kubed-icon {
-    color: #3617ce !important;
-    fill: #3617ce !important;
+.src-pages-apps-containers-Home-index__cates .src-pages-apps-containers-Home-index__group .src-pages-apps-containers-Home-index__menu > .src-pages-apps-containers-Home-index__item:active,
+.src-components-Layout-Nav-index__subNav > ul > li > a:active,
+.src-components-Layout-Nav-index__subNav > ul > li .src-components-Layout-Nav-index__title:active {
+  color: #3744b9 !important;
+  fill: #3744b9 !important;
 }
 
-.src-components-Layout-Nav-index__subNav>ul>li.src-components-Layout-Nav-index__childSelect .src-components-Layout-Nav-index__title {
-    color: #3617ce !important;
+.src-components-Layout-Nav-index__subNav > ul > li.src-components-Layout-Nav-index__select > a .kubed-icon,
+.src-components-Layout-Nav-index__subNav > ul > li.src-components-Layout-Nav-index__open > a .kubed-icon {
+  color: #3617ce !important;
+  fill: #3617ce !important;
 }
 
-.src-components-Layout-Nav-index__innerNav>li.src-components-Layout-Nav-index__select>a,
-.src-components-Layout-Nav-index__innerNav>li:hover>a {
-    color: #6371e8 !important;
+.src-components-Layout-Nav-index__subNav > ul > li.src-components-Layout-Nav-index__childSelect .src-components-Layout-Nav-index__title {
+  color: #3617ce !important;
 }
 
-.src-components-Layout-Nav-index__innerNav>li:active>a,
-.src-components-Layout-Nav-index__subNav>ul>li.src-components-Layout-Nav-index__select>a,
-.src-components-Layout-Nav-index__subNav>ul>li.src-components-Layout-Nav-index__open>a {
-    color: #3617ce !important;
+.src-components-Layout-Nav-index__innerNav > li.src-components-Layout-Nav-index__select > a,
+.src-components-Layout-Nav-index__innerNav > li:hover > a {
+  color: #6371e8 !important;
+}
+
+.src-components-Layout-Nav-index__innerNav > li:active > a,
+.src-components-Layout-Nav-index__subNav > ul > li.src-components-Layout-Nav-index__select > a,
+.src-components-Layout-Nav-index__subNav > ul > li.src-components-Layout-Nav-index__open > a {
+  color: #3617ce !important;
 }
 
 /* 좌측메뉴 2단계 메뉴 선택 위치/색상 */
 .src-components-Layout-Nav-index__innerNav {
-    padding-left: 40px !important;
+  padding-left: 40px !important;
 }
 
 @media (max-width: 1366px) {
-    .src-components-Layout-Nav-index__innerNav {
-        padding-left: 30px !important;
-    }
+  .src-components-Layout-Nav-index__innerNav {
+    padding-left: 30px !important;
+  }
+}
+.src-components-Layout-Nav-index__innerNav > li:hover > a {
+  color: #6b44dc !important;
 }
 
-.src-components-Layout-Nav-index__innerNav>li:hover>a {
-    color: #6b44dc !important;
-}
-
-.src-components-Layout-Nav-index__innerNav>li .src-components-Layout-Nav-index__select>a,
-.src-components-Layout-Nav-index__innerNav>li:active>a {
-    color: #3617ce !important;
-    font-weight: 700 !important;
+.src-components-Layout-Nav-index__innerNav > li .src-components-Layout-Nav-index__select > a,
+.src-components-Layout-Nav-index__innerNav > li:active > a {
+  color: #3617ce !important;
+  font-weight: 700 !important;
 }
 
 /***** 목록,상세,생성 화면 *****/
 /* 상세 우측 메뉴탭 */
 a:hover.src-core-containers-Base-Detail-index__navItem {
-    color: #a8bbff !important;
+  color: #a8bbff !important;
 }
 
 .src-core-containers-Base-Detail-index__navItem.src-core-containers-Base-Detail-index__active {
-    border-radius: 4px;
-    box-shadow: none !important;
-    background-color: #4465dc !important;
-    border-color: #4465dc !important;
+  border-radius: 4px;
+  box-shadow: none !important;
+  background-color: #4465dc !important;
+  border-color: #4465dc !important;
 }
 
 /* 상세 > 리비전 기록 */
 .d2h-ins {
-    border-color: #b4c0e2 !important;
-    background-color: rgba(199, 202, 240, 0.7) !important;
+  border-color: #b4c0e2 !important;
+  background-color: rgba(199, 202, 240, 0.7) !important;
 }
 
 /* 상세 > 메타데이터 */
-.src-components-Cards-Annotations-index__values>li {
-    border-radius: 20px !important;
+.src-components-Cards-Annotations-index__values > li {
+  border-radius: 20px !important;
 }
 
 /* 목록 페이지 타이틀 아이콘 사이즈 및 정렬 */
 .src-components-Cards-Banner-index__titleWrapper .icon {
-    justify-content: center;
-    align-items: center;
+  justify-content: center;
+  align-items: center;
 }
 
 .src-components-Cards-Banner-index__titleWrapper .kubed-icon-dark {
-    width: 80%;
-    height: 80%;
+  width: 80%;
+  height: 80%;
 }
 
 .src-components-Cards-Banner-index__titleWrapper .ico-type-vm {
-    margin: 9px !important;
+  margin: 9px !important;
 }
 
 /* 목록 아이콘 사이즈 */
 .src-components-Base-Avatar-index__image,
 .src-components-Base-Avatar-index__icon,
 .src-components-Base-Text-index__icon {
-    width: 30px !important;
-    height: 30px !important;
+  width: 30px !important;
+  height: 30px !important;
 }
 
 /* 목록 KaaS 아이콘 */
 .kubed-icon-kubernetes {
-    width: 35px !important;
-    height: 35px !important;
+  width: 35px !important;
+  height: 35px !important;
 }
 
 /* 목록 가상머신 아이콘 */
 .src-pages-clusters-containers-Resources-Vms-index__avatar {
-    height: 35px !important;
-    display: flex;
-    align-items: center;
+  height: 35px !important;
+  display: flex;
+  align-items: center;
 }
 
 /* 목록 가상머신, KaaS 아이콘 상태 indicator */
 .src-pages-clusters-containers-Resources-Vms-index__avatar .src-pages-clusters-containers-Resources-Vms-index__icon .src-pages-clusters-containers-Resources-Vms-index__indicator {
-    top: 24px !important;
+  top: 24px !important;
 }
 
 .src-pages-clusters-containers-Resources-ContainerResource-index__avatar .src-pages-clusters-containers-Resources-ContainerResource-index__icon .src-pages-clusters-containers-Resources-ContainerResource-index__indicator {
-    top: 24px !important;
-    right: 4px !important;
+  top: 24px !important;
+  right: 4px !important;
 }
 
 /* 목록 테이블 마우스 오버 색상 */
-tbody>.table-row:hover,
-tbody>.table-row:hover td {
-    background: #eef2ff !important;
+tbody > .table-row:hover,
+tbody > .table-row:hover td {
+  background: #eef2ff !important;
 }
 
 /* 목록 테이블 column 보기/닫기 팝오버 사이즈 */
 .src-components-Tables-Base-index__table {
-    overflow: unset !important;
+  overflow: unset !important;
 }
 
 /* 목록 테이블 체크 선택시 table-row-selected */
 .table-row-selected {
-    border-color: #5680ec !important;
+  border-color: #5680ec !important;
 }
 
 /* 목록 search area 옆 refresh, settings 버튼 아이콘 */
 .level-right .button.has-icon .icon.is-small {
-    width: 20px !important;
-    height: 20px !important;
-    text-align: middle !important;
+  width: 20px !important;
+  height: 20px !important;
+  text-align: middle !important;
 }
 
 .level-right .button-size-normal.has-icon {
-    padding: 5px 10px;
+  padding: 5px 10px;
 }
 
 /* 목록 - 목록 아이콘 옆 이름 한줄일때 middle 정렬 */
-td>div[class$=-index__avatar] {
-    align-items: center;
+td > div[class$=-index__avatar] {
+  align-items: center;
 }
 
 /* 생성 - popup 상세 컴포넌트 */
 .form-group-content {
-    margin-top: 0 !important;
+  margin-top: 0 !important;
 }
 
 /* 토글 접히는 박스 */
 .form-group-title-toggle {
-    height: 30px;
+  height: 30px;
 }
 
 /* 생성 - 목록 디자인 */
 .src-components-Base-Modal-index__body table thead th {
-    text-transform: uppercase !important;
-    border-bottom: 1px solid #f1f1f1 !important;
-    padding: 10px !important;
-    background: #f9fbfd !important;
+  text-transform: uppercase !important;
+  border-bottom: 1px solid #f1f1f1 !important;
+  padding: 10px !important;
+  background: #f9fbfd !important;
 }
 
 .form-item-control table tbody td,
 .src-components-Base-Modal-index__body table thead td {
-    border-bottom: #eff4f9 !important;
+  border-bottom: #eff4f9 !important;
 }
 
 .src-pages-clusters-containers-Resources-components-Modals-HostDevices-Regist-index__table table tbody tr {
-    border-bottom: 0 !important;
+  border-bottom: 0 !important;
 }
 
 /* 생성 - 목록 row 추가 테이블 border-bottom */
-div[class$=-Regist-index__table]>table {
-    border-collapse: none !important;
+div[class$=-Regist-index__table] > table {
+  border-collapse: none !important;
 }
 
-div[class$=-Regist-index__table]>table>tbody>tr>td {
-    border-bottom: #eff4f9 !important;
+div[class$=-Regist-index__table] > table > tbody > tr > td {
+  border-bottom: #eff4f9 !important;
 }
 
 /* 생성 - 목록 선택 삭제 x 버튼 디자인 */
 div[class$=__removeCheckWrapper] {
-    display: flex;
+  display: flex;
 }
 
-div[class$=__removeCheckWrapper]>span>.button-size-normal.has-icon {
-    border: 1px solid #5680ec !important;
-    background-color: #5680ec !important;
-    box-shadow: none;
-    color: #ffffff !important;
-    display: flex !important;
+div[class$=__removeCheckWrapper] > span > .button-size-normal.has-icon {
+  border: 1px solid #5680ec !important;
+  background-color: #5680ec !important;
+  box-shadow: none;
+  color: #ffffff !important;
+  display: flex !important;
 }
 
-div[class$=__removeCheckWrapper]>span>.button-size-normal.has-icon span svg {
-    color: #ffffff !important;
+div[class$=__removeCheckWrapper] > span > .button-size-normal.has-icon span svg {
+  color: #ffffff !important;
 }
 
 /* 생성 - 아이콘 박스 선택 : OS 선택 등 */
 .src-pages-clusters-containers-Resources-components-CardSelect-index__container li:first-child {
-    margin-left: 12px;
+  margin-left: 12px;
 }
 
-li.src-pages-clusters-containers-Resources-components-CardSelect-index__selected {
-    border: 2px solid #A3ABF9 !important;
-    background: #f6f8ff !important;
-    box-shadow: none !important;
+li.src-pages-clusters-containers-Resources-components-CardSelect-index__selected  {
+  border: 2px solid  #A3ABF9 !important;
+  background: #f6f8ff !important;
+  box-shadow: none !important;
 }
 
 .src-pages-clusters-containers-Resources-components-TypeSelect-index__option.src-pages-clusters-containers-Resources-components-TypeSelect-index__selected,
 .src-pages-clusters-containers-Resources-components-TypeSelect-index__control.src-pages-clusters-containers-Resources-components-TypeSelect-index__selected {
-    background: #f6f8ff !important;
+  background: #f6f8ff !important;
 }
 
 .src-pages-clusters-containers-Resources-components-TypeSelect-index__option.src-pages-clusters-containers-Resources-components-TypeSelect-index__disabled:hover,
 .src-pages-clusters-containers-Resources-components-TypeSelect-index__option.src-pages-clusters-containers-Resources-components-TypeSelect-index__disabled {
-    background: #e3e9ef !important;
+  background: #e3e9ef !important;
 }
 
-.src-pages-clusters-containers-Resources-components-TypeSelect-index__option.src-pages-clusters-containers-Resources-components-TypeSelect-index__disabled>div>div,
-.src-pages-clusters-containers-Resources-components-TypeSelect-index__option.src-pages-clusters-containers-Resources-components-TypeSelect-index__disabled>div>p {
-    color: #79879c !important;
+.src-pages-clusters-containers-Resources-components-TypeSelect-index__option.src-pages-clusters-containers-Resources-components-TypeSelect-index__disabled > div > div,
+.src-pages-clusters-containers-Resources-components-TypeSelect-index__option.src-pages-clusters-containers-Resources-components-TypeSelect-index__disabled > div > p {
+  color: #79879c !important;
 }
 
-.src-components-Layout-Nav-index__subNav>ul>li.src-components-Layout-Nav-index__childSelect .src-components-Layout-Nav-index__title .kubed-icon {
-    color: #2b2edc !important;
-    fill: #96a6e2 !important;
+.src-components-Layout-Nav-index__subNav > ul > li.src-components-Layout-Nav-index__childSelect .src-components-Layout-Nav-index__title .kubed-icon {
+  color: #2b2edc !important;
+  fill: #96a6e2 !important;
 }
 
 /* [프로젝트] > 상세 > [자원 상태] 목록 글씨 색상 */
-.src-pages-projects-containers-Overview-ResourceUsage-AppResourceItem-index__card .src-pages-projects-containers-Overview-ResourceUsage-AppResourceItem-index__info.src-pages-projects-containers-Overview-ResourceUsage-AppResourceItem-index__cursor:hover>strong,
-.src-pages-projects-containers-Overview-ResourceUsage-AppResourceItem-index__card .src-pages-projects-containers-Overview-ResourceUsage-AppResourceItem-index__info.src-pages-projects-containers-Overview-ResourceUsage-AppResourceItem-index__cursor:hover>span {
-    color: #3617ce !important;
+.src-pages-projects-containers-Overview-ResourceUsage-AppResourceItem-index__card .src-pages-projects-containers-Overview-ResourceUsage-AppResourceItem-index__info.src-pages-projects-containers-Overview-ResourceUsage-AppResourceItem-index__cursor:hover > strong,
+.src-pages-projects-containers-Overview-ResourceUsage-AppResourceItem-index__card .src-pages-projects-containers-Overview-ResourceUsage-AppResourceItem-index__info.src-pages-projects-containers-Overview-ResourceUsage-AppResourceItem-index__cursor:hover > span {
+  color: #3617ce !important;
 }
 
 /* 상세 breadcrumb  */
-.src-core-containers-Base-Detail-BaseInfo-index__breadcrumbs .icon>svg {
-    color: #3617ce !important;
+.src-core-containers-Base-Detail-BaseInfo-index__breadcrumbs .icon > svg {
+  color: #3617ce !important;
 }
 
 /* 상세 좌측 정보 영역 상단 박스 이미지 삭제 */
 .src-core-containers-Base-Detail-BaseInfo-index__card .src-core-containers-Base-Detail-BaseInfo-index__base {
-    background-image: none !important;
+  background-image: none !important;
 }
 
 /* 상세 : no-data */
-.src-pages-clusters-containers-Resources-components-DetailVmList-index__wrapper>div {
-    text-align: center !important;
+.src-pages-clusters-containers-Resources-components-DetailVmList-index__wrapper > div {
+  text-align: center !important;
 }
 
 /* 목록 : no-data */
-.src-pages-clusters-containers-Resources-components-Modals-MediatedDevices-Regist-index__table table tbody tr td.no-data>p {
-    text-align: center !important;
+.src-pages-clusters-containers-Resources-components-Modals-MediatedDevices-Regist-index__table table tbody tr td.no-data > p {
+  text-align: center !important;
 }
 
 /* 상세 : 콘솔창 폰트 : 고정폭 폰트로 수정 */
 .src-pages-clusters-containers-Resources-components-Modals-ConsoleLog-index__wrapper {
-    font-family: Monaco, Menlo, Consolas, Courier New, monospace !important;
-    border-radius: 4px;
+  font-family: Monaco, Menlo, Consolas, Courier New, monospace !important;
+  border-radius: 4px;
 }
 
 .src-components-Cards-Monitoring-StatusTabs-index__tabList .src-components-Cards-Monitoring-StatusTabs-index__tab.src-components-Cards-Monitoring-StatusTabs-index__active {
-    background-color: #425de7 !important;
+  background-color: #425de7 !important;
 }
 
 /* 앱스토어, 워크벤치 : 아이콘, 텍스트 컬러변경 */
-.src-components-Cards-App-index__wrapper .src-components-Cards-App-index__title p>strong,
-.src-components-Base-Text-index__wrapper>div:hover *,
-.src-components-Base-Text-index__clickable:hover svg,
-.src-components-Base-Text-index__clickable:hover,
-.src-pages-console-containers-Dashboard-Admin-PlatformStatus-index__resource:hover>div *,
-.src-pages-console-containers-Dashboard-Admin-History-index__text:hover>*,
-.src-pages-console-containers-Dashboard-Admin-History-index__histories a:hover>*,
-.src-pages-console-containers-Dashboard-Admin-History-index__histories>a:hover>div *,
+.src-components-Cards-App-index__wrapper .src-components-Cards-App-index__title p > strong,
+.src-pages-console-containers-Dashboard-index__wrapper .src-components-Base-Text-index__wrapper > div:hover *,
+.src-pages-console-containers-Dashboard-index__wrapper .src-components-Base-Text-index__clickable:hover svg,
+.src-pages-console-containers-Dashboard-index__wrapper .src-components-Base-Text-index__clickable:hover,
+.src-pages-console-containers-Dashboard-Admin-PlatformStatus-index__resource:hover > div *,
+.src-pages-console-containers-Dashboard-Admin-History-index__text:hover > *,
+.src-pages-console-containers-Dashboard-Admin-History-index__histories a:hover > *,
+.src-pages-console-containers-Dashboard-Admin-History-index__histories > a:hover > div *,
 .src-pages-console-containers-Dashboard-Admin-History-index__histories a:hover svg,
 .icon .src-components-Base-Text-index__icon,
-.src-pages-console-containers-Dashboard-Admin-History-index__histories a:hover .src-components-Base-Text-index__text,
-.src-components-Base-Text-index__text:hover>div {
-    color: #2b2edc !important;
-    fill: #96a6e2 !important;
+.src-pages-console-containers-Dashboard-Admin-History-index__histories a:hover .src-components-Base-Text-index__text {
+  color: #2b2edc !important;
+  fill: #96a6e2 !important;
 }
 
 .src-pages-access-containers-layout__titleWrapper,
 .src-pages-apps-containers-layout__titleWrapper,
 .src-pages-settings-containers-layout__titleWrapper {
-    background: #3617ce !important;
+  background: #3617ce !important;
+}
+
+/* 앱스토어 header 로고, 앱 상세 탭, 뒤로가기, 앱 세부정보 text */
+.src-components-Layout-Header-index__inAppsPage .src-components-Layout-Header-index__logo {
+  filter: brightness(0) invert(1) !important;
+}
+
+.tabs-container .tabs > ul > li:hover,
+.tabs-container .tabs > ul > li:active, .tabs-container .tabs > ul > li.is-active {
+  color: #4465dc;
+}
+
+.src-pages-apps-containers-Home-index__cates .src-pages-apps-containers-Home-index__group .src-pages-apps-containers-Home-index__menu > .src-pages-apps-containers-Home-index__item:hover, .src-pages-apps-containers-Home-index__cates .src-pages-apps-containers-Home-index__group .src-pages-apps-containers-Home-index__menu > .src-pages-apps-containers-Home-index__item.src-pages-apps-containers-Home-index__active {
+  color: #3744b9 !important;
+}
+
+.src-pages-apps-components-Banner-index__back .custom-icon:hover > * {
+  color: #96a6e2 !important;
+  fill: #96a6e2 !important;
+}
+
+.markdown-body code, .markdown-body tt {
+  color: #2b2edc !important;
+  background-color: #DDE4FF !important;
 }
 
 /* pie chart color */
 .recharts-pie-sector path {
-    fill: #8155ff !important;
+  fill: #8155ff !important;
+}
+
+.src-components-Cards-Monitoring-StatusTabs-index__tabList .src-components-Cards-Monitoring-StatusTabs-index__tab.src-components-Cards-Monitoring-StatusTabs-index__active .recharts-pie-sector path {
+  fill: #ffffff !important;
 }
 
 /* dot-area chart circle */
-.recharts-area-dots>* {
-    stroke: #4487ec !important;
+.recharts-area-dots > * {
+  stroke: #4487ec !important;
 }
 
 /* rank 색상 */
 .src-components-Tables-Ranking-index__table.src-components-Tables-Ranking-index__table_rank.src-components-Tables-Ranking-index__table_no_border td.src-components-Tables-Ranking-index__rankCol {
-    background: #dde4ff !important;
+  background: #dde4ff !important;
 }
 
 /* base bar */
 .src-components-Base-Bar-index__bar {
-    background: #6371e8;
+  background: #6371e8;
 }
 
 /* 하단 우측 kube 도구 버튼 색 */
 .src-components-KubeTools-index__button {
-    border: 1px solid #242e42 !important;
-    background-color: #242e42 !important;
+  border: 1px solid #242e42 !important;
+  background-color: #242e42 !important;
 }
 
 /* global nav menu : 메인 첫 선택 메뉴 전체 화면 */
 .ReactModal__Overlay.ReactModal__Overlay--after-open {
-    background: #d8e2ec !important;
+  background: #d8e2ec !important;
 }
 
 .src-components-Layout-GlobalNav-index__body {
-    padding: 0;
-    border-radius: 0;
-    overflow: hidden;
-    display: flex;
-    height: 100vh;
-    background: none !important;
+  padding: 0;
+  border-radius: 0;
+  overflow: hidden;
+  display: flex;
+  height: 100vh;
+  background: none !important;
 }
 
-.src-components-Layout-GlobalNav-index__body>div {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    border: 1px solid #d8e2ec;
+.src-components-Layout-GlobalNav-index__body > div {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  border: 1px solid #d8e2ec;
 }
 
 .src-components-Layout-GlobalNav-index__close {
-    width: 30px;
-    height: 30px;
-    position: absolute;
-    right: 20px;
-    top: 20px;
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  right: 20px;
+  top: 20px;
 }
 
-.src-components-Layout-GlobalNav-index__close>.kubed-icon-close {
-    color: #36435c !important;
+.src-components-Layout-GlobalNav-index__close > .kubed-icon-close {
+  color: #36435c !important;
 }
 
-.src-components-Layout-GlobalNav-index__close:hover>.kubed-icon.kubed-icon-close.kubed-icon-light {
-    color: #ffffff !important;
+.src-components-Layout-GlobalNav-index__close:hover > .kubed-icon.kubed-icon-close.kubed-icon-light {
+  color: #ffffff !important;
 }
 
 .src-components-Layout-GlobalNav-index__navs {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    align-content: center;
-    flex-wrap: wrap;
-    width: 770px;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-content: center;
+  flex-wrap: wrap;
+  width: 770px;
 }
 
 .src-components-Layout-GlobalNav-index__nav {
-    position: relative !important;
-    width: 330px !important;
-    height: 220px !important;
-    padding: 30px !important;
-    border-radius: 10px !important;
-    text-align: left !important;
-    box-shadow: 0 4px 8px 0 rgba(36, 46, 66, 0.06) !important;
+  position: relative !important;
+  width: 330px !important;
+  height: 220px !important;
+  padding: 30px !important;
+  border-radius: 10px !important;
+  text-align: left !important;
+  box-shadow: 0 4px 8px 0 rgba(36, 46, 66, 0.06) !important;
 }
 
-.src-components-Layout-GlobalNav-index__navs>a:nth-child(1) .src-components-Layout-GlobalNav-index__nav {
-    background: #7883e4;
+.src-components-Layout-GlobalNav-index__navs > a:nth-child(1) .src-components-Layout-GlobalNav-index__nav {
+  background: #7883e4;
 }
 
-.src-components-Layout-GlobalNav-index__navs>a:nth-child(2) .src-components-Layout-GlobalNav-index__nav {
-    background: #8574e9;
+.src-components-Layout-GlobalNav-index__navs > a:nth-child(2) .src-components-Layout-GlobalNav-index__nav {
+  background: #8574e9;
 }
 
-.src-components-Layout-GlobalNav-index__navs>a:nth-child(3) .src-components-Layout-GlobalNav-index__nav {
-    background: #323551;
+.src-components-Layout-GlobalNav-index__navs > a:nth-child(3) .src-components-Layout-GlobalNav-index__nav {
+  background: #323551;
 }
 
-.src-components-Layout-GlobalNav-index__navs>a:nth-child(4) .src-components-Layout-GlobalNav-index__nav {
-    background: #3744b9;
+.src-components-Layout-GlobalNav-index__navs > a:nth-child(4) .src-components-Layout-GlobalNav-index__nav {
+  background: #3744b9;
 }
 
 .src-components-Layout-GlobalNav-index__nav .src-components-Layout-GlobalNav-index__title,
 .src-components-Layout-GlobalNav-index__nav .src-components-Layout-GlobalNav-index__desc {
-    color: #ffffff !important;
-    line-height: 1rem !important;
-    text-shadow: none !important;
+  color: #ffffff !important;
+  line-height: 1rem !important;
+  text-shadow: none !important;
 }
 
 .src-components-Layout-GlobalNav-index__nav .src-components-Layout-GlobalNav-index__title {
-    font-weight: 700;
+  font-weight: 700;
 }
 
 .src-components-Layout-GlobalNav-index__nav:hover {
-    background: #ffffff !important;
+  background: #ffffff !important;
 }
 
 .src-components-Layout-GlobalNav-index__nav:hover .src-components-Layout-GlobalNav-index__title {
-    color: #000 !important;
+  color: #000 !important;
 }
 
 .src-components-Layout-GlobalNav-index__nav:hover .src-components-Layout-GlobalNav-index__desc {
-    color: #000 !important;
+  color: #000 !important;
 }
 
 .src-components-Layout-GlobalNav-index__nav .src-components-Layout-GlobalNav-index__icon {
-    width: 60px;
-    height: 60px;
-    margin-bottom: 20px;
+  width: 60px;
+  height: 60px;
+  margin-bottom: 20px;
 }
 
-.src-components-Layout-GlobalNav-index__nav .src-components-Layout-GlobalNav-index__icon>span>svg {
-    display: none;
+.src-components-Layout-GlobalNav-index__nav .src-components-Layout-GlobalNav-index__icon > span > svg {
+  display: none;
 }
 
 .src-components-Layout-GlobalNav-index__nav .src-components-Layout-GlobalNav-index__title {
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 1.4;
-    color: #000;
-    text-shadow: 0 4px 8px rgba(36, 46, 66, 0.1);
-    margin-bottom: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #000;
+  text-shadow: 0 4px 8px rgba(36, 46, 66, 0.1);
+  margin-bottom: 12px;
 }
 
 .src-components-Layout-GlobalNav-index__nav .src-components-Layout-GlobalNav-index__title:before {
-    width: 60px;
-    height: 60px;
-    content: "";
-    position: absolute;
-    top: 30px;
-    background-repeat: no-repeat !important;
+  width: 60px;
+  height: 60px;
+  content: "";
+  position: absolute;
+  top: 30px;
+  background-repeat: no-repeat !important;
 }
 
-.src-components-Layout-GlobalNav-index__navs>a:nth-child(1)>.src-components-Layout-GlobalNav-index__nav:hover .src-components-Layout-GlobalNav-index__title:before {
-    background: url("/assets/resources/images/icons/icon_menu_1_h.svg") no-repeat !important;
+.src-components-Layout-GlobalNav-index__navs > a:nth-child(1) > .src-components-Layout-GlobalNav-index__nav:hover .src-components-Layout-GlobalNav-index__title:before {
+  background: url("/assets/resources/images/icons/icon_menu_1_h.svg") no-repeat !important;
 }
 
-.src-components-Layout-GlobalNav-index__navs>a:nth-child(1) .src-components-Layout-GlobalNav-index__title:before {
-    background: url("/assets/resources/images/icons/icon_menu_1.svg");
+.src-components-Layout-GlobalNav-index__navs > a:nth-child(1) .src-components-Layout-GlobalNav-index__title:before {
+  background: url("/assets/resources/images/icons/icon_menu_1.svg");
 }
 
-.src-components-Layout-GlobalNav-index__navs>a:nth-child(2)>.src-components-Layout-GlobalNav-index__nav:hover .src-components-Layout-GlobalNav-index__title:before {
-    background: url("/assets/resources/images/icons/icon_menu_2_h.svg") no-repeat !important;
+.src-components-Layout-GlobalNav-index__navs > a:nth-child(2) > .src-components-Layout-GlobalNav-index__nav:hover .src-components-Layout-GlobalNav-index__title:before {
+  background: url("/assets/resources/images/icons/icon_menu_2_h.svg") no-repeat !important;
 }
 
-.src-components-Layout-GlobalNav-index__navs>a:nth-child(2) .src-components-Layout-GlobalNav-index__title:before {
-    background: url("/assets/resources/images/icons/icon_menu_2.svg");
+.src-components-Layout-GlobalNav-index__navs > a:nth-child(2) .src-components-Layout-GlobalNav-index__title:before {
+  background: url("/assets/resources/images/icons/icon_menu_2.svg");
 }
 
-.src-components-Layout-GlobalNav-index__navs>a:nth-child(3)>.src-components-Layout-GlobalNav-index__nav:hover .src-components-Layout-GlobalNav-index__title:before {
-    background: url("/assets/resources/images/icons/icon_menu_3_h.svg") no-repeat !important;
+.src-components-Layout-GlobalNav-index__navs > a:nth-child(3) > .src-components-Layout-GlobalNav-index__nav:hover .src-components-Layout-GlobalNav-index__title:before {
+  background: url("/assets/resources/images/icons/icon_menu_3_h.svg") no-repeat !important;
 }
 
-.src-components-Layout-GlobalNav-index__navs>a:nth-child(3) .src-components-Layout-GlobalNav-index__title:before {
-    background: url("/assets/resources/images/icons/icon_menu_3.svg");
+.src-components-Layout-GlobalNav-index__navs > a:nth-child(3) .src-components-Layout-GlobalNav-index__title:before {
+  background: url("/assets/resources/images/icons/icon_menu_3.svg");
 }
 
-.src-components-Layout-GlobalNav-index__navs>a:nth-child(4)>.src-components-Layout-GlobalNav-index__nav:hover .src-components-Layout-GlobalNav-index__title:before {
-    background: url("/assets/resources/images/icons/icon_menu_4_h.svg") no-repeat !important;
+.src-components-Layout-GlobalNav-index__navs > a:nth-child(4) > .src-components-Layout-GlobalNav-index__nav:hover .src-components-Layout-GlobalNav-index__title:before {
+  background: url("/assets/resources/images/icons/icon_menu_4_h.svg") no-repeat !important;
 }
 
-.src-components-Layout-GlobalNav-index__navs>a:nth-child(4) .src-components-Layout-GlobalNav-index__title:before {
-    background: url("/assets/resources/images/icons/icon_menu_4.svg");
+.src-components-Layout-GlobalNav-index__navs > a:nth-child(4) .src-components-Layout-GlobalNav-index__title:before {
+  background: url("/assets/resources/images/icons/icon_menu_4.svg");
 }
 
 .src-components-Layout-GlobalNav-index__nav .src-components-Layout-GlobalNav-index__desc {
-    color: #000;
-    font-size: 14px;
+  color: #000;
+  font-size: 14px;
 }
 
 .src-components-Layout-GlobalNav-index__nav .src-components-Layout-GlobalNav-index__bottomIcon {
-    display: none;
+  display: none;
 }
 
 /* 로그인 */
 .src-core-containers-Login-index__login {
-    position: relative;
-    padding: 60px !important;
-    margin-top: 180px !important;
-    width: 460px !important;
-    border-radius: 8px !important;
-    box-shadow: 0px 4px 15px 0px #9BA7B2 !important;
+  position: relative;
+  padding: 60px !important;
+  margin-top: 180px !important;
+  width: 460px !important;
+  border-radius: 8px !important;
+  box-shadow: 0px 4px 15px 0px #9BA7B2 !important;
 }
-
 .src-core-containers-Login-index__login .top_logo {
-    height: 100px !important;
-    text-align: center !important;
-    margin-bottom: 50px !important;
+  height: 100px !important;
+  text-align: center !important;
+  margin-bottom: 50px !important;
 }
-
 .src-core-containers-Login-index__login .top_logo .src-core-containers-Login-index__logo {
-    position: relative !important;
-    top: auto !important;
-    left: auto !important;
-    transform: none !important;
-    text-align: center !important;
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  transform: none !important;
+  text-align: center !important;
 }
-
 .src-core-containers-Login-index__login .top_logo .src-core-containers-Login-index__header {
-    position: relative;
-    font-weight: 700 !important;
-    font-size: 14px !important;
-    margin-top: 20px !important;
-    color: #242e42;
-    line-height: 20px;
-    text-align: center;
+  position: relative;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  margin-top: 20px !important;
+  color: #242e42;
+  line-height: 20px;
+  text-align: center;
 }
-
 .src-core-containers-Login-index__login .form-item-error {
-    margin-top: 0px !important;
+  margin-top: 0px !important;
 }
 
-.src-core-containers-Login-index__logo>img {
-    height: 40px !important;
+.src-core-containers-Login-index__logo > img {
+  height: 40px !important;
 }
 
 .src-core-containers-Login-index__divider {
-    display: none !important;
+  display: none !important;
 }
 
 .src-core-containers-Login-index__login .form-item-label {
-    font-size: 12px;
-    font-weight: 600;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: 1.67;
-    letter-spacing: normal;
-    color: #36435c;
+  font-size: 12px;
+  font-weight: 600;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.67;
+  letter-spacing: normal;
+  color: #36435c;
 }
 
 .src-core-containers-Login-index__login input.input {
-    margin: 5px 0 5px 0 !important;
-    height: 40px !important;
-    width: 100%;
-    max-width: 455px;
+  margin: 5px 0 5px 0 !important;
+  height: 40px !important;
+  width: 100%;
+  max-width: 455px;
 }
-
 .src-core-containers-Login-index__login input.input:focus {
-    border: 2px solid #3617ce !important;
+  border: 2px solid #3617ce !important;
 }
 
 .src-core-containers-Login-index__footer {
-    margin-top: 24px;
+  margin-top: 24px;
 }
-
 .src-core-containers-Login-index__footer .button-control {
-    color: #ffffff;
-    border: 1px solid #242e42;
-    background-color: #242e42;
-    box-shadow: 0 8px 16px 0 rgba(35, 45, 65, 0.28);
+  color: #ffffff;
+  border: 1px solid #242e42;
+  background-color: #242e42;
+  box-shadow: 0 8px 16px 0 rgba(35, 45, 65, 0.28);
 }
 
 .src-core-containers-Login-index__footer button[type=submit] {
-    height: 45px !important;
-    background: #3617ce !important;
-    font-size: 14px !important;
-    border-radius: 4px !important;
+  height: 45px !important;
+  background: #3617ce !important;
+  font-size: 14px !important;
+  border-radius: 4px !important;
 }
-
 .src-core-containers-Login-index__footer button[type=submit]:hover {
-    background-color: #4465dc !important;
+  background-color: #4465dc !important;
 }
-
 .src-core-containers-Login-index__footer button[type=submit]:active {
-    box-shadow: none !important;
+  box-shadow: none !important;
 }
 
 .login_back {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 120px;
-    text-align: center;
-    background: linear-gradient(90deg, #522FE0 6.51%, #3F78FF 98.9%);
-}
-
-/*# sourceMappingURL=custom_theme.css.map */
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 120px;
+  text-align: center;
+  background: linear-gradient(90deg, #522FE0 6.51%, #3F78FF 98.9%);
+}/*# sourceMappingURL=custom_theme.css.map */
