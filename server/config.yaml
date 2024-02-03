@@ -35,8 +35,8 @@ server:
   dockerHubUrl: https://hub.docker.com
 
 client:
-  title: KubeSphere
-  description: ""
+  title: Petasus Kubernetes Grid
+  description: "Petasus Kubernetes Grid (PKG)"
   encryptKey: kubesphere
 
   version:
