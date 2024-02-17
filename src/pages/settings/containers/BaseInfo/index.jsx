@@ -55,7 +55,7 @@ export default class BaseInfo extends Component {
           </div>
           <div className={styles.content}>
             <div className={styles.image}>
-              <img src="/assets/logo.svg" alt="" />
+              <img src="/assets/logo.png" alt="" />
             </div>
             <div className={styles.info}>
               <Text

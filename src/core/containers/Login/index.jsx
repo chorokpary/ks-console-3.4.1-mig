@@ -149,7 +149,7 @@ export default class Login extends Component {
         <div className={styles.login}>
 	  <div className="top_logo">
             <a href="/" className={styles.logo}>
-              <img src="/assets/logo.svg" alt="" />
+              <img src="/assets/logo.png" alt="" />
             </a>
             <div className={styles.header}>{t('WELCOME')}</div>
           </div>
