@@ -559,9 +559,10 @@ li.src-pages-clusters-containers-Resources-components-CardSelect-index__selected
 }
 
 /* pie chart color */
-.recharts-pie-sector path {
+/*.recharts-pie-sector path {
   fill: #8155ff !important;
 }
+*/
 
 .src-components-Cards-Monitoring-StatusTabs-index__tabList .src-components-Cards-Monitoring-StatusTabs-index__tab.src-components-Cards-Monitoring-StatusTabs-index__active .recharts-pie-sector path {
   fill: #ffffff !important;
