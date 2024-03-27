@@ -19,7 +19,7 @@ module.exports = {
   // Banner
   CLUSTER_NODE_PL: '클러스터 노드',
   CLUSTER_NODE: '클러스터 노드',
-  CLUSTER_NODE_DESC: '클러스터 노드는 KubeSphere 클러스터의 기본 서버입니다. 이 페이지에서 클러스터 노드를 관리할 수 있습니다.',
+  CLUSTER_NODE_DESC: '클러스터 노드는 Petasus Kubernetes 클러스터의 기본 서버입니다. 이 페이지에서 클러스터 노드를 관리할 수 있습니다.',
   NODE_TYPES_Q: '클러스터 노드의 유형은 무엇입니까?',
   NODE_TYPES_A: '노드는 컨트롤 플레인 노드와 워커 노드로 분류됩니다.',
   WHAT_IS_NODE_TAINTS_Q: '노드 테인트란 무엇입니까?',

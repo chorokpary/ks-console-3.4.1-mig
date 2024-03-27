@@ -17,7 +17,7 @@
  */
 module.exports = {
   // Basic Information
-  EMAIL_DESC: '이메일 주소는 KubeSphere 웹 콘솔에 로그인하는 데 사용할 수 있습니다.',
+  EMAIL_DESC: '이메일 주소는 Petasus Kubernetes 웹 콘솔에 로그인하는 데 사용할 수 있습니다.',
   LANGUAGE: '언어',
   USER_SETTINGS: '사용자 설정',
   CLOSE: '닫기',

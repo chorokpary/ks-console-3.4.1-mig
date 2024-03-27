@@ -16,7 +16,7 @@
  * along with KubeSphere Console.  If not, see <https://www.gnu.org/licenses/>.
  */
 module.exports = {
-  KS_DESCRIPTION: 'KubeSphere는 현재 가장 널리 쓰이는 컨테이너 오케스트레이션 플랫폼인 Kubernetes 위에 엔터프라이즈급 멀티 테넌트 컨테이너 플랫폼을 제공하는 것을 목표로 하는 오픈소스 프로젝트입니다. 사용하기 쉬운 인터페이스와 마법사 스타일의 작업을 제공하여 개발, 테스트 및 유지 관리의 일상적인 작업 측면에서 Kubernetes의 러닝 커브(learning curve)와 운영 비용을 줄입니다.',
+  KS_DESCRIPTION: 'Petasus Kubernetes는 현재 가장 널리 쓰이는 컨테이너 오케스트레이션 플랫폼인 Kubernetes 위에 엔터프라이즈급 멀티 테넌트 컨테이너 플랫폼을 제공하는 것을 목표로 하는 오픈소스 프로젝트입니다. 사용하기 쉬운 인터페이스와 마법사 스타일의 작업을 제공하여 개발, 테스트 및 유지 관리의 일상적인 작업 측면에서 Kubernetes의 러닝 커브(learning curve)와 운영 비용을 줄입니다.',
   REPS_ADDRESS: 'GitHub',
   ISSUE_FEEDBACK: '피드백',
   PART_IN_DISCUSSION: '디스커션',

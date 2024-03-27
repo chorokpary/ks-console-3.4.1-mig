@@ -31,8 +31,8 @@ module.exports = {
   CONNTECT_DIRECT: '직접 연결',
   CONNTECT_PROXY: '에이전트 연결',
   INPUT_KUBECONFIG: '맴버 클러스터 kubeconfig',
-  CLUSTER_DIRECT_IMPORT_TIP: 'KubeSphere의 멀티 클러스터 컨트롤 플레인은 제공된 Kubeconfig를 통해 멤버 클러스터에 연결됩니다. 이 방법을 사용하려면 호스트 클러스터가 kubeconfig의 서버 주소를 통해 멤버 클러스터에 직접 액세스할 수 있어야 합니다.</br></br>이 방법은 일반적으로 다음과 같은 시나리오에 적용됩니다. </br>1. 호스트 클러스터와 멤버 클러스터가 동일한 내부 네트워크에 있습니다.</br>2. 호스트 클러스터와 멤버 클러스터의 네트워크는 모두 VPN 또는 다른 기술(예: 터널링)을 통해 연결됩니다.</br>3. kubeconfig 내 서버 주소는 공용 네트워크를 통해 액세스할 수 있습니다.',
-  CLUSTER_AGENT_IMPORT_TIP: 'KubeSphere 컨트롤 플레인은 프록시를 통해 멤버 클러스터에 연결됩니다. 컨트롤 플레인은 맴버 클러스터에서 생성한 클라이언트 구성 요소에 연결된 공용 프록시 서비스를 실행합니다. 따라서 reserved 프록시가 생성됩니다. 이 방법의 경우 컨트롤 플레인과 맴버 클러스터가 동일한 네트워크에 있을 필요는 없습니다. 멤버 클러스터의 API 서버 주소를 노출할 필요가 없습니다. 그러나 네트워크 성능이 영향을 받을 수 있습니다.</br></br>이 방법은 일반적으로 다음과 같은 시나리오에 적용됩니다. </br>1. 호스트 클러스터와 멤버 클러스터가 동일한 네트워크에 있지 않습니다.<br/>2. 호스트 클러스터와 멤버 클러스터 모두의 네트워크는 VPN 또는 다른 기술(예: 터널링)을 통해 연결할 수 없습니다.<br/>3. 클러스터 내의 네트워크 성능 저하를 감수할 수 있습니다.',
+  CLUSTER_DIRECT_IMPORT_TIP: 'Petasus Kubernetes의 멀티 클러스터 컨트롤 플레인은 제공된 Kubeconfig를 통해 멤버 클러스터에 연결됩니다. 이 방법을 사용하려면 호스트 클러스터가 kubeconfig의 서버 주소를 통해 멤버 클러스터에 직접 액세스할 수 있어야 합니다.</br></br>이 방법은 일반적으로 다음과 같은 시나리오에 적용됩니다. </br>1. 호스트 클러스터와 멤버 클러스터가 동일한 내부 네트워크에 있습니다.</br>2. 호스트 클러스터와 멤버 클러스터의 네트워크는 모두 VPN 또는 다른 기술(예: 터널링)을 통해 연결됩니다.</br>3. kubeconfig 내 서버 주소는 공용 네트워크를 통해 액세스할 수 있습니다.',
+  CLUSTER_AGENT_IMPORT_TIP: 'Petasus Kubernetes 컨트롤 플레인은 프록시를 통해 멤버 클러스터에 연결됩니다. 컨트롤 플레인은 맴버 클러스터에서 생성한 클라이언트 구성 요소에 연결된 공용 프록시 서비스를 실행합니다. 따라서 reserved 프록시가 생성됩니다. 이 방법의 경우 컨트롤 플레인과 맴버 클러스터가 동일한 네트워크에 있을 필요는 없습니다. 멤버 클러스터의 API 서버 주소를 노출할 필요가 없습니다. 그러나 네트워크 성능이 영향을 받을 수 있습니다.</br></br>이 방법은 일반적으로 다음과 같은 시나리오에 적용됩니다. </br>1. 호스트 클러스터와 멤버 클러스터가 동일한 네트워크에 있지 않습니다.<br/>2. 호스트 클러스터와 멤버 클러스터 모두의 네트워크는 VPN 또는 다른 기술(예: 터널링)을 통해 연결할 수 없습니다.<br/>3. 클러스터 내의 네트워크 성능 저하를 감수할 수 있습니다.',
   CLUSTER_AGENT_TITLE: '클러스터에 제공된 에이전트를 기준으로 맴버 클러스터를 추가하십시오.',
   CLUSTER_AGENT_DESC: '클러스터에 에이전트를 설정해야 합니다.',
   HOW_TO_GET_KUBECONFIG: 'kubeconfig를 얻으려면 어떻게 해야 합니까?',
@@ -57,11 +57,11 @@ module.exports = {
   EXPIRE_DATE: '만료 시간',
   LAST_KUBE_CONFIG_EXPIRED: 'KubeConfig가 <span class="kubeConfig_expired">{count}/<span>일 후에 만료됨',
   VALIDATION_FAILED: '인증 실패',
-  NO_CLUSTER_TIP_DESC: '클러스터는 KubeSphere를 실행하는 노드(물리적 또는 가상 머신)의 그룹입니다.',
+  NO_CLUSTER_TIP_DESC: '클러스터는 Petasus Kubernetes를 실행하는 노드(물리적 또는 가상 머신)의 그룹입니다.',
   // List > Remove Cluster
   RISK_WARNING: '위험 경고',
   REMOVE_CLUSTER_TIP_A: '클러스터가 제거된 후에는 클러스터의 리소스가 자동으로 지워지지 않습니다.',
-  REMOVE_CLUSTER_TIP_B: '클러스터가 제거된 후에는 클러스터의 멀티 클러스터 구성 데이터가 자동으로 지워지지 않습니다. KubeSphere를 제거하거나 관련 리소스를 삭제하면 사용자 데이터가 손실될 수 있습니다. <a href="https://kubesphere.io/docs/"> 공식 KubeSphere 설명서</a>를 참조하여 제거된 클러스터의 멀티 클러스터 구성 데이터를 수동으로 지워야 합니다.',
+  REMOVE_CLUSTER_TIP_B: '클러스터가 제거된 후에는 클러스터의 멀티 클러스터 구성 데이터가 자동으로 지워지지 않습니다. Petasus Kubernetes를 제거하거나 관련 리소스를 삭제하면 사용자 데이터가 손실될 수 있습니다. <a href="https://kubesphere.io/docs/"> 공식 Petasus Kubernetes 설명서</a>를 참조하여 제거된 클러스터의 멀티 클러스터 구성 데이터를 수동으로 지워야 합니다.',
   CLUSTER_CONFIRM_TEXT: '클러스터를 제거할 때의 위험을 인지하였습니다.',
   ENTER_CLUSTER_NAME: '이 작업은 실행 취소할 수 없습니다. 클러스터 이름 <strong>{name}</strong>을 입력하여 이 작업의 위험을 이해하고 있는지 확인합니다.'
 };

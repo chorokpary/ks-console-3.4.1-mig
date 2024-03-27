@@ -46,7 +46,7 @@ module.exports = {
   PROJECT_ROLE: '프로젝트 역할',
   SELECT_ROLE_TIP: '역할을 선택해주십시오.',
   ADD_PROJECT: '프로젝트 추가',
-  CLUSTER_UPGRADE_REQUIRED: '현재 KubeSphere 버전은 이 기능을 지원하지 않습니다. KubeSphere를 {version} 이상으로 업그레이드하십시오.',
+  CLUSTER_UPGRADE_REQUIRED: '현재 Petasus Kubernetes 버전은 이 기능을 지원하지 않습니다. Petasus Kubernetes를 {version} 이상으로 업그레이드하십시오.',
   // List > Set Departments > DevOps Project Role
   DEVOPS_PROJECT_ROLE: '데브옵스 프로젝트 역할',
   ADD_DEVOPS_PROJECT: '데브옵스 프로젝트 추가'

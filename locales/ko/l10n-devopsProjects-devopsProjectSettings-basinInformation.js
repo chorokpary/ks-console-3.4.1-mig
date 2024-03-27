@@ -18,7 +18,7 @@
 module.exports = {
   // Banner
   DEVOPS_PROJECT_SETTINGS: '데브옵스 프로젝트 설정',
-  DEVOPS_DESCRIPTION: '\b데브옵스 프로젝트는 파이프라인이 정의된 독립적인 네임스페이스입니다.사용자는 자신의 방식으로 파이프라인을 그룹핑 할 수 있습니다 (예: 프로젝트 유형, 조직 유형 등).',
+  DEVOPS_DESCRIPTION: '데브옵스 프로젝트는 파이프라인이 정의된 독립적인 네임스페이스입니다.사용자는 자신의 방식으로 파이프라인을 그룹핑 할 수 있습니다 (예: 프로젝트 유형, 조직 유형 등).',
   // Basic Information
   DEVOPS_PROJECT_ROLE_SCAP: '데브옵스 프로젝트 역할',
   DEVOPS_PROJECT_SCAP: '데브옵스 프로젝트',

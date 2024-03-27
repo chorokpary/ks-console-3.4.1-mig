@@ -26,7 +26,7 @@ module.exports = {
   // List > Create > Basic Information
   SCHEDULE: '스케쥴',
   ENTER_SCHEDULE_TIP: '스케줄을 선택해주십시오.',
-  CRONJOB_CRON_DESC: '크론잡에 대한 스케줄을 설정합니다. KubeSphere는 기본적으로 UTC를 사용하며 사용자는 표준 시간대에 따라 일정을 조정해야 합니다. <a href="//en.wikipedia.org/wiki/Cron" target="_blank">자세히 알아보기</a>',
+  CRONJOB_CRON_DESC: '크론잡에 대한 스케줄을 설정합니다. Petasus Kubernetes는 기본적으로 UTC를 사용하며 사용자는 표준 시간대에 따라 일정을 조정해야 합니다. <a href="//en.wikipedia.org/wiki/Cron" target="_blank">자세히 알아보기</a>',
   // List > Create > Advanced settings
   MAXIMUM_DELAY: '최대 시작 지연(초)',
   SUCCESSFUL_JOBS_RETAINED: '성공적인 잡 예약 수',

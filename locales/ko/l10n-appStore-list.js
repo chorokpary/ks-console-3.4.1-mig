@@ -18,7 +18,7 @@
 module.exports = {
   // Head
   APP_STORE: '앱 스토어',
-  HOME_APP_STORE_DESC: 'KubeSphere 공식 앱스토어는 배포 및 관리 기능을 제공하며 사용자는 앱 템플릿을 기반으로 앱을 원클릭으로 신속하게 배포할 수 있습니다.',
+  HOME_APP_STORE_DESC: 'Petasus Kubernetes 공식 앱스토어는 배포 및 관리 기능을 제공하며 사용자는 앱 템플릿을 기반으로 앱을 원클릭으로 신속하게 배포할 수 있습니다.',
   // Discover
   DISCOVER: '살펴보기',
   NEW_APPS: '새로운 앱',

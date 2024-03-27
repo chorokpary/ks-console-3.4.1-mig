@@ -48,7 +48,7 @@ module.exports = {
   S2I_TARGET_IMAGE_REPOSITORY_DESC: '생성할 이미지를 저장할 이미지 레지스트리를 선택합니다. 사용 가능한 이미지 레지스트리가 없는 경우 이미지 레지스트리 스크릿을 만들어야 합니다. <br/><a href={link} target="_blank">자세히 알아보기</a>',
   TRIGGER_TOKEN: '트리거 토큰',
   INVALID_TRIGGER_TOKEN_DESC: '잘못된 토큰입니다. 토큰에는 대문자, 소문자 및 숫자만 포함될 수 있습니다.',
-  TRIGGER_TOKEN_DESC: 'KubeSphere에 대해 클라이언트를 인증하는 데 사용되는 토큰을 설정합니다. Webhook을 통해 KubeSphere에서 이미지 빌드를 자동으로 트리거하도록 클라이언트를 설정할 수 있습니다. 토큰에는 대문자, 소문자 및 숫자만 포함될 수 있습니다.',
+  TRIGGER_TOKEN_DESC: 'Petasus Kubernetes에 대해 클라이언트를 인증하는 데 사용되는 토큰을 설정합니다. Webhook을 통해 Petasus Kubernetes에서 이미지 빌드를 자동으로 트리거하도록 클라이언트를 설정할 수 있습니다. 토큰에는 대문자, 소문자 및 숫자만 포함될 수 있습니다.',
   CODE_RELATIVE_PATH: '코드 상대 경로',
   CODE_RELATIVE_PATH_DESC: '코드 저장소에서 코드의 상대 경로를 설정합니다. 기본 경로는 /입니다.',
   S2I_ENVIRONMENT_DESC: '이미지의 런타임 동작을 제어할 환경 변수를 설정합니다. <a href={link} target="_blank">자세히 알아보기</a>',

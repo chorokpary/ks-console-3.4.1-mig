@@ -21,7 +21,7 @@ module.exports = {
   PREREQUESTS_FOR_USE_ROUTE_Q: '인그레스를 사용하기 위하여 필요한 조건은 무엇입니까?',
   PREREQUESTS_FOR_USE_ROUTE_A: '인그레스를 사용하려면 프로젝트 관리자에게 문의하여 프로젝트의 게이트웨이를 설정해야 합니다.',
   ACCESS_TYPES_OF_ROUTE_Q: '인그레스의 외부 액세스 모드는 무엇입니까?',
-  ACCESS_TYPES_OF_ROUTE_A: 'KubeSphere 인그레서는 NodePort 및 LoadBalancer 두 가지 유형의 외부 액세스 모드를 지원합니다.',
+  ACCESS_TYPES_OF_ROUTE_A: 'Petasus Kubernetes 인그레서는 NodePort 및 LoadBalancer 두 가지 유형의 외부 액세스 모드를 지원합니다.',
   ROUTE_PL: '인그레스',
   // List
   GATEWAY_ADDRESS_TCAP: '게이트웨이 주소',

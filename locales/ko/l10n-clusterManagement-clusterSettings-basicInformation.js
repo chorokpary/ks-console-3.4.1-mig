@@ -26,6 +26,6 @@ module.exports = {
   EDIT_CLUSTER_INFO_DESC: '클러스터에 대한 기본 정보를 편집합니다.',
   // Remove Cluster
   REMOVE_CLUSTER: '클러스터 제거',
-  REMOVE_CLUSTER_DESC: '클러스터가 제거되면 KubeSphere에서 클러스터를 관리할 수 없습니다. 클러스터의 리소스는 삭제되지 않습니다. 클러스터 이름 <strong>{name}</strong>을 입력하여 이 작업의 위험을 이해하고 있는지 확인합니다.',
+  REMOVE_CLUSTER_DESC: '클러스터가 제거되면 Petasus Kubernetes에서 클러스터를 관리할 수 없습니다. 클러스터의 리소스는 삭제되지 않습니다. 클러스터 이름 <strong>{name}</strong>을 입력하여 이 작업의 위험을 이해하고 있는지 확인합니다.',
   REMOVE_SUCCESS: '성공적으로 제거됨'
 };

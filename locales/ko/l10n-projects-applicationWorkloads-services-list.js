@@ -17,8 +17,8 @@
  */
 module.exports = {
   // Banner
-  SERVICE_TYPES_Q: 'KubeSphere에서 지원하는 서비스 유형은 무엇입니까?',
-  SERVICE_TYPES_A: 'KubeSphere는 스테이트리스 서비스 및 스테이트풀 서비스를 지원합니다. 스테이트리스 서비스의 파드 복제본은 동일한 볼륨을 공유하지만 스테이트풀 서비스의 각 파드 복제본은 독립적인 볼륨을 가집니다.',
+  SERVICE_TYPES_Q: 'Petasus Kubernetes에서 지원하는 서비스 유형은 무엇입니까?',
+  SERVICE_TYPES_A: 'Petasus Kubernetes는 스테이트리스 서비스 및 스테이트풀 서비스를 지원합니다. 스테이트리스 서비스의 파드 복제본은 동일한 볼륨을 공유하지만 스테이트풀 서비스의 각 파드 복제본은 독립적인 볼륨을 가집니다.',
   SCENARIOS_FOR_SERVICES_Q: '스테이트리스 서비스 및 스테이트풀 서비스의 사용 사례는 무엇입니까?',
   SCENARIOS_FOR_SERVICES_A: '스테이트리스 서비스는 Nginx 및 Tomcat과 같이 데이터 지속성이 필요하지 않은 시나리오에 적합합니다. 스테이트풀 서비스는 MySQL 데이터베이스, Kafka 및 Zookeeper와 같이 데이터 지속성이 필요한 시나리오에 적합합니다.',
   // Service List

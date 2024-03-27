@@ -20,9 +20,9 @@ module.exports = {
   PLATFORM_ROLE_PL: '플랫폼 역할',
   // List
   PLATFORM_ROLE_EMPTY_DESC: '플랫폼 역할을 생성하세요.',
-  ROLE_USERS_MANAGER: 'KubeSphere 플랫폼의 모든 사용자를 관리합니다.',
-  ROLE_WORKSPACES_MANAGER: 'KubeSphere 플랫폼의 모든 워크스페이스를 관리합니다.',
-  ROLE_PLATFORM_ADMIN: 'KubeSphere 플랫폼의 모든 리소스를 관리합니다.',
+  ROLE_USERS_MANAGER: 'Petasus Kubernetes 플랫폼의 모든 사용자를 관리합니다.',
+  ROLE_WORKSPACES_MANAGER: 'Petasus Kubernetes 플랫폼의 모든 워크스페이스를 관리합니다.',
+  ROLE_PLATFORM_ADMIN: 'Petasus Kubernetes 플랫폼의 모든 리소스를 관리합니다.',
   ROLE_PLATFORM_REGULAR: '워크스페이스에 가입하기 전에 리소스에 접근할 수 없습니다.',
   ROLE_PLATFORM_SELF_PROVISIONER: '워크스페이스를 생성하고 생성 된 워크스페이스의 관리자가 됩니다.',
   CREATION_TIME_TCAP: '생성된 시간',
@@ -59,7 +59,7 @@ module.exports = {
   // List > Create > Edit Permissions > Platform Settings
   PERMIGROUP_PLATFORM_SETTINGS: '플랫폼 설정',
   PERMISSION_PLATFORM_SETTINGS_MANAGEMENT: '플랫폼 설정 관리',
-  PERMISSION_PLATFORM_SETTINGS_MANAGEMENT_DESC: 'KubeSphere 플랫폼의 설정을 조회 및 편집합니다.',
+  PERMISSION_PLATFORM_SETTINGS_MANAGEMENT_DESC: 'Petasus Kubernetes 플랫폼의 설정을 조회 및 편집합니다.',
   // List > Edit Information
   // List > Edit Permissions
   // List > Delete

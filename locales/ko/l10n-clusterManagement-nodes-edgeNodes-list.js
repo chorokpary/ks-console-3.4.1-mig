@@ -18,7 +18,7 @@
 module.exports = {
   // Banner
   EDGE_NODE_PL: 'Edge 노드',
-  EDGE_NODE_DESC: 'Edge 노드는 KubeSphere 클러스터 외부에 배포된 서버입니다. KubeSphere 클러스터에 Edge 노드를 추가하여 관리할 수 있습니다.',
+  EDGE_NODE_DESC: 'Edge 노드는 Petasus Kubernetes 클러스터 외부에 배포된 서버입니다. Petasus Kubernetes 클러스터에 Edge 노드를 추가하여 관리할 수 있습니다.',
   // Node Count
   // List
   EDGE_NODE_EMPTY_DESC: '클러스터에 Edge 노드를 추가하십시오.',
@@ -36,8 +36,8 @@ module.exports = {
   ADD_DEFAULT_TAINT: '기본 테인트 {params} 추가',
   EDGE_NODE: 'Edge 노드',
   INTERNAL_IP_ADDRESS: '내부 IP 주소',
-  EDGENODE_INTERNAL_IP_DESC: 'KubeSphere 클러스터에서 Edge 노드의 내부 IP 주소를 설정합니다.',
-  EDGENODE_INTERNAL_IP_EMPTY_DESC: 'KubeSphere 클러스터에서 Edge 노드의 내부 IP 주소를 설정하십시오.',
+  EDGENODE_INTERNAL_IP_DESC: 'Petasus Kubernetes 클러스터에서 Edge 노드의 내부 IP 주소를 설정합니다.',
+  EDGENODE_INTERNAL_IP_EMPTY_DESC: 'Petasus Kubernetes 클러스터에서 Edge 노드의 내부 IP 주소를 설정하십시오.',
   COPY_SUCCESSFUL: '성공적으로 복사됨',
   // List > View Log
   LOGS: '로그',

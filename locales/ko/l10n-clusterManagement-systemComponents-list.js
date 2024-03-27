@@ -18,11 +18,11 @@
 module.exports = {
   // Banner
   SYSTEM_COMPONENT_PL: '시스템 구성 요소',
-  SERVICE_COMPONENTS_DESC: '시스템 구성 요소는 다양한 기능을 제공하는 KubeSphere 시스템의 소프트웨어 구성 요소입니다. 이 페이지에서 서비스 구성 요소의 실행 상태를 볼 수 있습니다.',
+  SERVICE_COMPONENTS_DESC: '시스템 구성 요소는 다양한 기능을 제공하는 Petasus Kubernetes 시스템의 소프트웨어 구성 요소입니다. 이 페이지에서 서비스 구성 요소의 실행 상태를 볼 수 있습니다.',
   // KubeSphere
   STOPPED: '중지됨',
   RUNNING_TIME: '실행 시간',
-  KS_CONSOLE_DESC: 'KubeSphere 콘솔 서비스를 제공합니다.',
+  KS_CONSOLE_DESC: 'Petasus Kubernetes 콘솔 서비스를 제공합니다.',
   KS_APISERVER_DESC: '클러스터 관리를 위한 REST API를 제공합니다. 이 구성 요소는 클러스터 구성 요소와 클러스터 보안 제어 간의 통신에도 사용됩니다.',
   OPENLDAP_DESC: '사용자 정보를 중앙 집중식으로 저장하고 관리합니다.',
   REDIS_DESC: '데이터베이스, 캐시 및 메시지 브로커로 사용되는 오픈 소스, 메모리 내 데이터 구조 저장소입니다.',

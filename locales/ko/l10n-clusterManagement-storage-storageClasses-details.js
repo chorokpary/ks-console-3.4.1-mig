@@ -22,12 +22,12 @@ module.exports = {
   // More > Set as Default Storage Class
   SET_DEFAULT_STORAGE_CLASS_TITLE: '기본 스토리지 클래스로 설정',
   SET_AS_DEFAULT_STORAGE_CLASS: '기본 스토리지 클래스로 설정',
-  STORAGE_CLASS_SET_DEFAULT_DESC: '기본 스토리지 클래스가 설정된 후 특별한 요구 사항이 추가되지 않은 경우 시스템은 기본적으로 이 클래스의 볼륨을 생성합니다. KubeSphere 클러스터에는 기본 스토리지 클래스가 하나만 허용됩니다.',
+  STORAGE_CLASS_SET_DEFAULT_DESC: '기본 스토리지 클래스가 설정된 후 특별한 요구 사항이 추가되지 않은 경우 시스템은 기본적으로 이 클래스의 볼륨을 생성합니다. Petasus Kubernetes 클러스터에는 기본 스토리지 클래스가 하나만 허용됩니다.',
   // More > Edit Authorization Rules
   SET_AUTHORIZATION_RULES: '권한 부여 규칙 설정',
   AUTHORIZATION_RULES: '권한 부여 규칙',
   AUTHORIZATION_RULES_DESC: '특정 프로젝트 및 워크스페이스에서만 스토리지 클래스에 액세스할 수 있도록 권한 부여 규칙을 설정합니다.',
-  AUTHORIZATION_NOT_SUPPORT: '클러스터가 현재 이 기능을 지원하지 않습니다. KubeSphere를 v3.3.0 이상으로 업그레이드하거나  <a href="https://github.com/kubesphere/storageclass-accessor" target="_blank">storageclass-accessor</a>를 수동으로 설치하십시오.',
+  AUTHORIZATION_NOT_SUPPORT: '클러스터가 현재 이 기능을 지원하지 않습니다. Petasus Kubernetes를 v3.3.0 이상으로 업그레이드하거나  <a href="https://github.com/kubesphere/storageclass-accessor" target="_blank">storageclass-accessor</a>를 수동으로 설치하십시오.',
   OPERATOR_IN: 'In',
   OPERATOR_NOT_IN: 'Not in',
   // More > Set Volume Permissions

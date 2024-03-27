@@ -22,7 +22,7 @@ module.exports = {
   // Baisc Information
   PROVIDER: 'Provider',
   KUBERNETES_VERSION: 'Kubernetes 버전',
-  KUBESPHERE_VERSION: 'KubeSphere 버전',
+  KUBESPHERE_VERSION: 'Petasus Kubernetes 버전',
   VISIBILITY_PARTIAL: '일부 워크스페이스 표시 됨',
   VISIBILITY_PUBLIC: '모든 워크스페이스에 표시 됨',
   CLUSTER_BASE_INFO_DESC: '기본 정보는 클러스터의 개요를 제공합니다. 클러스터 정보를 보고 편집할 수 있습니다.',
