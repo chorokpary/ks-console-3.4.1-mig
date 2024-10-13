@@ -147,9 +147,9 @@ export default class Login extends Component {
     return (
       <div className={styles.loginContainer}>
         <div className={styles.login}>
-	  <div className="top_logo">
+          <div className="top_logo">
             <a href="/" className={styles.logo}>
-              <img src="/assets/logo.png" alt="" />
+              <img src="/assets/logo.svg" alt="" />
             </a>
           </div>
           <div className={styles.divider}></div>
