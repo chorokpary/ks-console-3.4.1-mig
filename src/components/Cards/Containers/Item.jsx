@@ -147,17 +147,20 @@ export default class ContainerItem extends React.Component {
     let probeType
     let probeDetail
 
-    if ('httpGet' in probe) {
-      const { path, port, scheme } = probe.httpGet
-      probeType = 'HTTP_REQUEST'
-      probeDetail = `GET ${path} on port ${port} (${scheme})`
-    } else if ('tcpSocket' in probe) {
-      probeType = 'TCP_PORT'
-      probeDetail = `Open socket on port ${probe.tcpSocket.port} (TCP)`
+    if (probe && 'httpGet' in probe) {
+      const { path, port, scheme } = probe.httpGet;
+      probeType = 'HTTP_REQUEST';
+      probeDetail = `GET ${path} on port ${port} (${scheme})`;
+    } else if (probe && 'tcpSocket' in probe) {
+      probeType = 'TCP_PORT';
+      probeDetail = `Open socket on port ${probe.tcpSocket.port} (TCP)`;
+    } else if (probe && 'exec' in probe) {
+      const { command = [] } = probe.exec || {};
+      probeType = 'COMMAND';
+      probeDetail = command.join(' ');
     } else {
-      const { command = [] } = probe.exec
-      probeType = 'COMMAND'
-      probeDetail = command.join(' ')
+      probeType = 'UNKNOWN';
+      probeDetail = probe ? JSON.stringify(probe) : 'no probe provided';
     }
 
     return (
