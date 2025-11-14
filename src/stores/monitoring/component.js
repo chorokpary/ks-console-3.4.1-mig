@@ -126,12 +126,12 @@ export default class ComponentMonitoring extends Base {
       kubernetes: get(result, 'kubernetesStatus', []),
       node: get(result, 'nodeStatus', {}),
 
-      kubesphere: get(ksComponents, 'kubesphere-system', []),
+      kubesphere: get(ksComponents, 'petasus-system', []),
       openpitrix: get(ksComponents, 'openpitrix-system', []),
       istio: get(ksComponents, 'istio-system', []),
-      monitoring: get(ksComponents, 'kubesphere-monitoring-system', []),
-      logging: get(ksComponents, 'kubesphere-logging-system', []),
-      devops: get(ksComponents, 'kubesphere-devops-system', []),
+      monitoring: get(ksComponents, 'monitoring-system', []),
+      logging: get(ksComponents, 'logging-system', []),
+      devops: get(ksComponents, 'devops-system', []),
       kubeSystem: get(ksComponents, 'kube-system', []),
     }
 

@@ -85,12 +85,12 @@ describe('The Projects Page', function() {
 
     // search
     {
-      cy.get('[data-test="search"] > input').type(`kubesphere-system{enter}`)
+      cy.get('[data-test="search"] > input').type(`petasus-system{enter}`)
 
       // wait loading end
       cy.wait('@getNamespaces')
 
-      cy.get(`[data-row-key="kubesphere-system"]`).contains('kubesphere-system')
+      cy.get(`[data-row-key="petasus-system"]`).contains('petasus-system')
     }
 
     // clear search

@@ -38,7 +38,7 @@ export default {
             annotations: { ...data.metadata.annotations },
           })
 
-          if (namespace !== 'kubesphere-controls-system') {
+          if (namespace !== 'controls-system') {
             set(data, 'spec.controller.scope', { enabled: true, namespace })
           }
 
@@ -173,7 +173,7 @@ export default {
 
             if (selectValue) {
               const name = item.name.split('kubesphere-router-')[1]
-              const namespace = name === 'kubesphere-system' ? '' : name
+              const namespace = name === 'petasus-system' ? '' : name
               const cluster = item.cluster
 
               reqs.push(store.deleteGateway({ namespace, cluster }))

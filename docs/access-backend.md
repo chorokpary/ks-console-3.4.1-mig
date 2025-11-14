@@ -5,7 +5,7 @@
 ### Expose the KubeSphere api server service to the host
 
 ```sh
-kubectl -n kubesphere-system patch svc ks-apiserver -p '{"spec":{"type":"NodePort","ports":[{"port":80,"protocal":"TCP","targetPort":9090,"nodePort":30881}]}}'
+kubectl -n petasus-system patch svc ks-apiserver -p '{"spec":{"type":"NodePort","ports":[{"port":80,"protocal":"TCP","targetPort":9090,"nodePort":30881}]}}'
 ```
 
 The above command exposes the ks-apiserver service through the node port 30881. You can access the ks-apiserver service through any <node_ip>:<30881> port in the cluster.
@@ -32,6 +32,6 @@ If you are in the same network as the cluster. You can access the ks-apiserver u
 ```yaml
 server:
   apiServer:
-    url: http://ks-apiserver.kubesphere-system.svc
-    wsUrl: ws://ks-apiserver.kubesphere-system.svc
+    url: http://ks-apiserver.petasus-system.svc
+    wsUrl: ws://ks-apiserver.petasus-system.svc
 ```

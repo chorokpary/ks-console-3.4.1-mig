@@ -48,9 +48,8 @@ it('renders correctly', () => {
   ]
 
   const props = {
-    params: { namespace: 'kubesphere-system', name: 'ks-console' },
-    pathname:
-      '/projects/kubesphere-system/deployments/ks-console/resource-status',
+    params: { namespace: 'petasus-system', name: 'ks-console' },
+    pathname: '/projects/petasus-system/deployments/ks-console/resource-status',
     breadcrumbs,
     routes,
   }
@@ -60,8 +59,8 @@ it('renders correctly', () => {
       <Breadcrumb {...props} />
     </Router>
   )
-  expect(wrapper.find('a[href="/projects/kubesphere-system"]')).toHaveLength(1)
+  expect(wrapper.find('a[href="/projects/petasus-system"]')).toHaveLength(1)
   expect(
-    wrapper.find('a[href="/projects/kubesphere-system/deployments"]')
+    wrapper.find('a[href="/projects/petasus-system/deployments"]')
   ).toHaveLength(1)
 })

@@ -292,7 +292,7 @@ export default class BaseMonitoringStore {
       this.cluster && globals.app.isMultiCluster
         ? `/clusters/${this.cluster}`
         : ''
-    }/monitoring.coreos.com/v1/namespaces/kubesphere-monitoring-system/servicemonitors/etcd`
+    }/monitoring.coreos.com/v1/namespaces/monitoring-system/servicemonitors/etcd`
     this.etcdChecking = true
 
     try {

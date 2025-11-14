@@ -35,7 +35,7 @@ export default class Gateway extends Base {
 
   gatewayUrl = ({ cluster, namespace, gatewayName = '' }) =>
     `${this.apiVersion}${this.getPath({
-      namespace: namespace || 'kubesphere-system',
+      namespace: namespace || 'petasus-system',
       cluster,
     })}/${this.module}${
       this.isCluster(namespace) ? `${gatewayName ? `/${gatewayName}` : ''}` : ''
@@ -45,26 +45,26 @@ export default class Gateway extends Base {
     `/${
       this.isCluster(namespace) ? 'k' : ''
     }apis/gateway.kubesphere.io/v1alpha1${this.getPath({
-      namespace: namespace || 'kubesphere-controls-system',
+      namespace: namespace || 'controls-system',
       cluster,
     })}/${this.module}${
       this.isCluster(namespace)
         ? `${gatewayName ? `/${gatewayName}` : ''}`
-        : '/kubesphere-router-kubesphere-system'
+        : '/kubesphere-router-petasus-system'
     }`
 
   gatewayPodsUrl = ({ cluster, namespace, gatewayName = '' }) =>
     `${this.apiVersion}${this.getPath({
-      namespace: namespace || 'kubesphere-system',
+      namespace: namespace || 'petasus-system',
       cluster,
     })}/${this.module}${
       this.isCluster(namespace)
         ? `${gatewayName ? `/${gatewayName}` : ''}`
-        : '/kubesphere-router-kubesphere-system'
+        : '/kubesphere-router-petasus-system'
     }`
 
   isCluster(namespace) {
-    return namespace && namespace !== 'kubesphere-controls-system'
+    return namespace && namespace !== 'controls-system'
   }
 
   @observable
@@ -91,7 +91,7 @@ export default class Gateway extends Base {
       if (this.isCluster(params.namespace)) {
         const gatewayData = result
           .filter(
-            item => item.metadata.name !== 'kubesphere-router-kubesphere-system'
+            item => item.metadata.name !== 'kubesphere-router-petasus-system'
           )
           .map(item => ObjectMapper.gateway(item))
           .find(item => item.name.indexOf(params.namespace) > -1)
@@ -135,7 +135,7 @@ export default class Gateway extends Base {
 
     let detailGateway = dataList[0]
 
-    if (get(detailGateway, 'name') !== 'kubesphere-router-kubesphere-system') {
+    if (get(detailGateway, 'name') !== 'kubesphere-router-petasus-system') {
       const temp = dataList[1]
       dataList[0] = temp
       dataList[1] = detailGateway

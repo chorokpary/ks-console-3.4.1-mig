@@ -338,8 +338,8 @@ class GatewayCard extends React.Component {
     const { type, getData } = this.props
 
     this.trigger('gateways.create', {
-      name: type === 'cluster' ? 'kubesphere-router-kubesphere-system' : '',
-      namespace: type === 'cluster' ? 'kubesphere-controls-system' : namespace,
+      name: type === 'cluster' ? 'kubesphere-router-petasus-system' : '',
+      namespace: type === 'cluster' ? 'controls-system' : namespace,
       cluster: this.cluster,
       store: this.store,
       success: getData,

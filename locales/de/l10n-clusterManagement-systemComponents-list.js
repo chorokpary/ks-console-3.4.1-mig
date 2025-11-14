@@ -18,7 +18,7 @@
 module.exports = {
   // Banner
   SYSTEM_COMPONENT_PL: 'Systemkomponenten',
-  SERVICE_COMPONENTS_DESC: 'Systemkomponenten sind Softwarekomponenten im KubeSphere-System, die verschiedene Funktionen bereitstellen. Auf dieser Seite können Sie den Ausführungsstatus von Dienstkomponenten ansehen.',
+  SERVICE_COMPONENTS_DESC: 'Systemkomponenten sind Softwarekomponenten im petasus-system, die verschiedene Funktionen bereitstellen. Auf dieser Seite können Sie den Ausführungsstatus von Dienstkomponenten ansehen.',
   // KubeSphere
   STOPPED: 'Gestoppt',
   RUNNING_TIME: 'Laufzeit',

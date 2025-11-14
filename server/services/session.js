@@ -336,7 +336,7 @@ const getClusterRole = async ctx => {
   try {
     const config = await send_gateway_request({
       method: 'GET',
-      url: `/api/v1/namespaces/kubesphere-system/configmaps/kubesphere-config`,
+      url: `/api/v1/namespaces/petasus-system/configmaps/kubesphere-config`,
       token,
     })
     const data = config.data['kubesphere.yaml']

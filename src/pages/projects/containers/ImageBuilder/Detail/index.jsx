@@ -157,7 +157,7 @@ export default class ImageBuilderDetail extends React.Component {
     const url = this.pathAddCluster(path, cluster)
     const downLoadUrl = `${window.location.protocol}//${window.location.host}/b2i_download${url}`
     const secret = get(detail, 'spec.config.secretCode', '')
-    const triggerLink = `http://s2ioperator-trigger-service.kubesphere-devops-system.svc/s2itrigger/v1alpha1/general/namespaces/${
+    const triggerLink = `http://s2ioperator-trigger-service.devops-system.svc/s2itrigger/v1alpha1/general/namespaces/${
       detail.namespace
     }/s2ibuilders/${detail.name}/${secret ? `?secretCode=${secret}` : ''}`
 

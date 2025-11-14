@@ -26,7 +26,7 @@ const collectionDefaultSetting = {
   },
 }
 
-const KS_LOG_NAMESPACE = 'kubesphere-logging-system'
+const KS_LOG_NAMESPACE = 'logging-system'
 
 const MATCHS = {
   logging: 'kube.*',

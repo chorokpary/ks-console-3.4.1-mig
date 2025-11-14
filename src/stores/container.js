@@ -58,8 +58,8 @@ export default class ContainerStore {
 
     if (gateways) {
       const ns =
-        namespace === 'kubesphere-controls-system' || !namespace
-          ? 'kubesphere-system'
+        namespace === 'controls-system' || !namespace
+          ? 'petasus-system'
           : namespace
       return `kapis/gateway.kubesphere.io/v1alpha1/namespaces/${ns}/gateways/${gateways}/pods/${podName}`
     }

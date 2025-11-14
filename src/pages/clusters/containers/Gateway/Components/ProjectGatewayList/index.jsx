@@ -48,7 +48,7 @@ export default class ProjectGatewayCard extends React.Component {
 
   getGatewayResource = gatewayData => {
     const name = gatewayData.name.split('kubesphere-router-')[1]
-    const namespace = name === 'kubesphere-system' ? '' : name
+    const namespace = name === 'petasus-system' ? '' : name
     const cluster = gatewayData.cluster
     return { cluster, namespace }
   }

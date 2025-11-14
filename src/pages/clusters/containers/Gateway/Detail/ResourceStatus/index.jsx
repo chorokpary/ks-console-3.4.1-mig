@@ -121,7 +121,7 @@ class ResourceStatus extends React.Component {
     const { gatewayName: name, cluster } = this.props.match.params
     const configmap = await this.configMapStore.fetchDetail({
       cluster,
-      namespace: 'kubesphere-system',
+      namespace: 'petasus-system',
       name: 'kubesphere-config',
     })
     const workloadNamespace = get(

@@ -549,7 +549,7 @@ client:
   preservedAnnotations: [".*kubesphere.io/", "openpitrix_runtime"]
 
   # namespaces that need to be disable collection file log
-  disabledLoggingSidecarNamespace: ["kubesphere-logging-system"]
+  disabledLoggingSidecarNamespace: ["logging-system"]
 
   # loadbalancer annotations, default support qingcloud lb
   loadBalancerDefaultAnnotations:

@@ -1504,7 +1504,7 @@
           "id": 56,
           "targets": [
             {
-              "expr": "process_open_fds{namespace=\"kubesphere-devops-system\", container=\"ks-jenkins\", job=\"ks-jenkins\"}"
+              "expr": "process_open_fds{namespace=\"devops-system\", container=\"ks-jenkins\", job=\"ks-jenkins\"}"
             }
           ],
           "title": "Open File Descriptors",
@@ -1516,7 +1516,7 @@
           "id": 57,
           "targets": [
             {
-              "expr": "jenkins_queue_blocked_value{namespace=\"kubesphere-devops-system\", container=\"ks-jenkins\", job=\"ks-jenkins\"}"
+              "expr": "jenkins_queue_blocked_value{namespace=\"devops-system\", container=\"ks-jenkins\", job=\"ks-jenkins\"}"
             }
           ],
           "title": "Queue Blocked",
@@ -1528,7 +1528,7 @@
           "id": 58,
           "targets": [
             {
-              "expr": "jenkins_executor_in_use_value{namespace=\"kubesphere-devops-system\", container=\"ks-jenkins\", job=\"ks-jenkins\"}"
+              "expr": "jenkins_executor_in_use_value{namespace=\"devops-system\", container=\"ks-jenkins\", job=\"ks-jenkins\"}"
             }
           ],
           "title": "Executors in Use",
@@ -1540,7 +1540,7 @@
           "id": 59,
           "targets": [
             {
-              "expr": "jenkins_queue_buildable_value{namespace=\"kubesphere-devops-system\", container=\"ks-jenkins\", job=\"ks-jenkins\"}"
+              "expr": "jenkins_queue_buildable_value{namespace=\"devops-system\", container=\"ks-jenkins\", job=\"ks-jenkins\"}"
             }
           ],
           "title": "Queue Buildable",
@@ -1552,7 +1552,7 @@
           "id": 60,
           "targets": [
             {
-              "expr": "jenkins_runs_total_total{namespace=\"kubesphere-devops-system\", container=\"ks-jenkins\", job=\"ks-jenkins\"}\n"
+              "expr": "jenkins_runs_total_total{namespace=\"devops-system\", container=\"ks-jenkins\", job=\"ks-jenkins\"}\n"
             }
           ],
           "title": "Total Run",
@@ -1745,7 +1745,7 @@
           "lines": true,
           "targets": [
             {
-              "expr": "default_jenkins_disk_usage_bytes{container=\"ks-jenkins\", namespace=\"kubesphere-devops-system\", job=\"ks-jenkins\"}",
+              "expr": "default_jenkins_disk_usage_bytes{container=\"ks-jenkins\", namespace=\"devops-system\", job=\"ks-jenkins\"}",
               "legendFormat": "{{container}}-{{instance}}: {{directory}}",
               "refId": 1,
               "step": "1m"
@@ -1774,13 +1774,13 @@
           "lines": true,
           "targets": [
             {
-              "expr": "process_open_fds{namespace=\"kubesphere-devops-system\", container=\"ks-jenkins\", job=\"ks-jenkins\"}",
+              "expr": "process_open_fds{namespace=\"devops-system\", container=\"ks-jenkins\", job=\"ks-jenkins\"}",
               "legendFormat": "open fds",
               "refId": 1,
               "step": "1m"
             },
             {
-              "expr": "process_max_fds{namespace=\"kubesphere-devops-system\", container=\"ks-jenkins\", job=\"ks-jenkins\"}",
+              "expr": "process_max_fds{namespace=\"devops-system\", container=\"ks-jenkins\", job=\"ks-jenkins\"}",
               "legendFormat": "max fds",
               "refId": 2,
               "step": "1m"
@@ -1859,7 +1859,7 @@
           "lines": true,
           "targets": [
             {
-              "expr": "jenkins_queue_stuck_history{namespace=\"kubesphere-devops-system\", container=\"ks-jenkins\", job=\"ks-jenkins\", quantile=\"0.999\"}",
+              "expr": "jenkins_queue_stuck_history{namespace=\"devops-system\", container=\"ks-jenkins\", job=\"ks-jenkins\", quantile=\"0.999\"}",
               "legendFormat": "{{container}}-{{instance}}",
               "refId": 1,
               "step": "1m"
@@ -1922,13 +1922,13 @@
           "lines": true,
           "targets": [
             {
-              "expr": "jenkins_health_check_score{namespace=\"kubesphere-devops-system\", container=\"ks-jenkins\", job=\"ks-jenkins\"}\n",
+              "expr": "jenkins_health_check_score{namespace=\"devops-system\", container=\"ks-jenkins\", job=\"ks-jenkins\"}\n",
               "legendFormat": "{{container}}-{{instance}}-health-score",
               "refId": 1,
               "step": "1m"
             },
             {
-              "expr": "default_jenkins_up{namespace=\"kubesphere-devops-system\", container=\"ks-jenkins\", job=\"ks-jenkins\"}",
+              "expr": "default_jenkins_up{namespace=\"devops-system\", container=\"ks-jenkins\", job=\"ks-jenkins\"}",
               "legendFormat": "{{container}}-{{instance}}-up",
               "refId": 2,
               "step": "1m"
