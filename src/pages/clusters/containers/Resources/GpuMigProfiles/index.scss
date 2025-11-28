@@ -1,0 +1,41 @@
+@charset "utf-8";
+
+@import '~scss/variables';
+@import '~scss/mixins';
+
+.avatar {
+  display: flex;
+
+  .icon {
+    position: relative;
+    margin-right: 12px;
+  }
+
+  .title {
+    @include TypographyTitleH6($dark-color01);
+  }
+}
+
+.iconwrapper {
+  display: flex;
+  i {
+    margin-top: 5px;
+    margin-right: 5px;
+  }
+}
+
+.text_no_wrap {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-wrap: normal;
+  overflow: hidden;
+  max-width: 150px;
+}
+
+.text_no_wrap_300 {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-wrap: normal;
+  overflow: hidden;
+  max-width: 300px;
+}

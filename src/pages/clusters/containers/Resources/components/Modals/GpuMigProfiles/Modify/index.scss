@@ -1,0 +1,188 @@
+@import '~scss/variables';
+@import '~scss/mixins';
+
+.textarea {
+  :global .textarea {
+    max-width: 100%;
+  }
+}
+
+.pop_overflow_y {
+  min-height: 750px;
+  max-height: calc(100vh - 222px);
+  overflow-y: auto;
+}
+
+.divwrap {
+  display: flex;
+  position: relative;
+  padding-bottom: 12px;
+
+  .div_left {
+    position: relative;
+    width: 82%;
+  }
+
+  .div_right {
+    position: relative;
+    width: 18%;
+    margin-top: 24px;
+    padding-left: 10px;
+  }
+}
+
+.body {
+  padding: 0;
+  overflow: hidden;
+  max-height: none;
+}
+
+.cont_boxwrap {
+  flex: 1;
+  position: relative;
+  padding: 20px;
+  z-index: 10;
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  border-radius: 0 0 4px 4px;
+  background: #f9fbfd;
+  flex: 0 0 auto;
+  width: 100%;
+  padding: 12px 20px;
+}
+
+/* button */
+button {
+  cursor: pointer;
+}
+*.btn {
+  border-radius: 16px;
+  min-width: 90px;
+  height: 32px;
+  line-height: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 23px;
+  &.btn-short {
+    flex: 0 0 auto !important;
+    min-width: inherit;
+    width: auto;
+    padding: 5px 20px;
+  }
+
+  &.btn-default {
+    flex: 0 0 auto !important;
+    border: 1px solid #ccd3db;
+    background: #eff4f9;
+    color: #36435c;
+    box-shadow: none;
+    &:hover {
+      background-color: #e3e9ef;
+      border-color: #c1c9d1;
+    }
+  }
+  &.btn-control {
+    flex: 0 0 auto !important;
+    background: #3744b9;
+    color: #fff;
+    box-shadow: 0 4px 8px 0 rgba(35, 45, 65, 0.28);
+    &:hover {
+      box-shadow: none;
+    }
+  }
+  &.btn-cancel {
+    flex: 0 0 auto !important;
+    background: #ca2621;
+    color: #fff;
+  }
+}
+
+.loading_boxwrap {
+  flex: 1;
+  position: relative;
+  padding: 20px;
+  z-index: 10;
+  overflow: hidden;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.loading_boxwrap p {
+  font-size: 14px;
+  font-weight: bold;
+  color: #000000;
+}
+
+.loading_boxwrap p:first-of-type {
+  margin-top: 20px;
+}
+
+.iconwrapper {
+  display: flex;
+  i {
+    margin-right: 5px;
+  }
+}
+
+.ico-status-running {
+  background: url('/assets/resources/images/icons/ico-status-running.svg')
+    center no-repeat;
+  width: 40px;
+  height: 40px;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column; // 세로 배치
+  justify-content: center;
+  align-items: center;
+  height: 110px;
+
+  background-color: #fff;
+  border: 1px solid #d9d9d9;
+  border-radius: 5px;
+  padding: 10px;
+
+  i {
+    font-size: 24px; // 아이콘 크기
+    margin-bottom: 8px; // 아이콘과 텍스트 간격
+  }
+
+  span, // 혹은 텍스트 노드
+  & > *:not(i) {
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+  }
+}
+
+.wrapperError {
+  height: 20px;
+}
+
+.textDefault {
+  display: inline;
+}
+
+.textHover {
+  display: none;
+}
+
+/* hover 시 전환 */
+.migSliceRow:hover .textDefault {
+  display: none;
+}
+
+.migSliceRow:hover .textHover {
+  display: inline;
+}

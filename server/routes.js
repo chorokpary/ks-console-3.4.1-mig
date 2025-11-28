@@ -42,6 +42,8 @@ const {
   handleLogout,
   handleOAuthLogin,
   handleLoginConfirm,
+  handlePostGpuCatalog,
+  handleGetGpuCatalog,
 } = require('./controllers/session')
 
 const {
@@ -73,6 +75,10 @@ router
   .use(proxy('/(k)?api(s)?/(.*)', k8sResourceProxy))
 
   .get('/sample/:app', parseBody, handleSampleData)
+
+  // gpu catalog
+  .post('/gpucatalog', parseBody, handlePostGpuCatalog)
+  .get('/gpucatalog/:node', handleGetGpuCatalog)
 
   // session
   .post('/login', parseBody, handleLogin)

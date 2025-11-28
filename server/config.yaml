@@ -28,8 +28,16 @@ server:
   apiServer:
     clientID: kubesphere
     clientSecret: kubesphere
-    url: http://ks-apiserver
-    wsUrl: ws://ks-apiserver
+    # url: http://ks-apiserver
+    # wsUrl: ws://ks-apiserver
+
+    # 개발_가산
+    # url: http://172.16.200.203:30833
+    # wsUrl: ws://172.16.200.203:30833
+
+    # # 개발_내부_OTP
+    url: http://ks-apiserver:32573
+    wsUrl: ws://ks-apiserver:32573
 
   # docker image search default url
   dockerHubUrl: https://hub.docker.com
@@ -133,6 +141,12 @@ client:
             - { name: pods, title: POD_PL }
             - { name: services, title: SERVICE_PL }
             - { name: ingresses, title: ROUTE_PL }
+        - name: computing-workloads
+          title: RESOURCES_WORKLOAD
+          icon: templet
+          showInDisable: true
+          children:
+            - { name: gpumigprofiles, title: RESOURCES_GPU_MIG_PROFILE}
         - name: config
           title: CONFIGURATION
           icon: hammer

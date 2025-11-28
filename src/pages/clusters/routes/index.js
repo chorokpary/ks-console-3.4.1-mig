@@ -60,6 +60,7 @@ import LogCollections from '../containers/LogCollections'
 import CustomMonitoring from '../containers/CustomMonitoring'
 import detail from './detail'
 import Gateway from '../containers/Gateway'
+import GpuMigProfiles from '../containers/Resources/GpuMigProfiles'
 
 const PATH = '/clusters/:cluster'
 
@@ -258,6 +259,11 @@ export default [
           {
             path: `${PATH}/gateways/:component`,
             component: Gateway,
+            exact: true,
+          },
+          {
+            path: `${PATH}/gpumigprofiles`,
+            component: GpuMigProfiles,
             exact: true,
           },
           getIndexRoute({ path: PATH, to: `${PATH}/overview`, exact: true }),
