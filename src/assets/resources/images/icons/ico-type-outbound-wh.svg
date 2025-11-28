@@ -1,0 +1,9 @@
+<svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M3 5C3 3.89543 3.89543 3 5 3H25C26.1046 3 27 3.89543 27 5V14H3V5Z" fill="#C1C9D1"/>
+<path d="M27 25C27 26.1046 26.1046 27 25 27L5 27C3.89543 27 3 26.1046 3 25L3 16L27 16L27 25Z" fill="#C1C9D1"/>
+<rect x="5" y="5" width="4" height="3" fill="#36435C"/>
+<rect x="5" y="18" width="4" height="3" fill="#36435C"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M21.685 5L30 14.7293L21.685 24.8328L21.685 19.2198L18.9131 19.2198L18.9131 10.2389L21.685 10.2389L21.685 5Z" fill="#F9FBFD"/>
+<rect x="17.6812" y="10.2389" width="8.9809" height="1.84778" transform="rotate(90 17.6812 10.2389)" fill="#F9FBFD"/>
+<rect x="14.8477" y="10.2389" width="8.9809" height="1.84778" transform="rotate(90 14.8477 10.2389)" fill="#F9FBFD"/>
+</svg>

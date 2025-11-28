@@ -29,6 +29,8 @@ import ResourcesUsage from './ResourcesUsage'
 import KubernetesStatus from './KubernetesStatus'
 import ServiceComponents from './ServiceComponents'
 
+import './custom_style.css'
+
 @inject('clusterStore')
 @observer
 export default class Dashboard extends React.Component {
