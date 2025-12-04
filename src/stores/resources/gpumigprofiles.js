@@ -155,7 +155,7 @@ export default class GpuMigProfilesStore extends Base {
       isLoading: false,
       ...(this.list.silent ? {} : { selectedRowKeys: [] }),
     })
-    console.log(`this.dataList : ${JSON.stringify(this.dataList)}`)
+    // console.log(`this.dataList : ${JSON.stringify(this.dataList)}`)
     return this.dataList
   }
 
@@ -208,7 +208,7 @@ export default class GpuMigProfilesStore extends Base {
 
   @action
   async update(data, params = {}) {
-    console.log(`update data : ${JSON.stringify(data)}`)
+
     const name = `petasus-${data.name}`
 
     const configMapParams = {
@@ -284,7 +284,7 @@ export default class GpuMigProfilesStore extends Base {
 
   @action
   async delete(params) {
-    console.log(`params : ${JSON.stringify(params)}`)
+
     const name = params.name
 
     const configMapParams = {
@@ -329,15 +329,7 @@ export default class GpuMigProfilesStore extends Base {
     }
   }
 
-  async getMigConfigTemplate(params) {
-    const configMapParams = {
-      namespace: 'nvidia',
-      name: 'custom-mig-config-templates',
-    }
-    // /api/v1/namespaces/nvidia/configmaps/custom-mig-config-templates
-    const resultConfigMap = await request.get(
-      this.getDetailUrl(configMapParams)
-    )
+  async getMigConfigTemplate(params, resultConfigMap) {
 
     const yamlString = get(resultConfigMap, [
       'data',
@@ -418,7 +410,14 @@ export default class GpuMigProfilesStore extends Base {
 
   async transformData(data) {
     const result = { data: [] }
-    console.log(JSON.stringify(data))
+
+    const configMapParams = {
+      namespace: 'nvidia',
+      name: 'custom-mig-config-templates',
+    }
+    // /api/v1/namespaces/nvidia/configmaps/custom-mig-config-templates
+    const resultCustomMigConfig = await request.get(  this.getDetailUrl(configMapParams)  )
+
     for (const [name, items] of Object.entries(data)) {
       const gpuType = []
       const gpuCount = []
@@ -439,7 +438,8 @@ export default class GpuMigProfilesStore extends Base {
 
         // template yaml 파일에서 필요한 데이터 추출
         const migConfigTemplate = await this.getMigConfigTemplate(
-          templateParams
+          templateParams,
+          resultCustomMigConfig
         )
 
         item['mig-gpuType'] = migConfigTemplate.name.split('-')[0].toUpperCase()
@@ -452,7 +452,6 @@ export default class GpuMigProfilesStore extends Base {
         // totalSmCount 계산 위한 기본 slice 값 하나 저장
         smCountValue = parseInt(item['mig-sliceCount'], 10)
 
-        console.log(`AAAAAAAAAA :${item['mig-gpuType']}`)
         // gpuType & gpuCount
         if (!gpuType.includes(item['mig-gpuType'])) {
           gpuType.push(item['mig-gpuType'])

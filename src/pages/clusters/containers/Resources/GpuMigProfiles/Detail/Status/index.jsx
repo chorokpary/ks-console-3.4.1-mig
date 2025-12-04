@@ -138,19 +138,25 @@ const Status = props => {
 
           <div className={styles.wrapper}>
             <div className="gpu_mig_container mig_profile_view">
-              {sortByGpuKey(detailData.gpuTypeDetail).map((item, index) => {
-                const key = Object.keys(item)[0]
-                const devices = Object.values(item)[0]
-                const num = String(key.split('_')[1]).padStart(2, '0')
-                const gpuName = num == 'all' ? 'ALL' : `GPU${num}`
-                return (
-                  <MIGGpuTypeSlice
-                    key={key}
-                    gpuName={gpuName}
-                    devices={devices}
-                  />
-                )
-              })}
+              {
+                sortByGpuKey(detailData.gpuTypeDetail.filter(item => {                  
+                  return Object.keys(item)[0].split("_")[0] === storageClassTab;
+                })).map((item, index) => {
+
+                    const key = Object.keys(item)[0]+"_"+index
+                    const devices = Object.values(item)[0]
+                    const num = String(key.split('_')[1]).padStart(2, '0')
+                    const gpuName = num == 'all' ? 'ALL' : `GPU${num}`        
+                  
+                    return (             
+                      <MIGGpuTypeSlice
+                        key={key}
+                        gpuName={gpuName}
+                        devices={devices}
+                      />                  
+                    )
+                  })
+                }
             </div>
           </div>
         </Panel>
