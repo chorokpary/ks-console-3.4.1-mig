@@ -143,6 +143,8 @@ export default {
             }
           }
 
+          delete data?.spec?.template?.spec?.containers?.[0]?.resources?.migprofiles;
+          
           store.create(data, { cluster, namespace }).then(async () => {
             const { isScheduleDeployment } = store
             if (isScheduleDeployment && renderScheduleTab) {

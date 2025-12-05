@@ -110,6 +110,7 @@ module.exports = {
   RESOURCES_GPU_DEVICE: 'GPU Device',
 
   RESOURCES_GPU_MIG_CONFIG: 'MIG Config',
+  RESOURCES_GPU_MIG_CONFIG_REMOVE: 'MIG Remove',
   RESOURCES_GPU_MIG_CONFIG_NAME: 'MIG Config name',
   RESOURCES_GPU_MIG_CONFIG_STATE: 'MIG Config status',
   RESOURCES_GPU_MIG_SLICE: 'MIG Slice',
@@ -1294,5 +1295,12 @@ module.exports = {
   RESOURCES_BATCH_PROCESS_TIP: 'Batch applies one setting to the entire GPU.',
   RESOURCES_ALL_DEL: 'Delete All',
   RESOURCES_GPU_TYPE_ADD_TIP: '8 GPU types can be added.',
+
+  RESOURCES_SLICE_BY_POD_INFO: 'Pod information by slice',
+  RESOURCES_MIG_MONITORING: 'MIG Monitoring',
+  RESOURCES_SELECT_PROFILE_TYPE_GPU_DESC: 'Select the Profile to apply to the GPU.',
+  RESOURCES_SELECT_MIG_PROFILE_TYPE_TIP: 'Please select a MIG Profile.',
+  RESOURCES_MIG_RELEAGE_DESC: 'Do you want to MIG release?',
+
 
 }

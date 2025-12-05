@@ -35,9 +35,13 @@ server:
     # url: http://172.16.200.203:30833
     # wsUrl: ws://172.16.200.203:30833
 
-    # # 개발_내부_OTP
-    url: http://ks-apiserver:32573
-    wsUrl: ws://ks-apiserver:32573
+    # # 개발_내부
+    # url: http://ks-apiserver:32573
+    # wsUrl: ws://ks-apiserver:32573
+
+     # # 개발_내부
+    url: http://192.168.15.157:32573
+    wsUrl: ws://192.168.15.157:32573
 
   # docker image search default url
   dockerHubUrl: https://hub.docker.com
@@ -116,6 +120,7 @@ client:
           icon: nodes
           children:
             - { name: nodes, title: CLUSTER_NODE_PL }
+            - { name: gpunodes, title: RESOURCES_GPU_NODE }
             - {
                 name: edgenodes,
                 title: EDGE_NODE_PL,

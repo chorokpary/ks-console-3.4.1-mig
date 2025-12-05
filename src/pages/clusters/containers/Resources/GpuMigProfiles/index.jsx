@@ -100,10 +100,37 @@ export default class gpumigprofiles extends React.Component {
 
   get tableActions() {
     const { trigger, getData, routing, tableProps } = this.props
-
+     
     return {
       ...tableProps.tableActions,
       actions: [
+        {
+          key: 'apply',
+          type: 'control',
+          text: t('RESOURCES_GPU_MIG_CONFIG'),
+          action: 'create',
+          onClick: () =>
+            trigger('gpunodemig.apply', {
+              ...this.props.match.params,
+              type: this.name,
+              rootStore: this.props.rootStore,
+              success: getData,
+            }),
+        },
+         {
+          key: 'applyremove',
+          type: 'control',
+          text: t('RESOURCES_GPU_MIG_CONFIG_REMOVE'),
+          action: 'create',
+          onClick: () =>
+            trigger('gpunodemig.apply.remove', {
+              ...this.props.match.params,
+              type: this.name,
+              rootStore: this.props.rootStore,
+              nodeName: "kubesphere01",
+              success: getData,
+            }),
+        },
         {
           key: 'regist',
           type: 'control',

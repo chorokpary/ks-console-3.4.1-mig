@@ -172,6 +172,86 @@
   }
 }
 
+.gpuGroup {
+  position: relative;
+  padding: 0 8px;
+  padding-left: 68px;
+  margin-bottom: 10px;
+
+  img {
+    position: absolute;
+    top: 0;
+    left: 8px;
+  }
+
+  /* Row 전체를 가로로 배치 */
+  .rowContainer {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    gap: 16px;
+  }
+
+  /* 왼쪽 전체 영역 */
+  .leftArea {
+    flex: 1;
+  }
+
+  .input {
+    display: flex;
+    align-items: center;
+    margin-bottom: 14px;
+    
+    .label {
+      width: 90px;
+      margin-right: 10px;
+      display: flex;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+    .inputBox {
+      flex: 1;
+    }
+  }
+
+  /* GPU TYPE 셀렉트 두 개 가로 배치 */
+  .row {
+    display: flex;
+    width: 100%;
+    gap: 10px;
+
+    .inputBox {
+      width: 250px; 
+      flex: none;
+    }
+  }
+
+  /* 오른쪽 +, - 버튼 영역 */
+  .rightArea {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 6px;
+    gap: 8px;
+  }
+
+  .addBtn,
+  .removeBtn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid #c8c8c8;
+    background: #fff;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 26px;
+    text-align: center;
+    padding: 0;
+  }
+}
+
 .message {
   span + span {
     margin-left: 8px;

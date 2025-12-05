@@ -1,0 +1,19 @@
+@import '~scss/variables';
+
+.avatar {
+  display: flex;
+
+  .icon {
+    position: relative;
+    margin-right: 12px;
+
+    .indicator {
+      position: absolute;
+      top: 28px;
+      right: 0;
+    }
+  }
+}
+
+
+

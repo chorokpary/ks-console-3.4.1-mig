@@ -27,6 +27,7 @@ import {
   isEmpty,
   isNaN,
   isUndefined,
+  range,
 } from 'lodash'
 
 import {
@@ -38,9 +39,14 @@ import {
   Select,
 } from '@kube-design/components'
 
+import { UnitSlider, NumberInput } from 'components/Inputs'
+
 import { cpuFormat, memoryFormat } from 'utils'
 
 import styles from './index.scss'
+
+import NodeStore from 'stores/node'
+import GpuMigProfilesStore from 'stores/resources/gpumigprofiles'
 
 export default class ResourceLimit extends React.Component {
   static propTypes = {
@@ -63,13 +69,74 @@ export default class ResourceLimit extends React.Component {
   constructor(props) {
     super(props)
 
+    this.nodeStore = new NodeStore()
+    this.gpuMigProfilesStore = new GpuMigProfilesStore()
+
     this.state = {
       ...ResourceLimit.getValue(props),
       defaultValue: props.defaultValue,
       cpuError: '',
       memoryError: '',
       workspaceLimitCheck: {},
+      migConfigList: [],
+      migProfileList: [], 
     }
+  }
+
+  async componentDidMount() {
+    await this.fetchMigListData()
+    await this.fetchMigProfileListData()
+  }
+
+  fetchMigListData = async () => {
+    const list = await this.nodeStore.fetchList();
+    
+    const result = list.filter(item => {
+      const migConfig = item.labels?.["nvidia.com/mig.config"];
+      return migConfig && migConfig !== "all-disabled";
+    }).map(item => item.labels?.["nvidia.com/mig.config"]) || []
+
+    this.setState({
+      migConfigList: result,
+    });
+  }
+
+  fetchMigProfileListData = async () => {
+    const list = await this.gpuMigProfilesStore.fetchList();
+
+    const convetData = list.map(item => {
+      const profileSum = {};
+
+      // gpuTypeDetail 배열을 순회
+      item.gpuTypeDetail.forEach(detail => {
+        // detail → { "B200_1": { ... }, ... }
+        const gpuObj = Object.values(detail)[0];
+
+      // 내부 slice 카운트 합산
+      Object.entries(gpuObj).forEach(([sliceName, count]) => {
+          profileSum[sliceName] = (profileSum[sliceName] || 0) + count;
+        });
+      });
+
+      // slice 이름 정렬
+      const sortedProfile = Object.fromEntries(
+        Object.entries(profileSum).sort((a, b) => {
+          // slice 예: "3g.90gb" → 숫자 추출 후 정렬
+          const getNum = s => parseInt(s.split("g")[0], 10);
+          return getNum(a[0]) - getNum(b[0]);
+        })
+      );
+
+      return {
+        name: item.name,
+        profile: [sortedProfile]
+      };
+    });
+
+    this.setState({
+      migProfileList: convetData,
+    });
+
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -170,7 +237,7 @@ export default class ResourceLimit extends React.Component {
       ResourceLimit.getWorkspaceLimitValue(props, 'cpu'),
       cpuUnit
     )
-
+    
     return {
       requests: {
         cpu: cpuRequests,
@@ -189,6 +256,7 @@ export default class ResourceLimit extends React.Component {
         memory: isNaN(workspaceMeoLimit) ? 'Not Limited' : workspaceMeoLimit,
       },
       gpu: ResourceLimit.gpuSetting(props),
+      gpuRows: props.value.migprofiles?.length > 0 ? props.value.migprofiles : [{ id: 1, type1: null, type2: null, limit: 0, used: 0 }], 
     }
   }
 
@@ -282,18 +350,54 @@ export default class ResourceLimit extends React.Component {
   }
 
   get gpuOption() {
-    return globals.config.supportGpuType.reduce(
-      (prev, value) => [
+    // 첫번째 리스트 type1 추출
+    const standardType = this.state.gpuRows?.filter(row => row.id ===1).map(item => item.type1)
+
+    // 첫번째 type1 의 기준으로 유형 
+    let gpuOptionList = standardType != '' ? this.state.migConfigList.filter(item => item == standardType) : this.state.migConfigList
+
+    // 리스트가 1이면 초기화 
+    if (this.state.gpuRows.length === 1){
+      gpuOptionList = this.state.migConfigList
+    }
+
+    return  gpuOptionList.reduce((prev, value) => [
         ...prev,
         {
           value,
-          label: t(value.replace(/[-/.]/g, '_').toUpperCase()),
+          label: t((value.startsWith('petasus-') ? value.slice(8) : value).toUpperCase()),
         },
       ],
       []
     )
   }
 
+  migProfileOption(type) {
+    const target = this.state.migProfileList?.find(item => item.name === type);
+    const sliceArray = target ? Object.keys(target.profile[0]) : [];
+
+    // 사용한 profile
+    const usedProfile = [...new Set(
+      this.state.gpuRows?.filter(row => row.type1 === type)
+      .map(row => row.type2)
+      .filter(Boolean) // 🔥 null, undefined, "" 모두 제외
+    )];
+
+    // 사용한 profile 은 제거
+    const availableProfile = sliceArray.filter(item => !usedProfile.includes(item));
+
+    return  availableProfile.reduce(
+      (prev, value) => [
+        ...prev,
+        {
+          value,
+          label: value,
+        },
+      ],
+      []
+    )
+  }
+  
   get gpuType() {
     return this.state.gpu.type
   }
@@ -391,10 +495,11 @@ export default class ResourceLimit extends React.Component {
       memoryError,
       workspaceLimitCheck: wsL,
       gpu,
+      gpuRows,
     } = this.state
     const memoryUnit = this.memoryUnit
     const cpuUnit = this.cpuUnit === 'Core' ? '' : this.cpuUnit
-
+    
     const errorList = this.getWorkspaceCheckError()
     errorList.length > 0
       ? onError(cpuError || memoryError || wsL[errorList[0]])
@@ -426,14 +531,25 @@ export default class ResourceLimit extends React.Component {
     }
 
     // pass gpu input config into limits and requests field
-    if (!!gpu.type && !!gpu.value) {
-      set(result, 'limits', { ...result.limits, [`${gpu.type}`]: gpu.value })
-      set(result, 'requests', {
-        ...result.requests,
-        [`${gpu.type}`]: gpu.value,
-      })
+    const gpuRowsFiltered = gpuRows.filter(row => row.type2 !== null);
+    if(gpuRowsFiltered.length > 0){
+      gpuRowsFiltered.map((item) => {
+        const key = "nvidia.com/mig-"+item.type2
+        const count = String(item.used)
+        set(result, 'limits', { ...result.limits, [`${key}`]: count })
+        set(result, 'requests', { ...result.requests, [`${key}`]: count })
+      })       
+      set(result, 'migprofiles', gpuRowsFiltered )
     }
-
+    
+    // if (!!gpu.type && !!gpu.value) {
+    //   set(result, 'limits', { ...result.limits, [`${gpu.type}`]: gpu.value })
+    //   set(result, 'requests', {
+    //     ...result.requests,
+    //     [`${gpu.type}`]: gpu.value,
+    //   })
+    // }
+    
     onChange(result)
   }
 
@@ -586,46 +702,192 @@ export default class ResourceLimit extends React.Component {
     return !isEmpty(workspaceLimitProps)
   }
 
+  getMarks(max) {
+    max = max === 0 ? 1 : max;
+
+    const count = max < 5 ? max+1 : 6
+    return range(count).reduce((marks, index) => {
+      const value = (max * index) / (count - 1)
+      const mark = value === 0 ? '0' : `${Math.floor(value)}`
+      return { ...marks, [value]: mark }
+    }, {})
+  }
+
+  // Row 값 변경
+  updateRow = (index, field, value) => {
+    const gpuRows = [...this.state.gpuRows];
+
+    if (field === "type1") {
+      gpuRows[index]["type2"] = null;
+      gpuRows[index]["limit"] = 0;
+      gpuRows[index]["used"] = 0;
+    }
+
+    if(field == "type2"){
+      const limit = this.state.migProfileList.find(item => item.name === gpuRows[index]['type1'])?.profile[0][value]
+      gpuRows[index]["limit"] = limit;
+      gpuRows[index]["used"] = limit;
+    }
+
+    gpuRows[index][field] = value;
+    this.setState(
+      { gpuRows }, 
+      this.triggerChange
+    );
+    
+  };
+
+  // Row 추가
+  addRow = () => {
+    const gpuRows = [...this.state.gpuRows];
+    gpuRows.push({
+      id: gpuRows.length+1,
+      type1: null,
+      type2: null,
+      limit: 0,
+      used: 0,
+    });
+    this.setState(
+      { gpuRows }, 
+      this.triggerChange
+    );
+  };
+
+  // Row 삭제
+  removeRow = (index) => {
+    const gpuRows = [...this.state.gpuRows];
+    gpuRows.splice(index, 1);
+    this.setState(
+      { gpuRows }, 
+      this.triggerChange
+    );
+  };
+
+  // Row 추가 체크 
+  checkAdd = (type) => {
+    const target = this.state.migProfileList?.find(item => item.name === type);
+    const sliceArray = target ? Object.keys(target.profile[0]) : [];
+
+    return this.state.gpuRows.length == sliceArray.length 
+  }
+
   renderGpuSelect = () => {
     return (
       <Column>
-        <div className={styles.inputGroup}>
-          <img src="/assets/GPU.svg" size={48} />
-          <div className={classnames(styles.input)}>
-            <div className={styles.label}>
-              <span>{t('GPU_TYPE')}</span>
+         <div className={styles.wrapper}>
+          {this.state.gpuRows.map((row, index) => (
+            <div key={row.id} className={styles.gpuGroup}>
+              {index === 0 ? (
+                <img src="/assets/GPU.svg" size={48} />
+              ) : (
+                <div style={{ width: 48 }} />   // 자리 공간 유지
+              )}
+              <div className={styles.rowContainer}>
+                <div className={styles.leftArea}>
+
+                  {/* GPU 유형 */}
+                  <div className={styles.input}>
+                    <div className={styles.label}>
+                      {t("GPU_TYPE")}
+                    </div>
+                    <div className={styles.row}>
+                      <div className={styles.inputBox}>
+                        <Select
+                          options={this.gpuOption}
+                          value={row.type1}
+                          onChange={(v) => {
+                            this.updateRow(index, "type1", v)
+                          }}
+                          placeholder={t('RESOURCES_SELECT')}
+                        />
+                      </div>
+                      <div className={styles.inputBox}>
+                        <Select
+                          options={this.migProfileOption(row.type1)}
+                          value={row.type2}
+                          onChange={(v) => {
+                            this.updateRow(index, "type2", v)
+                          }}
+                          placeholder={t('RESOURCES_SELECT')}
+                          disabled={!row.type1} 
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className={styles.input}>
+                    <div className={styles.label}>
+                      {t("GPU_LIMIT")}
+                    </div>
+                    <div className={styles.inputBox}>
+                      <UnitSlider
+                        max={row.limit}
+                        min={0}
+                        marks={this.getMarks(row.limit)}
+                        unit={''}
+                        value={row.used > 0 ? row.used : row.limit}
+                        withInput
+                        onChange={(v) => {
+                            this.updateRow(index, "used", v)
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className={styles.rightArea}>
+                  {index == 0 && (
+                    <button type="button" className={styles.addBtn} onClick={() => this.addRow()} disabled={!row.type1 || this.checkAdd(row.type1)}>+</button>
+                  )}
+                  {index > 0 && (
+                    <button type="button" className={styles.removeBtn} onClick={() => this.removeRow(index)}>-</button>
+                  )}
+                </div>
+              </div>
             </div>
-            <div className={styles.inputBox}>
-              <Select
-                options={this.gpuOption}
-                value={this.state.gpu.type}
-                onChange={this.gpuSelectChange}
-                placeholder=" "
-              ></Select>
-            </div>
-          </div>
-          <div className={classnames(styles.input)}>
-            <div className={styles.label}>
-              <span>{t('GPU_LIMIT')}</span>
-            </div>
-            <div className={styles.inputBox}>
-              <Input
-                name="gpu.value"
-                value={this.state.gpu.value}
-                onChange={this.handleGpuInputChange}
-                placeholder={t('NO_LIMIT')}
-              />
-            </div>
-          </div>
+          ))}
         </div>
       </Column>
     )
+
+    //  return (
+    //   <Column>
+    //     <div className={styles.inputGroup}>
+    //       <img src="/assets/GPU.svg" size={48} />
+    //       <div className={classnames(styles.input)}>
+    //         <div className={styles.label}>
+    //           <span>{t('GPU_TYPE')}</span>
+    //         </div>
+    //         <div className={styles.inputBox}>
+    //           <Select
+    //             options={this.gpuOption}
+    //             value={this.state.gpu.type}
+    //             onChange={this.gpuSelectChange}
+    //             placeholder=" "
+    //           ></Select>
+    //         </div>
+    //       </div>
+    //       <div className={classnames(styles.input)}>
+    //         <div className={styles.label}>
+    //           <span>{t('GPU_LIMIT')}</span>
+    //         </div>
+    //         <div className={styles.inputBox}>
+    //           <Input
+    //             name="gpu.value"
+    //             value={this.state.gpu.value}
+    //             onChange={this.handleGpuInputChange}
+    //             placeholder={t('NO_LIMIT')}
+    //           />
+    //         </div>
+    //       </div>
+    //     </div>
+    //   </Column>
+    // )
   }
 
   render() {
     const { cpuError, memoryError, workspaceLimitCheck: limit } = this.state
     const { supportGpuSelect } = this.props
     const outWorkSpaceLimit = this.getWorkspaceCheckError()
+    console.log("gpuRows : "+ JSON.stringify(this.state.gpuRows))
 
     return (
       <div className={styles.wrapper}>
@@ -705,8 +967,13 @@ export default class ResourceLimit extends React.Component {
                 </div>
               </div>
             </Column>
-            {supportGpuSelect && this.renderGpuSelect()}
           </Columns>
+          {supportGpuSelect && 
+            <Columns className="is-gapless">
+              <Column>{this.renderGpuSelect()}</Column>
+            </Columns>
+          }
+           {/* {supportGpuSelect && this.renderGpuSelect()} */}                      
         </div>
         {this.ifRenderTip && this.renderQuotasTip()}
         {(cpuError || memoryError) && (

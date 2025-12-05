@@ -50,6 +50,7 @@ import LogCollectionDetail from '../containers/LogCollections/Detail'
 import IPPoolDetail from '../containers/Network/IPPools/Detail'
 import GatewayDetail from '../containers/Gateway/Detail'
 
+import GpuNodeDetail from '../containers/Resources/GpuNodes/Detail'
 import GpuMigProfilesDetail from '../containers/Resources/GpuMigProfiles/Detail'
 
 const PATH = '/clusters/:cluster'
@@ -176,6 +177,10 @@ export default [
         component: ProjectDetail,
       },
     ],
+  },
+  {
+    path: `${PATH}/gpunodes/:name`,
+    component: GpuNodeDetail,
   },
   {
     path: `${PATH}/gpumigprofiles/:name`,

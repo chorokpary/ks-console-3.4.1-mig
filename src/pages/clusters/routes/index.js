@@ -60,6 +60,8 @@ import LogCollections from '../containers/LogCollections'
 import CustomMonitoring from '../containers/CustomMonitoring'
 import detail from './detail'
 import Gateway from '../containers/Gateway'
+
+import GpuNodes from '../containers/Resources/GpuNodes'
 import GpuMigProfiles from '../containers/Resources/GpuMigProfiles'
 
 const PATH = '/clusters/:cluster'
@@ -259,6 +261,11 @@ export default [
           {
             path: `${PATH}/gateways/:component`,
             component: Gateway,
+            exact: true,
+          },
+          {
+            path: `${PATH}/gpunodes`,
+            component: GpuNodes,
             exact: true,
           },
           {

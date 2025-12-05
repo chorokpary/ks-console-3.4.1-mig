@@ -16,7 +16,7 @@ const Status = props => {
   const { cluster } = props.match.params
 
   const detailData = store.detail.result
-  console.log(`detailData : ${JSON.stringify(detailData)}`)
+
   const [loading, setLoading] = useState(true)
 
   const [gpuTypeList, setGpuTypeList] = useState([])

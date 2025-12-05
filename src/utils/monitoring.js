@@ -69,6 +69,16 @@ const UnitTypes = {
   },
 }
 
+export const getCustomValue = (unitType, customUnit) => {
+  const config = UnitTypes[unitType]
+  if (!config || !customUnit) return 1
+
+  const index = config.units.indexOf(customUnit)
+  if (index === -1) return 1
+
+  return config.conditions[index] || 1
+}
+
 export const getSuitableUnit = (value, unitType) => {
   const config = UnitTypes[unitType]
 
