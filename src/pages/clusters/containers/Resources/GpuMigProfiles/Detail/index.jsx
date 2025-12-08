@@ -180,7 +180,7 @@ const GpuMigProfileDetail = props => {
   }
 
   const getBanner = () => {
-    return <i className="ico-type-gpucluster"></i>
+    return <i className="icon ico-type-gpucluster"></i>
   }
 
   const getName = name => {

@@ -222,7 +222,7 @@ const MigGpuTypeProfileModify = props => {
               <div className="mig_slice_dropdown show">
                 <div className="mig_slice_dropdown_header">
                   <div className="mig_slice_dropdown_title">
-                    <span>슬라이스 선택</span>
+                    <span className="title_text">슬라이스 선택</span>
                     <span className="gpu_tag">{gpuName || 'GPU'}</span>
                   </div>
                   <button

@@ -7,6 +7,19 @@ html {
   height: 100%;
 }
 
+button {
+  appearance: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  -ms-box-shadow: none;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  -ms-box-shadow: none;
+  box-shadow: none;
+}
+
 .content_box_wrap i {
   -ms-flex-negative: 0;
   flex-shrink: 0;
@@ -4083,7 +4096,6 @@ html {
   font-size: 12px;
   margin: 0;
   color: #79879c;
-  font-weight: 100;
 }
 .sub_title_area > .delete_all_btn {
   height: 25px;
@@ -4245,7 +4257,7 @@ html {
 }
 .gpu_mig_box .mig_bar_chart .profile span {
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   color: #fff;
   font-family: 'Pretendard';
 }
@@ -4451,6 +4463,13 @@ html {
 .gpu_mig_box
   .mig_slice_dropdown
   .mig_slice_dropdown_header
+  .mig_slice_dropdown_title
+  .title_text {
+  color: #36435c;
+}
+.gpu_mig_box
+  .mig_slice_dropdown
+  .mig_slice_dropdown_header
   .mig_slice_dropdown_close {
   width: 24px;
   height: 24px;
@@ -4584,6 +4603,16 @@ html {
   font-family: 'Pretendard';
   color: #fff;
   cursor: pointer;
+  appearance: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  -ms-box-shadow: none;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  -ms-box-shadow: none;
+  box-shadow: none;
 }
 .gpu_mig_box
   .mig_slice_dropdown

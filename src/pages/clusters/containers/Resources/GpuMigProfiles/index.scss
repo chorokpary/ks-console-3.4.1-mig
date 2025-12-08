@@ -1,7 +1,7 @@
 @charset "utf-8";
 
-@import '~scss/variables';
-@import '~scss/mixins';
+@import "~scss/variables";
+@import "~scss/mixins";
 
 .avatar {
   display: flex;
@@ -38,4 +38,51 @@
   word-wrap: normal;
   overflow: hidden;
   max-width: 300px;
+}
+
+.configRow {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 8px;
+}
+
+.configItemWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+
+.configItem {
+  display: inline-block;
+  height: 14px;
+  line-height: 14px;
+  padding: 0 2px;
+  background-color: $primary;
+  color: $white;
+  border-radius: 2px;
+  vertical-align: middle;
+  font-size: 11px;
+}
+
+// 각 GPU 타입별 색상
+.configItem1g {
+  background-color: #45be6a;
+}
+
+.configItem2g {
+  background-color: #2c9c7b;
+}
+
+.configItem3g {
+  background-color: #21696a;
+}
+
+.configItem4g {
+  background-color: #00537b;
+}
+
+.configItem7g {
+  background-color: #013d59;
 }

@@ -106,7 +106,7 @@ export default class gpumigprofiles extends React.Component {
       actions: [
         {
           key: 'apply',
-          type: 'control',
+          type: 'default',
           text: t('RESOURCES_GPU_MIG_CONFIG'),
           action: 'create',
           onClick: () =>
@@ -119,7 +119,7 @@ export default class gpumigprofiles extends React.Component {
         },
          {
           key: 'applyremove',
-          type: 'control',
+          type: 'default',
           text: t('RESOURCES_GPU_MIG_CONFIG_REMOVE'),
           action: 'create',
           onClick: () =>
@@ -289,8 +289,23 @@ export default class gpumigprofiles extends React.Component {
                 gpuTypeDetail.length > 1 ? '혼합설정' : output.join(', ')
 
               return (
-                <div key={idx}>
-                  <strong>{key}</strong> : {output.join(', ')}
+                <div key={idx} className={styles.configRow}>
+                  <strong>{key}</strong>
+                  <span className={styles.configItemWrap}>
+                    {output.map((item, itemIdx) => {
+                      // item에서 숫자 추출 (예: "1g.20gb" -> "1g")
+                      const gpuType = item.split('.')[0] // "1g", "2g", "3g", "4g", "7g"
+                      const gpuTypeClass = `configItem${gpuType}`
+                      return (
+                        <span
+                          key={itemIdx}
+                          className={`${styles.configItem} ${styles[gpuTypeClass]}`}
+                        >
+                          {item}
+                        </span>
+                      )
+                    })}
+                  </span>
                 </div>
               )
             })
@@ -348,7 +363,7 @@ export default class gpumigprofiles extends React.Component {
   }
 
   getBanner = () => {
-    return <i className="ico-type40-gpucluster"></i>
+    return <i className="ico-type-gpucluster"></i>
   }
 
   render() {
