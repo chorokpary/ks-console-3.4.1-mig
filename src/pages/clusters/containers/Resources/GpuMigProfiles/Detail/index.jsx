@@ -11,6 +11,7 @@ import { getLocalTime } from 'utils'
 
 import GpuMigProfilesStore from 'stores/resources/gpumigprofiles'
 import routes from './routes'
+import styles from './index.scss'
 
 const store = new GpuMigProfilesStore()
 
@@ -108,8 +109,23 @@ const GpuMigProfileDetail = props => {
           gpuTypeDetail.length > 1 ? 'Mixed' : output.join(', ')
 
         return (
-          <div key={idx}>
-            <strong>{key}</strong> : {output.join(', ')}
+          <div key={idx} className={styles.configRow}>
+              <strong>{key}</strong>
+              <span className={styles.configItemWrap}>
+              {output.map((item, itemIdx) => {
+                // item에서 숫자 추출 (예: "1g.20gb" -> "1g")
+                const gpuType = item.split('.')[0] // "1g", "2g", "3g", "4g", "7g"
+                const gpuTypeClass = `configItem${gpuType}`
+                return (
+                  <span
+                    key={itemIdx}
+                    className={`${styles.configItem} ${styles[gpuTypeClass]}`}
+                  >
+                    {item}
+                  </span>
+                )
+              })}
+            </span>
           </div>
         )
       })

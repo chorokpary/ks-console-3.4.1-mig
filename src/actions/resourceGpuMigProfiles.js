@@ -20,12 +20,15 @@ import { toJS } from 'mobx'
 import { Notify } from '@kube-design/components'
 import { Modal } from 'components/Base'
 
+import AlertModal from 'clusters/containers/Resources/components/Modals/Alert'
 import ConfirmModal from 'clusters/containers/Resources/components/Modals/Confirm'
 import RegistModal from 'clusters/containers/Resources/components/Modals/GpuMigProfiles/Regist'
 import ModifyModal from 'clusters/containers/Resources/components/Modals/GpuMigProfiles/Modify'
 
 import EditYamlModal from 'components/Modals/EditYaml'
 import DeleteModal from 'components/Modals/Delete'
+
+import NodeStore from 'stores/node'
 
 export default {
   'gpumigprofiles.regist': {
@@ -95,7 +98,7 @@ export default {
     },
   },
   'gpumigprofiles.remove': {
-    on({
+    async on({
       store,
       detail,
       cluster,
@@ -105,6 +108,14 @@ export default {
       devops,
       ...props
     }) {
+
+      const nodeStore = new NodeStore()
+      const nodeList = await nodeStore.fetchList({limit: 10000})
+      
+      const isMig = nodeList.some(
+        item => item?.labels?.["nvidia.com/mig.config"] === detail.name
+      );
+
       const modal = Modal.open({
         onOk: () => {
           store
@@ -115,9 +126,9 @@ export default {
               success && success()
             })
         },
-        modal: DeleteModal,
+        modal: isMig ? AlertModal : DeleteModal,
         title: t('RESOURCES_DELETE'),
-        desc: t.html('RESOURCES_DELETE_GPU_CLUSTER_TIP', {
+        desc: isMig ? t.html('RESOURCES_USED_GPU_MIG_PROFILE_TIP') : t.html('RESOURCES_DELETE_GPU_MIG_PROFILE_TIP', {
           resource: detail.name.replace('petasus-', ''),
         }),
         resource: detail.name.replace('petasus-', ''),

@@ -1278,6 +1278,9 @@ module.exports = {
   RESOURCES_BATCH_PROCESS_TIP: '알괄적용은 1개 설정으로 전체 GPU에 적용됩니다.',
   RESOURCES_ALL_DEL: '전체 삭제',
   RESOURCES_GPU_TYPE_ADD_TIP: 'GPU 타입 추가는 8개까지 가능합니다.',
+  RESOURCES_DELETE_GPU_MIG_PROFILE_TIP: 'GPU MIG Profile 이름 <strong>{resource}</strong> 을 입력하여 이 작업의 위험을 이해하고 있는지 확인합니다.', 
+  RESOURCES_USED_GPU_MIG_PROFILE_TIP: '해당 MIG Profile 을 사용 중인 GPU 노드가 존재합니다. ' 
+  + '사용 중인 GPU 노드의 MIG 설정을 해제한 후 삭제를 진행해 주세요.',
 
   RESOURCES_SLICE_BY_POD_INFO: '슬라이스별 Pod 정보',
   RESOURCES_MIG_MONITORING: 'MIG Monitoring',

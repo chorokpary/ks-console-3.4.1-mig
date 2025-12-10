@@ -23,17 +23,14 @@ import { Button, Icon, Input } from '@kube-design/components'
 import { Modal } from 'components/Base'
 
 import styles from './index.scss'
-import NodeStore from 'stores/node'
-import HoganJsUtils from 'diff2html/lib/hoganjs-utils'
 
-export default class ApplyRemoveModal extends React.Component {
+export default class AlertModal extends React.Component {
   static propTypes = {
     type: PropTypes.string,
     resource: PropTypes.string,
     visible: PropTypes.bool,
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
     desc: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-    onOk: PropTypes.func,
     onCancel: PropTypes.func,
     isSubmitting: PropTypes.bool,
   }
@@ -41,7 +38,6 @@ export default class ApplyRemoveModal extends React.Component {
   static defaultProps = {
     visible: false,
     isSubmitting: false,
-    onOk() {},
     onCancel() {},
   }
 
@@ -59,42 +55,10 @@ export default class ApplyRemoveModal extends React.Component {
     this.setState({ confirm: e.target.value })
   }
 
-  handleOk = async () => {
-    const nodeStore = new NodeStore()
-
-    const params = {
-        name: this.props.resource,
-        cluster: this.props.cluster
-    }
-
-    const nodeDetailData = await nodeStore.fetchDetail(params)
-
-    const applyLabels = nodeDetailData.labels
-    applyLabels['nvidia.com/mig.config'] = "all-disabled"
-
-    this.props.onOk({
-      nodeName: this.props.resource,        
-      detail: nodeDetailData,
-      applyLabels,
-      cluster: this.props.cluster
-    })
-  }
-
   render() {
-    const {
-      app,
-      type,
-      resource,
-      visible,
-      onCancel,
-      title,
-      desc,
-      isSubmitting,
-      deleteCluster,
-    } = this.props
+    const { type, visible, onCancel, title, desc, isSubmitting } = this.props
 
-    let tip = desc 
-
+    const tip = desc
     return (
       <Modal
         width={504}
@@ -107,34 +71,18 @@ export default class ApplyRemoveModal extends React.Component {
       >
         <div className={styles.body}>
           <div className="h5">
+            <Icon name="close" type="light" />
             {title}
           </div>
           <div className={styles.content}>
             <p>{tip}</p>
-            {resource && (
-              <Input
-                name="confirm"
-                value={this.state.confirm}
-                onChange={this.handleInputChange}
-                placeholder={resource}
-                autoFocus={true}
-              />
-            )}
           </div>
         </div>
         <div className={styles.footer}>
-          <Button onClick={onCancel} data-test="modal-cancel">
-            {t('CANCEL')}
-          </Button>
           <Button
-            type="danger"
-            loading={isSubmitting}
-            disabled={
-              isSubmitting ||
-              (resource ? this.state.confirm !== resource : false)
-            }
-            onClick={this.handleOk}
-            data-test="modal-ok"
+            type="control"
+            onClick={onCancel}
+            data-test="modal-cancel"
           >
             {t('OK')}
           </Button>

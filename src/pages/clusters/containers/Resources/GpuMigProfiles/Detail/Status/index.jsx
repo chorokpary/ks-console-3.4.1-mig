@@ -122,7 +122,6 @@ const Status = props => {
     <>
       <div>
         <Panel title={t('RESOURCES_MIG_PROFILE')}>
-          {/* <div className={styles.tabs}> */}
             <Tabs
               type="button"
               activeName={storageClassTab}
@@ -134,9 +133,7 @@ const Status = props => {
                 return <TabPanel key={index} label={t(obj)} name={obj} />
               })}
             </Tabs>
-          {/* </div> */}
-
-          {/* <div className={styles.wrapper}> */}
+            
             <div className="gpu_mig_container mig_profile_view">
               {
                 sortByGpuKey(detailData.gpuTypeDetail.filter(item => {                  
@@ -158,7 +155,6 @@ const Status = props => {
                   })
                 }
             </div>
-          {/* </div> */}
         </Panel>
       </div>
     </>
