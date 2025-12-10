@@ -257,6 +257,7 @@ export default class ResourceLimit extends React.Component {
       },
       gpu: ResourceLimit.gpuSetting(props),
       gpuRows: props.value.migprofiles?.length > 0 ? props.value.migprofiles : [{ id: 1, type1: null, type2: null, limit: 0, used: 0 }], 
+      gpuType: props.value.migprofiles?.length > 0 ? "mig" : "gpu"
     }
   }
 
@@ -347,6 +348,20 @@ export default class ResourceLimit extends React.Component {
 
   get memoryUnit() {
     return this.props.memoryProps.unit || 'Mi'
+  }
+
+  get gpuTypeOption() {
+     const gpuTypeOptionList = ["nvidia.com/gpu","nvidia.com/mig"]
+
+     return  gpuTypeOptionList.reduce((prev, value) => [
+        ...prev,
+        {
+          value,
+          label: t(value.toUpperCase()),
+        },
+      ],
+      []
+    )
   }
 
   get gpuOption() {
@@ -531,25 +546,27 @@ export default class ResourceLimit extends React.Component {
     }
 
     // pass gpu input config into limits and requests field
-    const gpuRowsFiltered = gpuRows.filter(row => row.type2 !== null);
-    if(gpuRowsFiltered.length > 0){
-      gpuRowsFiltered.map((item) => {
-        const key = "nvidia.com/mig-"+item.type2
-        const count = String(item.used)
-        set(result, 'limits', { ...result.limits, [`${key}`]: count })
-        set(result, 'requests', { ...result.requests, [`${key}`]: count })
-      })       
-      set(result, 'migprofiles', gpuRowsFiltered )
-    }
-    
-    // if (!!gpu.type && !!gpu.value) {
-    //   set(result, 'limits', { ...result.limits, [`${gpu.type}`]: gpu.value })
-    //   set(result, 'requests', {
-    //     ...result.requests,
-    //     [`${gpu.type}`]: gpu.value,
-    //   })
-    // }
-    
+    if(gpu.type.split('/')[1] == "mig"){
+      const gpuRowsFiltered = gpuRows.filter(row => row.type2 !== null);
+      if(gpuRowsFiltered.length > 0){
+        gpuRowsFiltered.map((item) => {
+          const key = "nvidia.com/mig-"+item.type2
+          const count = String(item.used)
+          set(result, 'limits', { ...result.limits, [`${key}`]: count })
+          set(result, 'requests', { ...result.requests, [`${key}`]: count })
+        })       
+        set(result, 'migprofiles', gpuRowsFiltered )
+      }      
+    }else{
+      if (!!gpu.type && !!gpu.value) {
+        set(result, 'limits', { ...result.limits, [`${gpu.type}`]: gpu.value })
+        set(result, 'requests', {
+          ...result.requests,
+          [`${gpu.type}`]: gpu.value,
+        })
+      }
+    }      
+   
     onChange(result)
   }
 
@@ -622,6 +639,7 @@ export default class ResourceLimit extends React.Component {
           type,
           value: this.state.gpu.value,
         },
+        gpuType: type.split('/')[1] 
       },
       this.checkAndTrigger
     )
@@ -770,124 +788,122 @@ export default class ResourceLimit extends React.Component {
 
     return this.state.gpuRows.length == sliceArray.length 
   }
-
+  
   renderGpuSelect = () => {
     return (
       <Column>
          <div className={styles.wrapper}>
-          {this.state.gpuRows.map((row, index) => (
-            <div key={row.id} className={styles.gpuGroup}>
-              {index === 0 ? (
-                <img src="/assets/GPU.svg" size={48} />
-              ) : (
-                <div style={{ width: 48 }} />   // 자리 공간 유지
-              )}
-              <div className={styles.rowContainer}>
-                <div className={styles.leftArea}>
-
-                  {/* GPU 유형 */}
-                  <div className={styles.input}>
-                    <div className={styles.label}>
-                      {t("GPU_TYPE")}
-                    </div>
-                    <div className={styles.row}>
-                      <div className={styles.inputBox}>
-                        <Select
-                          options={this.gpuOption}
-                          value={row.type1}
-                          onChange={(v) => {
-                            this.updateRow(index, "type1", v)
-                          }}
-                          placeholder={t('RESOURCES_SELECT')}
-                        />
-                      </div>
-                      <div className={styles.inputBox}>
-                        <Select
-                          options={this.migProfileOption(row.type1)}
-                          value={row.type2}
-                          onChange={(v) => {
-                            this.updateRow(index, "type2", v)
-                          }}
-                          placeholder={t('RESOURCES_SELECT')}
-                          disabled={!row.type1} 
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles.input}>
-                    <div className={styles.label}>
-                      {t("GPU_LIMIT")}
-                    </div>
-                    <div className={styles.inputBox}>
-                      <UnitSlider
-                        max={row.limit}
-                        min={0}
-                        marks={this.getMarks(row.limit)}
-                        unit={''}
-                        value={row.used > 0 ? row.used : row.limit}
-                        withInput
-                        onChange={(v) => {
-                            this.updateRow(index, "used", v)
-                        }}
-                      />
-                    </div>
-                  </div>
+            <div className={styles.inputGroup}>
+              <img src="/assets/GPU.svg" size={48} />
+              <div className={classnames(styles.input)}>
+                <div className={styles.label}>
+                  <span>{t('GPU_TYPE')}</span>
                 </div>
-                <div className={styles.rightArea}>
-                  {index == 0 && (
-                    <button type="button" className={styles.addBtn} onClick={() => this.addRow()} disabled={!row.type1 || this.checkAdd(row.type1)}>+</button>
-                  )}
-                  {index > 0 && (
-                    <button type="button" className={styles.removeBtn} onClick={() => this.removeRow(index)}>-</button>
-                  )}
+                <div className={styles.inputBox}>
+                  <Select
+                    options={this.gpuTypeOption}
+                    value={`nvidia.com/${this.state.gpuType}`}
+                    onChange={this.gpuSelectChange}
+                    placeholder=" "
+                  ></Select>
                 </div>
               </div>
+              {
+                this.state.gpuType === "gpu" && (
+                    <div className={classnames(styles.input)}>
+                      <div className={styles.label}>
+                        <span>{t('GPU_LIMIT')}</span>
+                      </div>
+                      <div className={styles.inputBox}>
+                        <Input
+                          name="gpu.value"
+                          value={this.state.gpu.value}
+                          onChange={this.handleGpuInputChange}
+                          placeholder={t('NO_LIMIT')}
+                        />
+                      </div>
+                    </div>
+                  )
+                }      
             </div>
-          ))}
-        </div>
+              
+            {/* MIG Profile  */}
+            {this.state.gpuType === "mig" && ( 
+              this.state.gpuRows.map((row, index) => (
+                <div key={row.id} className={styles.gpuGroup}>
+                  <div style={{ width: 48 }} />           
+                  <div className={styles.rowContainer}>
+                    <div className={styles.leftArea}>
+
+                      {/* GPU 유형 */}
+                      <div className={styles.input}>
+                        <div className={styles.label}>
+                          {t("GPU_LIMIT")}
+                        </div>
+                        <div className={styles.row}>
+                          <div className={styles.inputBox}>
+                            <Select
+                              options={this.gpuOption}
+                              value={row.type1}
+                              onChange={(v) => {
+                                this.updateRow(index, "type1", v)
+                              }}
+                              placeholder={t('RESOURCES_SELECT')}
+                            />
+                          </div>
+                          <div className={styles.inputBox}>
+                            <Select
+                              options={this.migProfileOption(row.type1)}
+                              value={row.type2}
+                              onChange={(v) => {
+                                this.updateRow(index, "type2", v)
+                              }}
+                              placeholder={t('RESOURCES_SELECT')}
+                              disabled={!row.type1} 
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className={styles.input}>
+                        <div className={styles.label}>
+                        </div>
+                        <div className={styles.inputBox}>
+                          <UnitSlider
+                            max={row.limit}
+                            min={0}
+                            marks={this.getMarks(row.limit)}
+                            unit={''}
+                            value={row.used > 0 ? row.used : row.limit}
+                            withInput
+                            onChange={(v) => {
+                                this.updateRow(index, "used", v)
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className={styles.rightArea}>
+                      {index == 0 && (
+                        <button type="button" className={styles.addBtn} onClick={() => this.addRow()} disabled={!row.type1 || this.checkAdd(row.type1)}>+</button>
+                      )}
+                      {index > 0 && (
+                        <button type="button" className={styles.removeBtn} onClick={() => this.removeRow(index)}>-</button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}          
+          </div>
       </Column>
     )
-
-    //  return (
-    //   <Column>
-    //     <div className={styles.inputGroup}>
-    //       <img src="/assets/GPU.svg" size={48} />
-    //       <div className={classnames(styles.input)}>
-    //         <div className={styles.label}>
-    //           <span>{t('GPU_TYPE')}</span>
-    //         </div>
-    //         <div className={styles.inputBox}>
-    //           <Select
-    //             options={this.gpuOption}
-    //             value={this.state.gpu.type}
-    //             onChange={this.gpuSelectChange}
-    //             placeholder=" "
-    //           ></Select>
-    //         </div>
-    //       </div>
-    //       <div className={classnames(styles.input)}>
-    //         <div className={styles.label}>
-    //           <span>{t('GPU_LIMIT')}</span>
-    //         </div>
-    //         <div className={styles.inputBox}>
-    //           <Input
-    //             name="gpu.value"
-    //             value={this.state.gpu.value}
-    //             onChange={this.handleGpuInputChange}
-    //             placeholder={t('NO_LIMIT')}
-    //           />
-    //         </div>
-    //       </div>
-    //     </div>
-    //   </Column>
-    // )
   }
 
   render() {
     const { cpuError, memoryError, workspaceLimitCheck: limit } = this.state
     const { supportGpuSelect } = this.props
     const outWorkSpaceLimit = this.getWorkspaceCheckError()
-    console.log("gpuRows : "+ JSON.stringify(this.state.gpuRows))
+    // console.log("gpuRows : "+ JSON.stringify(this.state.gpuRows))
 
     return (
       <div className={styles.wrapper}>
@@ -972,8 +988,7 @@ export default class ResourceLimit extends React.Component {
             <Columns className="is-gapless">
               <Column>{this.renderGpuSelect()}</Column>
             </Columns>
-          }
-           {/* {supportGpuSelect && this.renderGpuSelect()} */}                      
+          }           
         </div>
         {this.ifRenderTip && this.renderQuotasTip()}
         {(cpuError || memoryError) && (
