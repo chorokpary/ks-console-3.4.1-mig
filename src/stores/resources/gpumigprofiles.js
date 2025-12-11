@@ -339,7 +339,7 @@ export default class GpuMigProfilesStore extends Base {
 
     const parsed = yaml.load(yamlText)
     const migConfigTemplates = parsed['mig-config-templates']
-
+    
     const result = migConfigTemplates
       .filter(item => {
         if (params.type === 'N') {
@@ -406,6 +406,17 @@ export default class GpuMigProfilesStore extends Base {
     const result = await this.transformData(filteredData)
 
     return result
+  }
+
+  async getCustomMigConfig() {
+    const configMapParams = {
+      namespace: 'nvidia',
+      name: 'custom-mig-config-templates',
+    }
+    // /api/v1/namespaces/nvidia/configmaps/custom-mig-config-templates
+    const resultCustomMigConfig = await request.get(this.getDetailUrl(configMapParams))
+
+    return resultCustomMigConfig
   }
 
   async transformData(data) {

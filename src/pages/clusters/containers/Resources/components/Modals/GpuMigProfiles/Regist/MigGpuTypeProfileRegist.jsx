@@ -38,14 +38,16 @@ const MigGpuTypeProfileRegist = props => {
 
   useEffect(() => {
     const getMigConfigTemplateData = async () => {
+
+      const resultCustomMigConfig = await gpuMigProfilesStore.getCustomMigConfig()
+      
       const params = {
         type: 'N',
         name,
         deviceId,
       }
-      const migConfigTemplateData = await gpuMigProfilesStore.getMigConfigTemplate(
-        params
-      )
+      const migConfigTemplateData = await gpuMigProfilesStore.getMigConfigTemplate(params , resultCustomMigConfig)
+
       setTotalSmCount(migConfigTemplateData.count)
       setTotalMemory(migConfigTemplateData.memory)
     }
