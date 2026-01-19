@@ -211,6 +211,11 @@ export const getPodStatusAndRestartCount = pod => {
   if (!isEmpty(initContainerStatuses)) {
     initContainerStatuses.forEach((container, index) => {
       restarts += Number(container.restartCount)
+
+      if (phase === 'Running') {
+        return
+      }
+
       const waiting = get(container, 'state.waiting')
       const terminated = get(container, 'state.terminated')
       if (terminated && terminated.exitCode === 0) {
@@ -305,6 +310,11 @@ export const getPodStatusAndRestartCount = pod => {
       break
     case 'Failed':
     case 'Error':
+    case 'CrashLoopBackOff':
+    case 'ImagePullBackOff':
+    case 'ErrImagePull':
+    case 'CreateContainerConfigError':
+    case 'InvalidImageName':
       type = 'error'
       break
     case 'Completed':
