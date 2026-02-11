@@ -62,20 +62,16 @@ export default class ApplyRemoveModal extends React.Component {
   handleOk = async () => {
     const nodeStore = new NodeStore()
 
-    const params = {
-        name: this.props.resource,
+    const data = {
+        name: this.props.store.detail.name,
         cluster: this.props.cluster
     }
 
-    const nodeDetailData = await nodeStore.fetchDetail(params)
-
-    const applyLabels = nodeDetailData.labels
-    applyLabels['nvidia.com/mig.config'] = "all-disabled"
+    const nodeName = this.props.store.detail.name
 
     this.props.onOk({
-      nodeName: this.props.resource,        
-      detail: nodeDetailData,
-      applyLabels,
+      ...data,
+      nodeName: nodeName,        
       cluster: this.props.cluster
     })
   }

@@ -3,6 +3,8 @@ import React from 'react'
 import { ICON_TYPES, NODE_STATUS } from 'utils/constants';
 import GpuNodeStore from 'stores/resources/gpunodes';
 
+import { getNodeStatus } from 'utils/node'
+
 import withList, { ListPage } from 'components/HOCs/withList';
 
 import { Avatar, Status } from 'components/Base'
@@ -18,6 +20,7 @@ import styles from './index.scss'
   name: 'GpuNode',
 })
 export default class GpuNodes extends React.Component {
+
   getStatus() {
     return NODE_STATUS.map(status => ({
       text: t(status.text),
@@ -72,8 +75,7 @@ export default class GpuNodes extends React.Component {
         isHideable: true,
         search: true,
         render: (_, record) => {
-          const status = record.status
-
+          const status = getNodeStatus(record)
           return (
             <div className={styles.status}>
               <Status
@@ -84,54 +86,54 @@ export default class GpuNodes extends React.Component {
           )
         },
       },
-      {
-        title: t('RESOURCES_GPU_VENDOR'),
-        dataIndex: 'vendor',
-        isHideable: true,
-        search: true,
-        width: 'auto',
-        render: (_, record) => {
-          const vendor = record.vendor_name
-          return vendor.toUpperCase();
-        }
-      },
-      {
-        title: t('RESOURCES_GPU_MODEL'),
-        dataIndex: 'model',
-        isHideable: true,
-        search: true,
-        width: 'auto',
-      },
-      {
-        title: t('RESOURCES_GPU_WORKLOAD_TYPE'),
-        dataIndex: 'workload_type',
-        isHideable: true,
-        width: 'auto',
-      },
-      {
-        title: t('RESOURCES_GPU_DRIVER_TYPE'),
-        dataIndex: 'driver_type',
-        isHideable: true,
-        width: 'auto',
-      },
-      {
-        title: t('RESOURCES_GPU_CONFIG_STATE'),
-        dataIndex: 'config_state',
-        isHideable: true,
-        width: 'auto',
-        render: config_state => {
-          const config_state_str =
-            config_state === "" ? (
-              "-"
-            ) : (
-              <p>{t(`RESOURCES_GPU_CONFIG_STATE_${config_state.toUpperCase()}`)}</p>
-            );
-          return config_state_str;
-        },
-      },
+      // {
+      //   title: t('RESOURCES_GPU_VENDOR'),
+      //   dataIndex: 'vendor',
+      //   isHideable: true,
+      //   search: true,
+      //   width: 'auto',
+      //   render: (_, record) => {
+      //     const vendor = record.vendor_name
+      //     return vendor.toUpperCase();
+      //   }
+      // },
+      // {
+      //   title: t('RESOURCES_GPU_MODEL'),
+      //   dataIndex: 'model',
+      //   isHideable: true,
+      //   search: true,
+      //   width: 'auto',
+      // },
+      // {
+      //   title: t('RESOURCES_GPU_WORKLOAD_TYPE'),
+      //   dataIndex: 'workload_type',
+      //   isHideable: true,
+      //   width: 'auto',
+      // },
+      // {
+      //   title: t('RESOURCES_GPU_DRIVER_TYPE'),
+      //   dataIndex: 'driver_type',
+      //   isHideable: true,
+      //   width: 'auto',
+      // },
+      // {
+      //   title: t('RESOURCES_GPU_CONFIG_STATE'),
+      //   dataIndex: 'config_state',
+      //   isHideable: true,
+      //   width: 'auto',
+      //   render: config_state => {
+      //     const config_state_str =
+      //       config_state === "" ? (
+      //         "-"
+      //       ) : (
+      //         <p>{t(`RESOURCES_GPU_CONFIG_STATE_${config_state.toUpperCase()}`)}</p>
+      //       );
+      //     return config_state_str;
+      //   },
+      // },
       {
         title: t('RESOURCES_GPU_COUNT'),
-        dataIndex: 'count',
+        dataIndex: 'gpu_count',
         isHideable: true,
         width: 'auto',
       },

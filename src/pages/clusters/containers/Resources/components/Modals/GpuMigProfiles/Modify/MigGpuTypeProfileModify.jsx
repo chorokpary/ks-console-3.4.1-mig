@@ -108,6 +108,7 @@ const MigGpuTypeProfileModify = props => {
     const modifySelectedSlice = {}
 
     modifyData.gpuTypeDetail.map((item, index) => {
+
       const key = Object.keys(item)[0]
       const devices = Object.values(item)[0]
       const num = String(key.split('_')[1]).padStart(2, '0')
@@ -115,7 +116,7 @@ const MigGpuTypeProfileModify = props => {
 
       const sliceArray = []
       Object.entries(devices).forEach(([key, count]) => {
-        const [gStr, memoryStr] = key.split('.')
+        const [gStr, memoryStr] = key.replace(/_\d+$/, '').split('.')
         const g = parseInt(gStr.replace('g', ''), 10)
         for (let i = 0; i < count; i++) {
           sliceArray.push(`${g}g.${memoryStr}`)

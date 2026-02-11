@@ -1,6 +1,12 @@
 @import '~scss/variables';
 @import '~scss/mixins';
 
+.wrapper {
+  padding: 12px;
+  background-color: $card-bg-color;
+  border-radius: $border-radius;
+}
+
 .resources {
   padding: 0;
 }
@@ -10,6 +16,14 @@
   grid-template-columns: repeat(3, 1fr);
   grid-column-gap: 12px;
   grid-row-gap: 12px;
+}
+
+.empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 56px;
+  width: 100%; 
 }
 
 

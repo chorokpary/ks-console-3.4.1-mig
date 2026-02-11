@@ -43,6 +43,10 @@ server:
     # url: http://192.168.15.157:32573
     # wsUrl: ws://192.168.15.157:32573
 
+    # 개발_Kaas_console
+    # url: http://172.16.2.152:30881
+    # wsUrl: ws://172.16.2.152:30881
+
   # docker image search default url
   dockerHubUrl: https://hub.docker.com
 

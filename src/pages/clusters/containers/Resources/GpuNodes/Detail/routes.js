@@ -22,16 +22,23 @@ import Status from 'clusters/containers/Resources/GpuNodes/Detail/Status'
 import GpuDevice from 'clusters/containers/Resources/GpuNodes/Detail/GpuDevice'
 import Pod from 'clusters/containers/Resources/GpuNodes/Detail/Pod'
 import MigMonitoring from 'clusters/containers/Resources/GpuNodes/Detail/MigMonitoring'
+import RunningStatus from 'clusters/containers/Resources/GpuNodes/Detail/RunningStatus'
 
 const PATH = '/clusters/:cluster/gpunodes/:name'
 
 export default [
     {
         path: `${PATH}/status`,
-        title: t('RESOURCES_STATE'),
-        component: Status,
+        title: 'RUNNING_STATUS',
+        component: RunningStatus,
         exact: true,
     },
+    // {
+    //     path: `${PATH}/status`,
+    //     title: t('RESOURCES_STATE'),
+    //     component: Status,
+    //     exact: true,
+    // },
     {
         path: `${PATH}/gpu-devices`,
         title: t('RESOURCES_GPU_DEVICE'),

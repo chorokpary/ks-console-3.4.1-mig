@@ -25,6 +25,10 @@ import GpuNodeStore from 'stores/resources/gpunodes';
 import DetailPage from 'clusters/containers/Base/Detail';
 import { Status } from 'components/Base'
 
+import { getNodeRoles, getNodeStatus } from 'utils/node'
+
+import { getDisplayName, getLocalTime } from 'utils'
+
 import routes from './routes';
 
 const store = new GpuNodeStore();
@@ -37,134 +41,121 @@ const GpuNodeDetail = props => {
     const fetchData = () => {
         store.fetchDetail(props.match.params);
     };
+    
     const listUrl = () => {
         const { cluster } = props.match.params;
         return `/clusters/${cluster}/gpunodes`;
     };
-    const routing = props.rootStore.routing;
-    const workload_type = store.detail.gpunode?.workload_type;
 
+    const routing = props.rootStore.routing;
+
+    const isMigApply = get(store.detail, 'labels["nvidia.com/mig.config"]') === 'all-disabled';
+    const migConfig = get(store.detail, 'labels["nvidia.com/mig.config"]', '');
 
     const getOperations = () => [
         {
             key: 'applyMig',
             icon: 'gpu',
-            disabled: false,
+            disabled: !isMigApply,
             text: t('RESOURCES_GPU_MIG_CONFIG'),
             action: 'view',
             onClick: () => {
-                    props.rootStore.triggerAction('gpunodemig.apply', {
-                    store: store,
-                    cluster: props.match.params.cluster,
-                    success: fetchData,
+                props.rootStore.triggerAction('gpunodemig.apply', {
+                  store: store,
+                  cluster: props.match.params.cluster,
+                  success: fetchData,
                 });
             },
         },
                 {
-            key: 'configWorkload',
+            key: 'applyMigRemove',
             icon: 'gpu',
-            disabled: true,
+            disabled: isMigApply,
             text: t('RESOURCES_GPU_MIG_CONFIG_REMOVE'),
             action: 'view',
             onClick: () => {
-                props.rootStore.triggerAction('gpunodemig.remove', {
-                    store: store,
-                    cluster: props.match.params.cluster,
-                    success: fetchData,
+                props.rootStore.triggerAction('gpunodemig.apply.remove', {
+                  store: store,
+                  cluster: props.match.params.cluster,
+                  success: fetchData,
                 });
             },
         },
     ]
 
     const getAttrs = () => {
-        const detail = toJS(store.detail);
+       const detail = toJS(store.detail)
+   
+       if (isEmpty(detail)) {
+         return
+       }
 
-        if (isEmpty(detail)) {
-            return;
-        }
+      const statusStr = getNodeStatus(detail)
 
-	const gpunode = detail.gpunode;
-        const status = (
-            <Status
-                type={gpunode.status}
-                name={t(`NODE_STATUS_${gpunode.status.toUpperCase()}`)}
-            />
-        )
-        const info = gpunode.info || {}
-        const capable = gpunode.capable || {}
+      const status = (
+         <Status
+           type={statusStr}
+           name={t(`NODE_STATUS_${statusStr.toUpperCase()}`)}
+         />
+       )
+       const address = get(detail, 'status.addresses[0].address', '-')
+       const nodeInfo = detail.nodeInfo || {}
 
-        return [
-            {
-                name: t('RESOURCES_CLUSTER'),
-                value: detail.cluster,
-            },
-            {
-                name: t('STATUS'),
-                value: status,
-            },
-            {
-                name: t('IP_ADDRESS'),
-                value: gpunode.node_ip,
-            },
-            {
-                name: t('RESOURCES_MACHINE'),
-                value: gpunode.machine,
-            },
-            {
-                name: t('OS_VERSION'),
-                value: info.os_image,
-            },
-            {
-                name: t('OS_TYPE'),
-                value: t(info.os_distro.toUpperCase()),
-            },
-            {
-                name: t('CONTAINER_RUNTIME'),
-                value: info.container_runtime,
-            },
-            {
-                name: t('ARCHITECTURE'),
-                value: info.architecture.toUpperCase(),
-            },
-            {
-                name: t('RESOURCES_GPU_VENDOR'),
-                value: gpunode.vendor_name.toUpperCase(),
-            },
-            {
-                name: t('RESOURCES_GPU_FAMILY'),
-                value: gpunode.family.toUpperCase(),
-            },
-            {
-                name: t('RESOURCES_GPU_MODEL'),
-                value: gpunode.model,
-            },
-            {
-                name: t('RESOURCES_GPU_RAM'),
-                value: gpunode.memory_gib,
-            },
-            {
-                name: t('RESOURCES_GPU_DRIVER_VERSION'),
-                value: gpunode.driver_version,
-            },
-            {
-                name: t('RESOURCES_GPU_CUDA_VERSION'),
-                value: gpunode.cuda_version,
-            },
-            {
-                name: t('RESOURCES_GPU_COUNT'),
-                value: gpunode.count,
-            },
-	    {
-                name: t('RESOURCES_GPU_WORKLOAD_TYPE'),
-                value: gpunode.workload_type,
-            },
-            {
-                name: t('RESOURCES_GPU_MIG'),
-                value: capable.mig ? t('RESOURCES_SUPPORT') : t('RESOURCES_NOT_SUPPORT'),
-            },           
-        ];
-    };
-
+       return [
+         {
+           name: t('STATUS'),
+           value: status,
+         },
+         {
+           name: t('IP_ADDRESS'),
+           value: address,
+         },
+         {
+           name: t('ROLE'),
+           value:
+             getNodeRoles(detail.labels).indexOf('master') === -1
+               ? t('WORKER')
+               : t('CONTROL_PLANE'),
+         },
+         {
+           name: t('OS_VERSION'),
+           value: nodeInfo.osImage,
+         },
+         {
+           name: t('OS_TYPE'),
+           value: t(nodeInfo.operatingSystem.toUpperCase()),
+         },
+         {
+           name: t('KERNEL_VERSION'),
+           value: nodeInfo.kernelVersion,
+         },
+         {
+           name: t('CONTAINER_RUNTIME'),
+           value: nodeInfo.containerRuntimeVersion,
+         },
+         {
+           name: t('KUBELET_VERSION'),
+           value: nodeInfo.kubeletVersion,
+         },
+         {
+           name: t('KUBE_PROXY_VERSION'),
+           value: nodeInfo.kubeProxyVersion,
+         },
+         {
+           name: t('ARCHITECTURE'),
+           value: nodeInfo.architecture.toUpperCase(),
+         },
+         
+         {
+           name: t('MIG Config'),
+           value: isMigApply ? "" : migConfig,
+         },
+         {
+           name: t('CREATION_TIME_TCAP'),
+           value: getLocalTime(detail.createTime).format('YYYY-MM-DD HH:mm:ss'),
+         },
+       ]
+     }
     if (store.isLoading) {
         return <Loading className="ks-page-loading" />;
     }

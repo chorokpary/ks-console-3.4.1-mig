@@ -25,6 +25,8 @@ import { get, groupBy } from 'lodash'
 import classnames from 'classnames'
 import styles from './index.scss'
 
+import PodsCard from 'components/Cards/Pods'
+
 const Pod = (props) => {
 
   const store = props.detailStore
@@ -145,7 +147,7 @@ const Pod = (props) => {
                   </Tabs>
                 </div>
 
-                  {(store.gpuDeviceList).map((obj, index) => {
+                  {/* {(store.gpuDeviceList).map((obj, index) => {
                       return (
                           <div
                               className={classnames(styles.expandItem, "", {
@@ -162,9 +164,15 @@ const Pod = (props) => {
                           </div>
                       )
                   }
-                  )}
+                  )} */}
               </div>
           </Panel>
+
+          <PodsCard
+            detail={store.detail}
+            limit={6}
+            prefix={`/clusters/${cluster}`}
+        />
     </>
   )
 }

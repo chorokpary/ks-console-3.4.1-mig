@@ -490,10 +490,13 @@ async function processGpuNode(node, index, token) {
   }
 
   // feature.node.kubernetes.io/device-xxxx_xxxx.present 패턴 찾기
-  const devicePattern = /^feature\.node\.kubernetes\.io\/device-([0-9a-f]{4})_([0-9a-f]{4})\.present$/
-  const deviceLabels = Object.keys(labels).filter(key =>
-    devicePattern.test(key)
-  )
+  // const devicePattern = /^feature\.node\.kubernetes\.io\/device-([0-9a-f]{4})_([0-9a-f]{4})\.present$/
+  // const deviceLabels = Object.keys(labels).filter(key =>
+  //   devicePattern.test(key)
+  // )
+  
+  const devicePattern = /^feature\.node\.kubernetes\.io\/pci-([0-9a-f]{4})_([0-9a-f]{4})\.present$/
+  const deviceLabels = Object.keys(labels).filter(key => devicePattern.test(key) && labels[key] === 'true')
 
   if (deviceLabels.length > 0) {
     console.log(`[Scheduler]   Device feature labels:`)

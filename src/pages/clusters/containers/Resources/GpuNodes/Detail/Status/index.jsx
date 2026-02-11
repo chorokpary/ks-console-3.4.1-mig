@@ -119,7 +119,7 @@ export default class Status extends React.Component {
             vmList={this.state.vmList}
           />
         }
-        {this.renderDeployments()}
+        {/* {this.renderDeployments()} */}
       </div>
     )
   }

@@ -105,33 +105,6 @@ export default class gpumigprofiles extends React.Component {
       ...tableProps.tableActions,
       actions: [
         {
-          key: 'apply',
-          type: 'default',
-          text: t('RESOURCES_GPU_MIG_CONFIG'),
-          action: 'create',
-          onClick: () =>
-            trigger('gpunodemig.apply', {
-              ...this.props.match.params,
-              type: this.name,
-              rootStore: this.props.rootStore,
-              success: getData,
-            }),
-        },
-         {
-          key: 'applyremove',
-          type: 'default',
-          text: t('RESOURCES_GPU_MIG_CONFIG_REMOVE'),
-          action: 'create',
-          onClick: () =>
-            trigger('gpunodemig.apply.remove', {
-              ...this.props.match.params,
-              type: this.name,
-              rootStore: this.props.rootStore,
-              nodeName: "kubesphere01",
-              success: getData,
-            }),
-        },
-        {
           key: 'regist',
           type: 'control',
           text: t('RESOURCES_CREATE'),
@@ -278,7 +251,7 @@ export default class gpumigprofiles extends React.Component {
 
               const output = []
               Object.entries(devices).forEach(([key, count]) => {
-                const [gStr, memoryStr] = key.split('.')
+                const [gStr, memoryStr] = key.replace(/_\d+$/, '').split('.')
                 const g = parseInt(gStr.replace('g', ''), 10)
                 for (let i = 0; i < count; i++) {
                   output.push(`${g}g.${memoryStr}`)
@@ -324,7 +297,7 @@ export default class gpumigprofiles extends React.Component {
                     <Tooltip
                       content={gpuDetailList}
                       placement="top"
-                      style={{ maxWidth: '400px', whiteSpace: 'normal' }}
+                      style={{ maxWidth: '500px', whiteSpace: 'normal' }}
                     >
                       <Icon
                         className="margin-l8"

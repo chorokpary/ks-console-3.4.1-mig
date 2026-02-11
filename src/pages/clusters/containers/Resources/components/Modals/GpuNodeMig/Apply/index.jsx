@@ -78,15 +78,11 @@ const ApplyModal = props => {
       const { data } = form.current.props
       data.migprofile = selectedMigProfile
 
-      const applyLabels = nodeDetailData.labels
-      applyLabels['nvidia.com/mig.config'] = data.migprofile
-      
-      // console.log("data : "+ JSON.stringify(data))
+      console.log("data : "+ JSON.stringify(data))
 
       onOk( {
         ...data,
         detail: nodeDetailData,
-        applyLabels,
         cluster: props.cluster
       })
     })
@@ -131,8 +127,9 @@ const ApplyModal = props => {
       const migProfileAllList = await gpuMigProfilesStore.fetchList(params)
 
       const profileList = migProfileAllList.map(item => item.name);
-
-      const migOption = profileList.map(name => ({
+  
+      const migOption = profileList.filter(item => item !== 'all-balanced')
+      .map(name => ({
           label: name,
           value: name
       }));
@@ -181,7 +178,7 @@ const ApplyModal = props => {
     
     const sliceArray = []
     Object.entries(devices).forEach(([key, count]) => {
-      const [gStr, memoryStr] = key.split('.')
+      const [gStr, memoryStr] = key.replace(/_\d+$/, '').split('.')
       const g = parseInt(gStr.replace('g', ''), 10)
       for (let i = 0; i < count; i++) {
         sliceArray.push(`${g}g.${memoryStr}`)

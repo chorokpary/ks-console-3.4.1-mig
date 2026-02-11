@@ -16,25 +16,57 @@
  * along with KubeSphere Console.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react'
+import React, {useState , useEffect} from 'react'
 import { observer, inject } from 'mobx-react'
-
+import { get } from 'lodash';
 import { Panel } from 'components/Base'
 import DetailGpuDeviceList from 'pages/clusters/containers/Resources/components/DetailGpuDeviceList';
 
 import styles from './index.scss'
 
+import GpuMigProfilesStore from 'stores/resources/gpumigprofiles'
+
 const GpuDevice = (props) => {
+
   const store = props.detailStore
+  const gpuMigProfilesStore = new GpuMigProfilesStore()
+
+  const [gpuData, setGpuData] = useState()
+  const [gpuCount, setGpuCount] = useState()
+
+  useEffect(() => {
+    fnGetData()
+  }, [])
+
+  const fnGetData = async ({ ...params } = {}) => {   
+    const profileName = get(store.detail, 'labels["nvidia.com/mig.config"]', '');
+
+    const profileParams = { name: profileName }
+    const profileDetail = await gpuMigProfilesStore.fetchDetail(profileParams)
+
+    setGpuData(profileDetail.result)
+    setGpuCount(profileDetail.result?.gpuCount.length)
+  }
 
   const renderGpuDevices = () => {
     const cluster = props.match.params.cluster
-    if (store.detail.gpunode.count > 0) {
+    if (gpuCount > 0) {
       return (
         <DetailGpuDeviceList
-          gpuDeviceData={store.gpuDeviceList}
+          gpuDeviceData={gpuData}
           cluster={cluster}
+          gpuNodeData={store.detail}
         />
+      )
+    }else{
+      return (
+        <Panel title={t('RESOURCES_GPU_DEVICE')} >
+          <div className={styles.wrapper}>
+            <div className={styles.empty}>
+                {t('RESOURCES_NO_DATA')}
+            </div>
+          </div>
+        </Panel>
       )
     }
   };
