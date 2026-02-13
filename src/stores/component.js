@@ -68,7 +68,7 @@ export default class ComponentStore {
 
     const data = {
       kubernetes: get(components, 'kube-system', []),
-      kubesphere: get(components, 'petasus-system', []),
+      petasus: get(components, 'petasus-system', []),
       istio: get(components, 'istio-system', []),
       monitoring: get(components, 'monitoring-system', []),
       logging: get(components, 'logging-system', []),
