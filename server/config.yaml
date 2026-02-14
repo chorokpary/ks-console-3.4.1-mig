@@ -579,46 +579,46 @@ client:
   # docs url for resources
   resourceDocs:
     # Project User Guide
-    applications: /project-user-guide/application/app-template/
-    composingapps: /project-user-guide/application/compose-app/
-    deployments: /project-user-guide/application-workloads/deployments/
-    statefulsets: /project-user-guide/application-workloads/statefulsets/
-    daemonsets: /project-user-guide/application-workloads/daemonsets/
-    jobs: /project-user-guide/application-workloads/jobs/
-    cronjobs: /project-user-guide/application-workloads/cronjobs/
-    services: /project-user-guide/application-workloads/services/
-    ingresses: /project-user-guide/application-workloads/routes/
-    s2i_template: /project-user-guide/image-builder/s2i-templates/
-    volumes: /project-user-guide/storage/volumes/
-    secrets: /project-user-guide/configuration/secrets/
-    configmaps: /project-user-guide/configuration/configmaps/
-    serviceaccounts: /project-user-guide/configuration/serviceaccounts/
-    imageregistry: /project-user-guide/configuration/image-registry/
-    grayrelease: /project-user-guide/grayscale-release/overview/
+    applications: ""
+    composingapps: ""
+    deployments: ""
+    statefulsets: ""
+    daemonsets: ""
+    jobs: ""
+    cronjobs: ""
+    services: ""
+    ingresses: ""
+    s2i_template: ""
+    volumes: ""
+    secrets: ""
+    configmaps: ""
+    serviceaccounts: ""
+    imageregistry: ""
+    grayrelease: ""
 
     # Project Administration
-    internet: /project-administration/project-gateway/
-    project_base_info: /workspace-administration/project-quotas/
-    project_roles: /project-administration/role-and-member-management/
-    project_members: /project-administration/role-and-member-management/
+    internet: ""
+    project_base_info: ""
+    project_roles: ""
+    project_members: ""
 
     # Cluster Administrator Guide
-    nodes: /cluster-administration/nodes/
-    storageclasses: /cluster-administration/persistent-volume-and-storage-class/
+    nodes: ""
+    storageclasses: ""
 
     # DevOps User Guide
-    pipelines: /devops-user-guide/how-to-use/pipelines/pipeline-settings/
-    cridentials: /devops-user-guide/how-to-use/credential-management/
-
+    pipelines: ""
+    cridentials: ""
+    
     # Developer Guide
-    helm_specification: /application-store/app-developer-guide/helm-specification/
-    helm_developer_guide: /application-store/app-developer-guide/helm-developer-guide/
+    helm_specification: ""
+    helm_developer_guide: ""
 
     # Custom Console
-    custom_console: /cluster-administration/platform-settings/customize-basic-information/
+    custom_console: ""
 
     # Kube Config
-    kube_config: /multicluster-management/enable-multicluster/retrieve-kubeconfig/
+    kube_config: ""
   # devops:
   #  replace sonarqube link to customize url origin, default is useless
   # sonarqubeURL: http://139.123.123.123:8080
