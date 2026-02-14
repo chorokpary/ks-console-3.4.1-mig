@@ -35,8 +35,8 @@ export default class ServiceComponents extends Component {
     const { cluster } = this.props
     return [
       {
-        type: 'kubesphere',
-        title: 'KubeSphere',
+        type: 'petasus',
+        title: 'Petasus',
       },
       {
         type: 'kubernetes',
