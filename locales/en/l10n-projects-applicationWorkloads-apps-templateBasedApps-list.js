@@ -19,16 +19,16 @@
 module.exports = {
   // Banner
   TEMPLATE_BASED_APP_PL: 'Template-Based Apps',
-  APPLICATIONS_DESC: 'An app provides users with comprehensive business functions in one package. App templates in KubeSphere are built on the Helm packaging specification. They are delivered through a unified public or private Helm repository. An app is composed of one or more Kubernetes objects including workloads, services and ingresses.',
+  APPLICATIONS_DESC: 'An app provides users with comprehensive business functions in one package. App templates in Petasus Kubernetes are built on the Helm packaging specification. They are delivered through a unified public or private Helm repository. An app is composed of one or more Kubernetes objects including workloads, services and ingresses.',
   APP_PL: 'Apps',
-  APP_TYPES_Q: 'What app types does KubeSphere support?',
-  APP_TYPES_A: 'KubeSphere supports templated-based apps and composed apps. Template-based apps are created from You can deploy apps from the KubeSphere App Store or an app template. Composed apps are customized by users.',
+  APP_TYPES_Q: 'What app types does Petasus Kubernetes support?',
+  APP_TYPES_A: 'Petasus Kubernetes supports templated-based apps and composed apps. Template-based apps are created from You can deploy apps from the Petasus Kubernetes App Store or an app template. Composed apps are customized by users.',
   HOW_TO_USE_APP_GOVERN_Q: 'How do I use Application Governance?',
   HOW_TO_USE_APP_GOVERN_A: 'You can enable Application Governance when you create a composed app.',
   DEPLOY_SAMPLE_APP: 'Deploy Sample App',
   // List
   NO_TEMPLATE_BASED_APP_FOUND: 'No Template-Based App Found',
-  TEMPLATE_BASED_APP_EMPTY_DESC: 'Please create an app from the KubeSphere App Store or an app template.',
+  TEMPLATE_BASED_APP_EMPTY_DESC: 'Please create an app from the Petasus Kubernetes App Store or an app template.',
   APP: 'App',
   VERSION: 'Version',
   CREATING: 'Creating',
@@ -36,10 +36,10 @@ module.exports = {
   DELETING: 'Deleting',
   // List > Create
   CREATE_APP: 'Create App',
-  CREATE_APP_DESC: 'Create an app from the KubeSphere App Store or an app template.',
+  CREATE_APP_DESC: 'Create an app from the Petasus Kubernetes App Store or an app template.',
   FROM_APP_STORE: 'From App Store',
   FROM_APP_TEMPLATE: 'From App Template',
-  FROM_APP_STORE_DESC: 'Create an app from the KubeSphere App Store.',
+  FROM_APP_STORE_DESC: 'Create an app from the Petasus Kubernetes App Store.',
   // List > Create > From App Template
   SELECT_APP_REPOSITORY: 'Select app repository',
   CURRENT_WORKSPACE: 'Current workspace',
