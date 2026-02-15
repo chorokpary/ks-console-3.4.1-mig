@@ -3,11 +3,13 @@
 .icons {
   :global {
     .icon {
-      background-color: $light-color01; 
+      background-color: $light-color01;
     }
   }
 
   span {
     margin-right: 8px;
+    align-items: center;
+    justify-content: center;
   }
 }
