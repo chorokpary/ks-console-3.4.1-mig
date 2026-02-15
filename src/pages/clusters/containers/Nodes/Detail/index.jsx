@@ -126,7 +126,7 @@ export default class NodeDetail extends React.Component {
       {
         name: t('ROLE'),
         value:
-          getNodeRoles(detail.labels).indexOf('master') === -1
+          getNodeRoles(detail.labels).indexOf('control-plane') === -1
             ? t('WORKER')
             : t('CONTROL_PLANE'),
       },

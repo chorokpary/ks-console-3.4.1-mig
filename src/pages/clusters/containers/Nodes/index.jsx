@@ -251,7 +251,7 @@ export default class Nodes extends React.Component {
     return [
       {
         text: t('CONTROL_PLANE'),
-        value: 'master',
+        value: 'control-plane',
       },
       {
         text: t('WORKER'),
@@ -313,7 +313,9 @@ export default class Nodes extends React.Component {
         isHideable: true,
         search: true,
         render: roles =>
-          roles.indexOf('master') === -1 ? t('WORKER') : t('CONTROL_PLANE'),
+          roles.indexOf('control-plane') === -1
+            ? t('WORKER')
+            : t('CONTROL_PLANE'),
       },
       {
         title: t('CPU_USAGE'),

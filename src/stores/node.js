@@ -128,8 +128,7 @@ export default class NodeStore extends Base {
   @action
   async fetchCount(params) {
     const resp = await request.get(this.getResourceUrl(params), {
-      labelSelector:
-        'node-role.kubernetes.io/master,node-role.kubernetes.io/control-plane',
+      labelSelector: 'node-role.kubernetes.io/control-plane',
     })
 
     const masterWorker = resp.items.filter(item => {
