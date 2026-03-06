@@ -192,7 +192,17 @@ export default class GpuMigProfilesStore extends Base {
     parsed['mig-configs'] = migConfigs
 
     // object → YAML 문자열로 변환
-    const newYamlText = yaml.dump(parsed)
+    let newYamlText = yaml.dump(parsed, {
+      indent: 2,
+      noRefs: true,
+      lineWidth: -1,
+      flowLevel: -1,
+    })
+
+    newYamlText = await this.convertBlockArrayToFlow(newYamlText, 'device-filter')
+    newYamlText = await this.convertBlockArrayToFlow(newYamlText, 'devices')
+    newYamlText = await this.quoteMigDevicesKeys(newYamlText)
+    newYamlText = await this.addSpacingBetweenConfigs(newYamlText)
 
     // ConfigMap 구조에 다시 넣기
     resultConfigMap.data['config.yaml'] = newYamlText
@@ -233,18 +243,33 @@ export default class GpuMigProfilesStore extends Base {
     const parsed = yaml.load(yamlText)
     const migConfigs = parsed['mig-configs']
 
-    // 기존 데이터 삭제 처리
-    delete migConfigs[name]
-
     // 수정 데이터 추가
-    migConfigs[name] = await this.convertToMigConfigPerDevice(data)
+    const newConfig = await this.convertToMigConfigPerDevice(data)
+
+    // 기존 name 유지하면서 필요한 부분만 수정
+    if (!migConfigs[name]) {
+      migConfigs[name] = newConfig
+    } else {
+      // 기존 객체 유지하면서 값만 업데이트
+      Object.assign(migConfigs[name], newConfig)
+    }
 
     // 수정된 mig-configs 다시 적용
     parsed['mig-configs'] = migConfigs
 
     // object → YAML 문자열로 변환
-    const newYamlText = yaml.dump(parsed)
+    let newYamlText = yaml.dump(parsed, {
+      indent: 2,
+      noRefs: true,
+      lineWidth: -1,
+      flowLevel: -1,
+    })
 
+    newYamlText = await this.convertBlockArrayToFlow(newYamlText, 'device-filter')
+    newYamlText = await this.convertBlockArrayToFlow(newYamlText, 'devices')
+    newYamlText = await this.quoteMigDevicesKeys(newYamlText)
+    newYamlText = await this.addSpacingBetweenConfigs(newYamlText)
+    
     // ConfigMap 구조에 다시 넣기
     resultConfigMap.data['config.yaml'] = newYamlText
 
@@ -316,7 +341,17 @@ export default class GpuMigProfilesStore extends Base {
     parsed['mig-configs'] = migConfigs
 
     // object → YAML 문자열로 변환
-    const newYamlText = yaml.dump(parsed)
+    let newYamlText = yaml.dump(parsed, {
+      indent: 2,
+      noRefs: true,
+      lineWidth: -1,
+      flowLevel: -1,
+    })
+
+    newYamlText = await this.convertBlockArrayToFlow(newYamlText, 'device-filter')
+    newYamlText = await this.convertBlockArrayToFlow(newYamlText, 'devices')
+    newYamlText = await this.quoteMigDevicesKeys(newYamlText)
+    newYamlText = await this.addSpacingBetweenConfigs(newYamlText)
 
     // ConfigMap 구조에 다시 넣기
     resultConfigMap.data['config.yaml'] = newYamlText
@@ -530,13 +565,15 @@ export default class GpuMigProfilesStore extends Base {
         gpuCount.push(countValue)
 
         // smCount & useMemory
-        for (const [key, count] of Object.entries(item['mig-devices'])) {
-          const [sizeStr, memStr] = key.split('.')
-          const size = parseInt(sizeStr.replace('g', ''), 10)
-          const mem = parseInt(memStr.replace('gb', ''), 10)
+        if (item['mig-devices'] && typeof item['mig-devices'] === 'object') {
+          for (const [key, count] of Object.entries(item['mig-devices'])) {
+            const [sizeStr, memStr] = key.split('.')
+            const size = parseInt(sizeStr.replace('g', ''), 10)
+            const mem = parseInt(memStr.replace('gb', ''), 10)
 
-          smCount += size * count
-          useMemory += mem * count
+            smCount += size * count
+            useMemory += mem * count
+          }
         }
 
         // gpuTypeDetail
@@ -568,6 +605,88 @@ export default class GpuMigProfilesStore extends Base {
     return result
   }
 
+  async convertBlockArrayToFlow(yamlText, key) {
+    const regex = new RegExp(
+        `(^|\\n)([ \\t-]*)${key}:\\s*\\n((?:\\s*-\\s*.+\\n)+)`,
+        'g'
+      )
+
+      return yamlText.replace(regex, (match, leadingNewline, indent, group) => {
+        const values = group
+          .split('\n')
+          .filter(line => line.trim().startsWith('-'))
+          .map(line => line.replace(/^\s*-\s*/, '').trim())
+
+        return `${leadingNewline}${indent}${key}: [${values.join(', ')}]\n`
+      })
+  }
+
+  async quoteMigDevicesKeys(yamlText) {
+    const lines = yamlText.split('\n')
+    let inMigDevices = false
+
+    return lines.map(line => {
+      if (line.trim() === 'mig-devices:') {
+        inMigDevices = true
+        return line
+      }
+
+      if (inMigDevices) {
+        if (/^\s{2,}[^\s":]+:\s+\d+/.test(line)) {
+          return line.replace(
+            /^(\s+)([^\s":]+):/,
+            '$1"$2":'
+          )
+        }
+
+        if (!line.startsWith(' ')) {
+          inMigDevices = false
+        }
+      }
+
+      return line
+    }).join('\n')
+  }
+
+  async addSpacingBetweenConfigs(yamlText) {
+    const lines = yamlText.split('\n');
+    const result = [];
+
+    let insideMigConfigs = false;
+    let firstConfigSeen = false;
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+
+      // mig-configs 시작
+      if (line.trim() === 'mig-configs:') {
+        insideMigConfigs = true;
+        firstConfigSeen = false;
+        result.push(line);
+        continue;
+      }
+
+      // mig-configs 하위 config 감지 (2칸 들여쓰기 + key:)
+      if (insideMigConfigs && /^ {2}[^\s].*:$/.test(line)) {
+        
+        // 첫 config 제외하고 blank line 추가
+        if (firstConfigSeen) {
+          if (result[result.length - 1] !== '') {
+            result.push('');
+          }
+        }
+
+        firstConfigSeen = true;
+        result.push(line);
+        continue;
+      }
+
+      result.push(line);
+    }
+
+    return result.join('\n');
+  }
+
   async convertToMigConfigPerDevice(input) {
     const result = []
 
@@ -589,11 +708,21 @@ export default class GpuMigProfilesStore extends Base {
         })
 
         result.push({
-          'device-filters': [deviceFilter],
-          devices: [gpu.deviceIndex],
+          // 항상 배열 (all 없음)
+          'device-filter': [deviceFilter],
+
+          // devices 는 조건 처리
+          devices:
+            gpu.deviceIndex === 'all'
+              ? 'all'
+              : [gpu.deviceIndex],
+
           'mig-enabled': true,
+
+          // object 유지
           'mig-devices': migDevicesJson,
         })
+
       })
     })
 
