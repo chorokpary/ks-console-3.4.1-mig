@@ -115,7 +115,7 @@ const MigGpuTypeProfileModify = props => {
       const gpuName = num == 'all' ? 'ALL' : `GPU${num}`
 
       const sliceArray = []
-      Object.entries(devices).forEach(([key, count]) => {
+      Object.entries(devices ?? {}).forEach(([key, count]) => {
         const [gStr, memoryStr] = key.replace(/_\d+$/, '').split('.')
         const g = parseInt(gStr.replace('g', ''), 10)
         for (let i = 0; i < count; i++) {

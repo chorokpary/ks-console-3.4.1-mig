@@ -97,7 +97,7 @@ const GpuMigProfileDetail = props => {
         const devices = Object.values(detail)[0] // devices = { "4g.90gb": 1, "1g.23gb": 3 }
 
         const output = []
-        Object.entries(devices).forEach(([key, count]) => {
+        Object.entries(devices ?? {}).forEach(([key, count]) => {
           const [gStr, memoryStr] = key.split('.')
           const g = parseInt(gStr.replace('g', ''), 10)
           for (let i = 0; i < count; i++) {

@@ -112,23 +112,8 @@ const RegistModal = props => {
 
   useEffect(() => {
     const getGputype = async () => {
-      const nodeListapi = await request.get('/gpucatalog/all')
-      const nodeList =  [
-        {
-        "name":"b200-180gb",
-        "alias":"B200 180GB",
-        "count":8,
-        "deviceID":"0x290110DE",
-        "nodeName":"kubesphere02"
-        },
-        {
-        "name":"b200-180gb",
-        "alias":"B200 180GB",
-        "count":8,
-        "deviceID":"0x290110DE",
-        "nodeName":"kubesphere01"
-        }
-      ]
+      const nodeList = await request.get('/gpucatalog/all')
+
       const nodeListConvert = await nodeList.map(item => {
         const [gpuType, memory] = item.alias.split(' ')
         return {
