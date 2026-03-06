@@ -17,12 +17,74 @@
  */
 
 import { action } from 'mobx'
-import { isEmpty } from 'lodash'
+import { get, isEmpty } from 'lodash'
 import { getWorkloadVolumes } from 'utils/workload'
 import Base from './base'
 
+import { LIST_DEFAULT_ORDER } from 'utils/constants'
+
 export default class PodStore extends Base {
   module = 'pods'
+
+  @action
+  async fetchListGpuNode({
+    cluster,
+    workspace,
+    namespace,
+    more,
+    devops,
+    ...params
+  } = {}) {
+    this.list.isLoading = true
+
+    if (!params.sortBy && params.ascending === undefined) {
+      params.sortBy = LIST_DEFAULT_ORDER[this.module] || 'createTime'
+    }
+
+    if (params.limit === Infinity || params.limit === -1) {
+      params.limit = -1
+      params.page = 1
+    }
+
+    params.limit = params.limit || 10
+
+    // gpuSlice 제외
+    const { gpuSlice, ...filterParams } = params
+
+    const result = await request.get(
+      this.getResourceUrl({ cluster, workspace, namespace, devops }),
+      this.getFilterParams(filterParams)
+    )
+
+    const allData = (get(result, 'items') || []).map(item => ({
+      cluster,
+      namespace,
+      ...this.mapper(item),
+    }))
+
+    // 슬라이스별 pod 추출
+    const data = allData.map(item => ({
+      ...item,
+      containers: (item.containers || []).filter(container =>
+        Object.keys(container.resources?.limits || {}).some(key =>
+          key.includes(gpuSlice)
+        )
+      )
+    })).filter(item => item.containers.length > 0);
+
+
+    this.list.update({
+      data: more ? [...this.list.data, ...data] : data,
+      total: data.length || 0,
+      ...params,
+      limit: Number(params.limit) || 10,
+      page: Number(params.page) || 1,
+      isLoading: false,
+      ...(this.list.silent ? {} : { selectedRowKeys: [] }),
+    })
+
+    return data
+  }
 
   @action
   async fetchDetail({ cluster, namespace, name, silent }) {

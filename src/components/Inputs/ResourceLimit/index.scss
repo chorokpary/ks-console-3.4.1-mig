@@ -124,7 +124,7 @@
     position: relative;
     display: flex;
     align-items: center;
-
+  
     &.error {
       :global .input {
         border-color: $red !important;
@@ -143,6 +143,16 @@
 
     .inputBox {
       flex: 1;
+    }
+
+    .selectBox {     
+      width: auto;
+      min-width: 100px;
+      flex: none;      
+    }
+
+    .selectBox + .selectBox {
+      margin-left: 5px;
     }
 
     .unit {
