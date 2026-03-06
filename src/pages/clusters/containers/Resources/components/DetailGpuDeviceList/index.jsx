@@ -17,8 +17,7 @@ import NodeMonitoringStore from 'stores/monitoring/node'
 
 const DetailGpuDeviceList = (props) => {
 
-    const [isExpandFlag, setIsExpandFlag] = useState(false)
-    const [expandItem, setExpandItem] = useState();
+    const [expandedItems, setExpandedItems] = useState([]);
 
     const cluster = props.cluster;
 
@@ -40,17 +39,17 @@ const DetailGpuDeviceList = (props) => {
     }
 
     const metricField = [
-            {
-              type: 'memory_used',
-              unit: 'Gi',
-            },
-            {
-              type: 'memory_total',
-              unit: 'Gi',
-            },
-            {
-              type: 'memory_utilisation',
-            },
+        {
+            type: 'memory_used',
+            unit: 'Gi',
+        },
+        {
+            type: 'memory_total',
+            unit: 'Gi',
+        },
+        {
+            type: 'memory_utilisation',
+        },
     ]
 
     const getLastValue = (node, type, unit) => {
@@ -103,7 +102,7 @@ const DetailGpuDeviceList = (props) => {
     
     const MIGGpuTypeSlice = ({ gpuName, devices }) => {
         const sliceArray = []
-        Object.entries(devices).forEach(([key, count]) => {
+        Object.entries(devices ?? {}).forEach(([key, count]) => {
             const [gStr, memoryStr] = key.replace(/_\d+$/, '').split('.')
             const g = parseInt(gStr.replace('g', ''), 10)
             for (let i = 0; i < count; i++) {
@@ -167,21 +166,8 @@ const DetailGpuDeviceList = (props) => {
         )
     }
 
-    const sortByGpuKey = list => {
-        return list.sort((a, b) => {
-        const keyA = Object.keys(a)[0]
-        const keyB = Object.keys(b)[0]
-
-        const numA = Number(keyA.split('_')[1])
-        const numB = Number(keyB.split('_')[1])
-
-        return numA - numB
-        })
-    }
-
-
     const renderContent = (obj, index) => {
-        console.log("obj  :"+ JSON.stringify(obj))
+
         return (
             <>
                 <div className={styles.content}>
@@ -203,13 +189,9 @@ const DetailGpuDeviceList = (props) => {
                     </div>
                     {!obj.mig ? <div className={styles.text} style={{ width: '5%' }} /> :
                         <div className={styles.arrow} onClick={() => handleExpand(index)}>
-                            <Icon name="chevron-down" type={index != expandItem ? '' : (index == expandItem && isExpandFlag == false) ? '' : 'light'} size={20} />
+                            <Icon name="chevron-down" type={expandedItems.includes(index) ? 'light' : ''} size={20} />
                         </div>
                     }
-                    {/* <div className={styles.text} style={{ width: '5%' }} /> :
-                        <div className={styles.arrow} onClick={() => handleExpand(index)}>
-                            <Icon name="chevron-down" type={index != expandItem ? '' : (index == expandItem && isExpandFlag == false) ? '' : 'light'} size={20} />
-                    </div>                     */}
                 </div>
             </>
         )
@@ -225,42 +207,60 @@ const DetailGpuDeviceList = (props) => {
         return (
             <div className={styles.itemExtra}>
                 <div className={styles.containers} >
-                    <Panel title={t('RESOURCES_GPU_MIG_SLICE')} className={styles.panelWrapper}>
-                        <div className="gpu_mig_container mig_profile_view">          
-                            <MIGGpuTypeSlice
-                                key={key}
-                                gpuName={gpuName}
-                                devices={devices}
-                            />  
-                        </div>
-                    </Panel>
+                    <p>{t('RESOURCES_GPU_MIG_SLICE')}</p>
+                    <div className="gpu_mig_container mig_profile_view">          
+                        <MIGGpuTypeSlice key={key} gpuName={gpuName} devices={devices}/>  
+                    </div>
                 </div>
             </div>
         )
     }
 
     const handleExpand = (index) => {
-        setExpandItem(index);
-        setIsExpandFlag(!isExpandFlag)
-    }
-    console.log("migProfileData : "+ JSON.stringify(migProfileData))
+        setExpandedItems(prev => {
+            if (prev.includes(index)) {
+                return prev.filter(i => i !== index);
+            } else {
+                return [...prev, index];
+            }
+        });
+    };
+
+    const openAll = () => {
+        const allIndexes = Array.from(
+            { length: gpuData.count },
+            (_, index) => index
+        );
+        setExpandedItems(allIndexes);
+    };
+
+    const closeAll = () => {
+        setExpandedItems([]);
+    };
+
     return (
         <>
             <Panel title={t('RESOURCES_GPU_DEVICE')} >
                 <div className={styles.wrapper}>
+                    <div className={styles.right}>
+                        <button id="closeAll" onClick={() => closeAll()}>
+                        <i className="ico-fold-all"></i>
+                        </button>
+                        <button id="openAll" onClick={() => openAll()}>
+                        <i className="ico-fold-unfold-all"></i>
+                        </button>
+                    </div>
                     {Array.from({ length: gpuData.count}).map((_, index) => {
-                            
-                        const obj = migProfileData.gpuTypeDetail.find(item => item[targetKey]);
-
+                        const obj = migProfileData.gpuTypeDetail[index]
                         return (
                             <div
                                 className={classnames(styles.expandItem, "", {
-                                    [styles.expanded]: (index == expandItem ? isExpandFlag : false),
+                                    [styles.expanded]: expandedItems.includes(index),
                                 })} key={index}
                             >
                                 <div className={styles.itemMain}>
                                     <div className={styles.icon}>
-                                        <Icon name="nodes" size={40} type={index != expandItem ? 'dark' : (index == expandItem && isExpandFlag == false) ? 'dark' : 'light'} />
+                                        <Icon name="nodes" size={40} type={expandedItems.includes(index) ? 'light' : ''} />
                                     </div>
                                     {renderContent(gpuData, index)}
                                 </div>

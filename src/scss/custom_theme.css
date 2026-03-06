@@ -846,3 +846,14 @@ li.src-pages-clusters-containers-Resources-components-CardSelect-index__selected
   text-align: center;
   background: linear-gradient(90deg, #522FE0 6.51%, #3F78FF 98.9%);
 }/*# sourceMappingURL=custom_theme.css.map */
+
+.ico-fold-all {
+  background: url('/assets/resources/images/icons/ico-fold-all.svg') center no-repeat;
+  width: 20px;
+  height: 20px;
+}
+.ico-fold-unfold-all {
+  background: url('/assets/resources/images/icons/ico-fold-unfold-all.svg') center no-repeat;
+  width: 20px;
+  height: 20px;
+}

@@ -571,7 +571,7 @@ function extractDeviceIds(labels, devicePattern) {
 async function fetchMigConfigs(deviceIds, nodeName, labels, token) {
   try {
     const configMapUrl =
-      '/api/v1/namespaces/nvidia/configmaps/custom-mig-config-templates'
+      '/api/v1/namespaces/nvidia-system/configmaps/custom-mig-config-templates'
     console.log(`[Scheduler]   Fetching MIG config from ConfigMap...`)
 
     const configMapResponse = await send_gateway_request({

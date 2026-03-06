@@ -49,6 +49,10 @@ const index = props => {
     const profileDetail = await gpuMigProfilesStore.fetchDetail(profileParams)
    
     setGpuList(profileDetail.result?.gpuCount)
+
+    console.log("profileDetail.result?.gpuCount  : "+ JSON.stringify(profileDetail.result?.gpuCount) )
+    profileDetail.result?.gpuCount.length > 0 && setSelectedGpu(`GPU${profileDetail.result?.gpuCount[0]+1}`)
+
   }
 
   const fetchData = async params => {
