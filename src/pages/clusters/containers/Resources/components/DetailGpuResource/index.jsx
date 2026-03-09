@@ -34,11 +34,12 @@ const DetailGpuResource = props => {
 
     const store = props.detailStore;
     const customStore = new CustomStore()
-
+    const gpuName = props.gpuName
+    console.log("gpuName : "+ gpuName)
     const { cluster, namespace } = props
 
     const [fetchParams, setFetchParams] = useState({});
-    const [vmDataList, setVmDataList] = useState();
+    const [gpuIndex, setGpuIndex] = useState();
     const [vmGpuUtilData, setVmGpuUtilData] = useState(null);
     const [vmGpuRamData, setVmGpuRamData] = useState(null);
     const [vmGpuPowerData, setVmGpuPowerData] = useState(null);
@@ -52,10 +53,10 @@ const DetailGpuResource = props => {
     }, [])
 
     useEffect(() => {
-        if (vmDataList !== undefined && vmDataList !== "") {
+        if (gpuIndex !== undefined && gpuIndex !== "") {
             fetchDataGpu({ ...fetchParams });
         }
-    }, [vmDataList]); 
+    }, [gpuIndex]); 
 
     const getMinuteValue = (timeStr = '60s', hasUnit = true) => {
         const unit = timeStr.slice(-1)
@@ -85,8 +86,15 @@ const DetailGpuResource = props => {
         return { start, end }
     }
 
+    const defaultMetric = [
+        {
+            metric: {},
+            values: [[Date.now() / 1000, 0]],
+        },
+    ]
+
     const fnGetData = async () => {
-        setVmDataList(props.vmList);
+        setGpuIndex(props.gpuIndex);
     };
 
     const fetchDataGpu = async (params) => {
@@ -106,7 +114,7 @@ const DetailGpuResource = props => {
         }
 
         const getVmGpuUtilData = async () => {
-            const gpuUtilDataExpr = `avg(DCGM_FI_DEV_GPU_UTIL{job="launcher-dcgm-exporter", pod=~"${vmDataList}", namespace="${namespace}"}) / 100`;
+            const gpuUtilDataExpr = `avg(DCGM_FI_DEV_GPU_UTIL{job="launcher-dcgm-exporter", gpu=~"${gpuIndex}", namespace="${namespace}"}) / 100`;
             const gpuUtilData = await customStore.fetchMetric({
                 expr: gpuUtilDataExpr,
                 ...paramsData,
@@ -116,7 +124,7 @@ const DetailGpuResource = props => {
         };
 
         const getVmGpuRamData = async () => {
-            const gpuRamDataExpr = `avg(DCGM_FI_DEV_FB_USED{job="launcher-dcgm-exporter", pod=~"${vmDataList}", namespace="${namespace}"}) * 1000000`;
+            const gpuRamDataExpr = `avg(DCGM_FI_DEV_FB_USED{job="launcher-dcgm-exporter", gpu=~"${gpuIndex}", namespace="${namespace}"}) * 1000000`;
             const gpuRamData = await customStore.fetchMetric({
                 expr: gpuRamDataExpr,
                 ...paramsData,
@@ -126,7 +134,7 @@ const DetailGpuResource = props => {
         };
 
         const getVmGpuPowerData = async () => {
-        const gpuPowerDataExpr = `avg(DCGM_FI_DEV_POWER_USAGE{job="launcher-dcgm-exporter", pod=~"${vmDataList}", namespace="${namespace}"})`;
+        const gpuPowerDataExpr = `avg(DCGM_FI_DEV_POWER_USAGE{job="launcher-dcgm-exporter", gpu=~"${gpuIndex}", namespace="${namespace}"})`;
         const gpuPowerData = await customStore.fetchMetric({
             expr: gpuPowerDataExpr,
             ...paramsData,
@@ -136,7 +144,7 @@ const DetailGpuResource = props => {
         };
 
         const getVmGpuTempData = async () => {
-        const gpuTempDataExpr = `avg(DCGM_FI_DEV_GPU_TEMP{job="launcher-dcgm-exporter", pod=~"${vmDataList}", namespace="${namespace}"})`;
+        const gpuTempDataExpr = `avg(DCGM_FI_DEV_GPU_TEMP{job="launcher-dcgm-exporter", gpu=~"${gpuIndex}", namespace="${namespace}"})`;
         const gpuTempData = await customStore.fetchMetric({
             expr: gpuTempDataExpr,
             ...paramsData,
@@ -146,7 +154,7 @@ const DetailGpuResource = props => {
         };
 
         const getVmGpuNvlinkData = async () => {
-        const gpuNvlinkDataExpr = `sum(DCGM_FI_DEV_NVLINK_BANDWIDTH_TOTAL{job="launcher-dcgm-exporter", pod=~"${vmDataList}", namespace="${namespace}"}) * ${getCustomValue(
+        const gpuNvlinkDataExpr = `sum(DCGM_FI_DEV_NVLINK_BANDWIDTH_TOTAL{job="launcher-dcgm-exporter", gpu=~"${gpuIndex}", namespace="${namespace}"}) * ${getCustomValue(
             'bandwidthBytes',
             'MBps'
             )}`;
@@ -159,7 +167,7 @@ const DetailGpuResource = props => {
         };
 
         const getVmGpuInboundData = async () => {
-        const inboundLinuxDataExpr = `sum(rate(node_infiniband_port_data_received_bytes_total{job="launcher-node-exporter", pod=~"${vmDataList}", namespace="${namespace}"}[2m]) * 8)`;
+        const inboundLinuxDataExpr = `sum(rate(node_infiniband_port_data_received_bytes_total{job="launcher-node-exporter", gpu=~"${gpuIndex}", namespace="${namespace}"}[2m]) * 8)`;
         const gpuInboundData = await customStore.fetchMetric({
             expr: inboundLinuxDataExpr,
             ...paramsData,
@@ -169,7 +177,7 @@ const DetailGpuResource = props => {
         };
 
         const getVmGpuOutboundData = async () => {
-        const outboundLinuxDataExpr = `sum(rate(node_infiniband_port_data_transmitted_bytes_total{job="launcher-node-exporter", pod=~"${vmDataList}", namespace="${namespace}"}[2m]) * 8)`;
+        const outboundLinuxDataExpr = `sum(rate(node_infiniband_port_data_transmitted_bytes_total{job="launcher-node-exporter", gpu=~"${gpuIndex}", namespace="${namespace}"}[2m]) * 8)`;
         const gpuOutboundData = await customStore.fetchMetric({
             expr: outboundLinuxDataExpr,
             ...paramsData,
@@ -192,7 +200,7 @@ const DetailGpuResource = props => {
           <Panel
             className={styles.resources}
             title={t('RESOURCE_USAGE')}
-            loading={vmGpuOutboundData ? false : true}
+            loading={vmGpuOutboundData === null}
           >
             <MonitorTab
               tabs={[
@@ -202,7 +210,7 @@ const DetailGpuResource = props => {
                   unit: '%',
                   legend: ['RESOURCES_GPU_UTILIZATION'],
                   title: 'RESOURCES_GPU_UTILIZATION',
-                  data: vmGpuUtilData,
+                  data: vmGpuUtilData?.length ? vmGpuUtilData : defaultMetric,
                 },
                 {
                   key: 'memory',
@@ -210,7 +218,7 @@ const DetailGpuResource = props => {
                   unit: getSuitableUnit(flatten(vmGpuRamData?.map(result => get(result, 'values') || [])), 'memory'),
                   legend: ['RESOURCES_GPU_RAM_USAGE'],
                   title: 'RESOURCES_GPU_RAM_USAGE',
-                  data: vmGpuRamData,
+                  data: vmGpuRamData?.length ? vmGpuRamData : defaultMetric,
                 },            
                 {
                   key: 'temperature',
@@ -218,7 +226,7 @@ const DetailGpuResource = props => {
                   unit: '°C',
                   legend: ['RESOURCES_GPU_TEMPERATURE'],
                   title: 'RESOURCES_GPU_TEMPERATURE',
-                  data: vmGpuTempData,
+                  data: vmGpuTempData?.length ? vmGpuTempData : defaultMetric,
                 },
                 {
                   key: 'power',
@@ -226,7 +234,7 @@ const DetailGpuResource = props => {
                   unit: 'W',
                   legend: ['RESOURCES_GPU_POWER'],
                   title: 'RESOURCES_GPU_POWER',
-                  data: vmGpuPowerData,
+                  data: vmGpuPowerData?.length ? vmGpuPowerData : defaultMetric,
                 },
                 {
                   key: 'inbound',
@@ -235,7 +243,7 @@ const DetailGpuResource = props => {
                   unit: getSuitableUnit(flatten(vmGpuInboundData?.map(result => get(result, 'values') || [])), 'bandwidth'),
                   legend: ['RESOURCES_GPU_IB_INBOUND'],
                   title: 'RESOURCES_GPU_IB_INBOUND',
-                  data: vmGpuInboundData,
+                  data: vmGpuInboundData?.length ? vmGpuInboundData : defaultMetric,
                 },
                 {
                   key: 'outbound',
@@ -244,7 +252,7 @@ const DetailGpuResource = props => {
                   unit: getSuitableUnit(flatten(vmGpuOutboundData?.map(result => get(result, 'values') || [])), 'bandwidth'),
                   legend: ['RESOURCES_GPU_IB_OUTBOUND'],
                   title: 'RESOURCES_GPU_IB_OUTBOUND',
-                  data: vmGpuOutboundData,
+                  data: vmGpuOutboundData?.length ? vmGpuOutboundData : defaultMetric,
                 },
                 {
                   key: 'traffic',
@@ -253,7 +261,7 @@ const DetailGpuResource = props => {
                   unit: getSuitableUnit(flatten(vmGpuNvlinkData?.map(result => get(result, 'values') || [])), 'bandwidthBytes'),
                   legend: ['RESOURCES_GPU_NVLINK_TRAFFIC'],
                   title: 'RESOURCES_GPU_NVLINK_TRAFFIC',
-                  data: vmGpuNvlinkData,
+                  data: vmGpuNvlinkData?.length ? vmGpuNvlinkData : defaultMetric,
                 },
               ]}
             />

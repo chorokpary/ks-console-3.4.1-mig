@@ -50,7 +50,7 @@ const Pod = (props) => {
 
             const gpuTypes = [
                 ...new Set(
-                    profileDetail.result.gpuTypeDetail.flatMap(item =>
+                    profileDetail.result?.gpuTypeDetail?.flatMap(item =>
                     Object.values(item).flatMap(gpu =>
                         Object.keys(gpu).map(key => key.split("_")[0])
                     )
@@ -72,19 +72,26 @@ const Pod = (props) => {
     <>
         <Panel title={t('RESOURCES_SLICE_BY_POD_INFO')} >
             <div className={styles.wrapper}>
-            <div className={styles.tabs}>
-                <Tabs
-                type="button"
-                activeName={slicePodTab}
-                onChange={newTab => {
-                    setSlicePodTab(newTab)
-                }}
-                >
-                {slicePodList.map((obj, index) => {
-                    return <TabPanel key={index} label={t(obj)} name={obj} />
-                })}
-                </Tabs>
-            </div>
+            {slicePodList.length == 0 &&
+                <div className={styles.empty}>
+                    {t('RESOURCES_NO_DATA')}
+                </div>
+            }
+            {slicePodList.length > 0 &&
+                <div className={styles.tabs}>
+                    <Tabs
+                    type="button"
+                    activeName={slicePodTab}
+                    onChange={newTab => {
+                        setSlicePodTab(newTab)
+                    }}
+                    >
+                    {slicePodList.map((obj, index) => {
+                        return <TabPanel key={index} label={t(obj)} name={obj} />
+                    })}
+                    </Tabs>
+                </div>
+            }
             </div>
         </Panel>
         

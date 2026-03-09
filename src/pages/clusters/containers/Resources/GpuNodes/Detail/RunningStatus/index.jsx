@@ -30,6 +30,8 @@ import MonitorTab from 'components/Cards/Monitoring/MonitorTab'
 import ConditionCard from './ConditionCard'
 import TaintCard from './TaintCard'
 
+import DetailGpuResource from 'pages/clusters/containers/Resources/components/DetailGpuResource'
+
 import styles from './index.scss'
 
 const METRIC_TYPES = [
@@ -47,6 +49,11 @@ export default class RunningStatus extends React.Component {
 
     this.store = props.detailStore
     this.monitoringStore = new NodeMonitoringStore({ cluster: this.cluster })
+
+    this.state = {
+      gpuIndex: '',
+      namespace: ''     
+    }
   }
 
   get cluster() {
@@ -59,6 +66,11 @@ export default class RunningStatus extends React.Component {
 
   fetchData() {
     const { name, role = [] } = this.store.detail
+
+    const gpuCount = Number(get(this.store.detail, ['labels', 'nvidia.com/gpu.count'], 0))
+    const gpuIndex = _.join(_.range(gpuCount), '|')
+      
+    this.setState({ gpuIndex, namespace : this.store.detail.cluster });
 
     this.monitoringStore.fetchMetrics({
       resources: [name],
@@ -244,7 +256,16 @@ export default class RunningStatus extends React.Component {
   render() {
     return (
       <div className={styles.main}>
-        {this.renderResourceStatus()}
+      {this.state.gpuIndex && 
+          <DetailGpuResource
+            {...this.props}
+            cluster={this.store.detail.cluster}
+            namespace={this.state.namespace}
+            gpuIndex={this.state.gpuIndex}
+            gpuName={this.store.detail.name}
+          />
+        }
+        {/* {this.renderResourceStatus()} */}
         {this.renderAllocatedResources()}
         {this.renderConditions()}
         {this.renderTanits()}

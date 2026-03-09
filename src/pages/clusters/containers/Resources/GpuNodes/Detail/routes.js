@@ -29,7 +29,7 @@ const PATH = '/clusters/:cluster/gpunodes/:name'
 export default [
     {
         path: `${PATH}/status`,
-        title: 'RUNNING_STATUS',
+        title: t('RESOURCES_STATE'),
         component: RunningStatus,
         exact: true,
     },

@@ -27,7 +27,7 @@ import DetailGpuResource from 'pages/clusters/containers/Resources/components/De
 import VmStore from 'stores/resources/vms'
 
 import styles from './index.scss'
-import { join } from 'lodash';
+import { get, join } from 'lodash';
 import { namespace } from 'd3-selection';
 
 @inject('detailStore')
@@ -40,7 +40,7 @@ export default class Status extends React.Component {
     this.vmStore = new VmStore({ cluster: this.cluster })
 
     this.state = {
-      vmList: '',
+      gpuIndex: '',
       namespace: ''     
     }
   }
@@ -50,20 +50,14 @@ export default class Status extends React.Component {
   }
 
   fnGetData = async () => {
-    const params = {
-      cluster: this.store.detail.cluster,
-      limit: 10000,
-    }
-
-    const vmListData = await this.vmStore.fetchList(params)
-    const project = vmListData.filter(item => item.node === this.store.detail.name)[0].project
-    const vmJoinData = vmListData.filter(item => item.node === this.store.detail.name).map(item => item.name).join('|') || ''
-
-    this.setState({ vmList: vmJoinData, namespace : project });
+    const gpuCount = Number(get(this.store.detail, ['labels', 'nvidia.com/gpu.count'], 0))
+    const gpuIndex = _.join(_.range(gpuCount), '|')
+  
+    this.setState({ gpuIndex, namespace : this.store.detail.cluster });
   }
 
   renderDeployments() {
-    const { deploy } = this.store.detail.gpunode
+    const { deploy } = this.store.detail.name
     const container_toolkit = { name: "container_toolkit", flag: deploy.container_toolkit }
     const dcgm = { name: "dcgm", flag: deploy.dcgm }
     const dcgm_exporter = { name: "dcgm_exporter", flag: deploy.dcgm_exporter }
@@ -109,17 +103,19 @@ export default class Status extends React.Component {
   };
 
   render() {
+
     return (
       <div className={styles.main}>
-        {this.state.vmList && 
+        {this.state.gpuIndex && 
           <DetailGpuResource
             {...this.props}
             cluster={this.store.detail.cluster}
             namespace={this.state.namespace}
-            vmList={this.state.vmList}
+            gpuIndex={this.state.gpuIndex}
+            gpuName={this.store.detail.name}
           />
         }
-        {/* {this.renderDeployments()} */}
+        {this.renderDeployments()}
       </div>
     )
   }

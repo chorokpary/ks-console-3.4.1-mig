@@ -47,9 +47,11 @@ export default class Text extends React.PureComponent {
         {icon &&
           (isFunction(icon) ? (
             icon()
-          ) : (
-            <Icon className={styles.icon} name={icon} size={40} />
-          ))}
+          ) 
+          : icon.includes('ico-type') ? <i className={`${icon}`} style={{ marginTop: '6px', marginRight: '12px' }}></i> 
+          : (<Icon className={styles.icon} name={icon} size={40} />)
+          )
+        }
         <div className={styles.text}>
           <div>
             {isFunction(title)
