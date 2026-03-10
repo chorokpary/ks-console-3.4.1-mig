@@ -148,7 +148,7 @@ const GpuNodeDetail = props => {
          
          {
            name: t('MIG Config'),
-           value: isMigApply ? "" : migConfig,
+           value: isMigApply ? "" : migConfig.replace('petasus-', ''),
          },
          {
            name: t('CREATION_TIME_TCAP'),

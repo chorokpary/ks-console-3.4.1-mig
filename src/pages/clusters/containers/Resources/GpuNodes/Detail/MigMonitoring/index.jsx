@@ -229,12 +229,22 @@ const index = props => {
           {configs.map((item, idx) => {
             const config = getAreaChartOps(item)
             console.log("config : "+ JSON.stringify(config))
-            if (isEmpty(config.data)) return null
-            return (
-              <div key={config.title} style={{ marginBottom: '10px' }}>
-                <SimpleArea {...config} />
-              </div>
-            )
+              // 데이터 있으면 그래프 출력
+              if (!isEmpty(config.data)) {
+                return (
+                  <div key={config.title} style={{ marginBottom: '10px' }}>
+                    <SimpleArea {...config} />
+                  </div>
+                )
+              }
+              // 마지막까지 데이터 없으면 "데이터 없음" 출력
+              if (idx === configs.length - 1) {
+                return (
+                  <div key="no-data" style={{ padding: '100px', textAlign: 'center'}}>
+                    {t('RESOURCES_NO_DATA')}
+                  </div>
+                )
+              }
           })}
         </div>
       </div>
