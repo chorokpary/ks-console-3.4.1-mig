@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { observer, inject } from 'mobx-react'
 import { get, isEmpty } from 'lodash'
 
-import { getChartData, getAreaChartOps } from 'utils/monitoring'
+import { getAreaChartOps } from 'utils/monitoring'
 
 import { Controller as MonitoringController } from 'components/Cards/Monitoring'
 import { SimpleArea } from 'components/Charts'
-import CustomTooltip from 'components/Charts/Custom/Tooltip'
 
 import CustomStore from 'stores/monitoring/custom/monitor'
 import NodeMonitorStore from 'stores/monitoring/node'
@@ -14,7 +13,6 @@ import GpuMigProfilesStore from 'stores/resources/gpumigprofiles'
 
 import { Panel } from 'components/Base'
 import styles from './index.scss'
-import { Button, InputSearch } from '@kube-design/components'
 
 const index = props => {
 
@@ -59,7 +57,7 @@ const index = props => {
     return hasUnit ? `${value}s` : value
   }
 
-  const getTimeRange = ({ step = '600s', times = 20 } = {}) => {
+  const getTimeRange = ({ step = '600s', times = 288 } = {}) => {
     const interval = parseFloat(step) * times
     const end = Math.floor(Date.now() / 1000)
     const start = Math.floor(end - interval)
@@ -78,17 +76,16 @@ const index = props => {
     const profileParams = { name: profileName }
     const profileDetail = await gpuMigProfilesStore.fetchDetail(profileParams)
    
-   setGpuList(Array.isArray(profileDetail.result?.gpuCount) 
+    setGpuList(Array.isArray(profileDetail.result?.gpuCount) 
       ? profileDetail.result.gpuCount 
       : []
     )
 
     profileDetail.result?.gpuCount.length > 0 && setSelectedGpu(`GPU${profileDetail.result?.gpuCount[0]+1}`)
-
   }
 
   const fetchData = async params => {
-    
+    setFetchParams(params)
     const paramsData = Object.assign(params, {
       start: params.start,
       end: params.end,
@@ -103,10 +100,9 @@ const index = props => {
     }
 
     const metricGpu = Number((selectedGpu || "GPU1").replace("GPU", "")) - 1
-    console.log("metricGpu : "+ metricGpu)
 
     const getVmGpuUtilData = async () => {
-      const gpuUtilDataExpr = `avg by (gpu) (DCGM_FI_DEV_GPU_UTIL{job="nvidia-dcgm-exporter", gpu="${metricGpu}", Hostname="${gpuName}"}) / 100`
+      const gpuUtilDataExpr = `avg by (GPU_I_PROFILE) (DCGM_FI_PROF_GR_ENGINE_ACTIVE{job="nvidia-dcgm-exporter", gpu="${metricGpu}", Hostname="${gpuName}"}) / 100`
       console.log("gpuUtilDataExpr : "+ gpuUtilDataExpr)
       const gpuUtilData = await customStore.fetchMetric({
         expr: gpuUtilDataExpr,
@@ -118,7 +114,7 @@ const index = props => {
     }
 
     const getVmGpuRamData = async () => {
-      const gpuRamDataExpr = `avg by (gpu)(DCGM_FI_DEV_FB_USED{job="nvidia-dcgm-exporter", gpu="${metricGpu}", Hostname="${gpuName}"}) * 1000000`
+      const gpuRamDataExpr = `avg by (GPU_I_PROFILE)(DCGM_FI_DEV_FB_USED{job="nvidia-dcgm-exporter", gpu="${metricGpu}", Hostname="${gpuName}"}) * 1000000`
       console.log("gpuRamDataExpr : "+ gpuRamDataExpr)
       const gpuRamData = await customStore.fetchMetric({
         expr: gpuRamDataExpr,
@@ -139,7 +135,7 @@ const index = props => {
         type: 'utilisation',
         title: 'RESOURCES_GPU_UTILIZATION',
         unit: '%',
-        legend: vmGpuUtilData.map(item => 'GPU' + item.metric.gpu),
+        legend: vmGpuUtilData.map(item => 'GPU' + (item.metric?.GPU_I_PROFILE ?? '0')),
         data: vmGpuUtilData,
       },
       {
@@ -147,7 +143,7 @@ const index = props => {
         title: 'RESOURCES_GPU_RAM_USAGE',
         unit: '%',
         unitType: 'memory',
-        legend: vmGpuRamData.map(item => 'GPU' + item.metric.gpu),
+        legend: vmGpuRamData.map(item => 'GPU' + (item.metric?.GPU_I_PROFILE ?? '0')),
         data: vmGpuRamData,
       },
     ]
@@ -155,9 +151,9 @@ const index = props => {
 
 
   useEffect(() => {
-    // if (selectedGpu) {
-    //   fetchData({ ...fetchParams })
-    // }
+    if (selectedGpu) {
+      fetchData({ ...fetchParams })
+    }
   }, [selectedGpu])
 
   const { isLoading, isRefreshing } = monitorStore
