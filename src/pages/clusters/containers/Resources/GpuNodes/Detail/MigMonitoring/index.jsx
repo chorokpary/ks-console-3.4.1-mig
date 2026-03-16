@@ -86,6 +86,7 @@ const index = props => {
 
   const fetchData = async params => {
     setFetchParams(params)
+    console.log("params : "+ JSON.stringify(params))
     const paramsData = Object.assign(params, {
       start: params.start,
       end: params.end,
@@ -100,9 +101,9 @@ const index = props => {
     }
 
     const metricGpu = Number((selectedGpu || "GPU1").replace("GPU", "")) - 1
-
+  
     const getVmGpuUtilData = async () => {
-      const gpuUtilDataExpr = `avg by (GPU_I_PROFILE) (DCGM_FI_PROF_GR_ENGINE_ACTIVE{job="nvidia-dcgm-exporter", gpu="${metricGpu}", Hostname="${gpuName}"}) / 100`
+      const gpuUtilDataExpr = `avg by (GPU) (DCGM_FI_DEV_GPU_UTIL{job="nvidia-dcgm-exporter", gpu="${metricGpu}", Hostname="${gpuName}"}) / 100`
       console.log("gpuUtilDataExpr : "+ gpuUtilDataExpr)
       const gpuUtilData = await customStore.fetchMetric({
         expr: gpuUtilDataExpr,
@@ -114,7 +115,7 @@ const index = props => {
     }
 
     const getVmGpuRamData = async () => {
-      const gpuRamDataExpr = `avg by (GPU_I_PROFILE)(DCGM_FI_DEV_FB_USED{job="nvidia-dcgm-exporter", gpu="${metricGpu}", Hostname="${gpuName}"}) * 1000000`
+      const gpuRamDataExpr = `avg by (GPU)(DCGM_FI_DEV_FB_USED{job="nvidia-dcgm-exporter", gpu="${metricGpu}", Hostname="${gpuName}"}) * 1000000`
       console.log("gpuRamDataExpr : "+ gpuRamDataExpr)
       const gpuRamData = await customStore.fetchMetric({
         expr: gpuRamDataExpr,
@@ -135,7 +136,7 @@ const index = props => {
         type: 'utilisation',
         title: 'RESOURCES_GPU_UTILIZATION',
         unit: '%',
-        legend: vmGpuUtilData.map(item => 'GPU' + (item.metric?.GPU_I_PROFILE ?? '0')),
+        legend: vmGpuUtilData.map(item => 'GPU0' + (item.metric?.GPU_I_PROFILE ?? (selectedGpu || "GPU1").replace("GPU", ""))),
         data: vmGpuUtilData,
       },
       {
@@ -143,7 +144,7 @@ const index = props => {
         title: 'RESOURCES_GPU_RAM_USAGE',
         unit: '%',
         unitType: 'memory',
-        legend: vmGpuRamData.map(item => 'GPU' + (item.metric?.GPU_I_PROFILE ?? '0')),
+        legend: vmGpuRamData.map(item => 'GPU0' + (item.metric?.GPU_I_PROFILE ?? (selectedGpu || "GPU1").replace("GPU", ""))),
         data: vmGpuRamData,
       },
     ]
@@ -159,7 +160,6 @@ const index = props => {
   const { isLoading, isRefreshing } = monitorStore
   const configs = getMonitoringCfgs()
 
-  console.log("selectedGpu : "+ selectedGpu)
   return (
     <MonitoringController
       title={t('RESOURCES_GPU_MONITORING')}
@@ -229,22 +229,13 @@ const index = props => {
           {configs.map((item, idx) => {
             const config = getAreaChartOps(item)
             console.log("config : "+ JSON.stringify(config))
-              // 데이터 있으면 그래프 출력
-              if (!isEmpty(config.data)) {
-                return (
-                  <div key={config.title} style={{ marginBottom: '10px' }}>
-                    <SimpleArea {...config} />
-                  </div>
-                )
-              }
-              // 마지막까지 데이터 없으면 "데이터 없음" 출력
-              if (idx === configs.length - 1) {
-                return (
-                  <div key="no-data" style={{ padding: '100px', textAlign: 'center'}}>
-                    {t('RESOURCES_NO_DATA')}
-                  </div>
-                )
-              }
+
+            if (isEmpty(config.data)) return null
+            return (
+              <div key={config.title} style={{ marginBottom: '10px' }}>
+                <SimpleArea {...config} />
+              </div>
+            )
           })}
         </div>
       </div>
