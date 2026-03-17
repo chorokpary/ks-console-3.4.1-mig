@@ -245,15 +245,8 @@ export default class GpuMigProfilesStore extends Base {
 
     // 수정 데이터 추가
     const newConfig = await this.convertToMigConfigPerDevice(data)
-
-    // 기존 name 유지하면서 필요한 부분만 수정
-    if (!migConfigs[name]) {
-      migConfigs[name] = newConfig
-    } else {
-      // 기존 객체 유지하면서 값만 업데이트
-      Object.assign(migConfigs[name], newConfig)
-    }
-
+    migConfigs[name] = newConfig
+    
     // 수정된 mig-configs 다시 적용
     parsed['mig-configs'] = migConfigs
 
