@@ -57,10 +57,13 @@ const index = props => {
     return hasUnit ? `${value}s` : value
   }
 
-  const getTimeRange = ({ step = '600s', times = 288 } = {}) => {
-    const interval = parseFloat(step) * times
-    const end = Math.floor(Date.now() / 1000)
-    const start = Math.floor(end - interval)
+  const getTimeRange = ({ step = '600s', times = 20 } = {}) => {
+    const stepSec = parseFloat(step)
+    const now = Math.floor(Date.now() / 1000)
+
+    // step 기준 timestamp 정렬
+    const end = Math.floor(now / stepSec) * stepSec
+    const start = end - stepSec * times
 
     return { start, end }
   }
@@ -87,24 +90,25 @@ const index = props => {
   const fetchData = async params => {
     setFetchParams(params)
     console.log("params : "+ JSON.stringify(params))
-    const paramsData = Object.assign(params, {
+    const paramsData = {
+      ...params,
       start: params.start,
       end: params.end,
       step: getMinuteValue(params.step),
       times: params.times,
-    })
+    }
 
     if (!paramsData.start || !paramsData.end) {
       const timeRange = getTimeRange(paramsData)
       paramsData.start = timeRange.start
       paramsData.end = timeRange.end
     }
+    console.log("paramsData : "+ JSON.stringify(paramsData))
 
     const metricGpu = Number((selectedGpu || "GPU1").replace("GPU", "")) - 1
   
     const getVmGpuUtilData = async () => {
-      const gpuUtilDataExpr = `avg by (GPU) (DCGM_FI_DEV_GPU_UTIL{job="nvidia-dcgm-exporter", gpu="${metricGpu}", Hostname="${gpuName}"}) / 100`
-      console.log("gpuUtilDataExpr : "+ gpuUtilDataExpr)
+      const gpuUtilDataExpr = `avg by (GPU_I_PROFILE) (DCGM_FI_PROF_GR_ENGINE_ACTIVE{job="nvidia-dcgm-exporter", gpu="${metricGpu}", Hostname="${gpuName}", GPU_I_PROFILE!=""}) / 100`
       const gpuUtilData = await customStore.fetchMetric({
         expr: gpuUtilDataExpr,
         ...paramsData,
@@ -115,8 +119,7 @@ const index = props => {
     }
 
     const getVmGpuRamData = async () => {
-      const gpuRamDataExpr = `avg by (GPU)(DCGM_FI_DEV_FB_USED{job="nvidia-dcgm-exporter", gpu="${metricGpu}", Hostname="${gpuName}"}) * 1000000`
-      console.log("gpuRamDataExpr : "+ gpuRamDataExpr)
+      const gpuRamDataExpr = `avg by (GPU_I_PROFILE) (DCGM_FI_DEV_FB_USED{job="nvidia-dcgm-exporter", gpu="${metricGpu}", Hostname="${gpuName}", GPU_I_PROFILE!=""}) * 1000000`
       const gpuRamData = await customStore.fetchMetric({
         expr: gpuRamDataExpr,
         ...paramsData,
@@ -136,7 +139,7 @@ const index = props => {
         type: 'utilisation',
         title: 'RESOURCES_GPU_UTILIZATION',
         unit: '%',
-        legend: vmGpuUtilData.map(item => 'GPU0' + (item.metric?.GPU_I_PROFILE ?? (selectedGpu || "GPU1").replace("GPU", ""))),
+        legend: vmGpuUtilData.map(item => (item.metric?.GPU_I_PROFILE ?? (selectedGpu || "GPU1").replace("GPU", ""))),
         data: vmGpuUtilData,
       },
       {
@@ -144,12 +147,11 @@ const index = props => {
         title: 'RESOURCES_GPU_RAM_USAGE',
         unit: '%',
         unitType: 'memory',
-        legend: vmGpuRamData.map(item => 'GPU0' + (item.metric?.GPU_I_PROFILE ?? (selectedGpu || "GPU1").replace("GPU", ""))),
+        legend: vmGpuRamData.map(item => (item.metric?.GPU_I_PROFILE ?? (selectedGpu || "GPU1").replace("GPU", ""))),
         data: vmGpuRamData,
       },
     ]
   }
-
 
   useEffect(() => {
     if (selectedGpu) {
@@ -228,7 +230,6 @@ const index = props => {
         >
           {configs.map((item, idx) => {
             const config = getAreaChartOps(item)
-            console.log("config : "+ JSON.stringify(config))
 
             if (isEmpty(config.data)) return null
             return (

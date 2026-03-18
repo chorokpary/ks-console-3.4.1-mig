@@ -39,6 +39,7 @@ import PodMonitorStore from 'stores/monitoring/pod'
 import PodStore from 'stores/pod'
 
 import WebSocketStore from 'stores/websocket'
+import CustomStore from 'stores/monitoring/custom/monitor'
 
 import { joinSelector, showNameAndAlias } from 'utils'
 import { startAutoRefresh, stopAutoRefresh } from 'utils/monitoring'
@@ -48,7 +49,7 @@ import styles from './index.scss'
 import PodItem from './Item'
 
 const MetricTypes = {
-  cpu: 'pod_cpu_usage',
+  gpu: 'pod_gpu_usage',
   memory: 'pod_memory_usage_wo_cache',
 }
 
@@ -87,6 +88,9 @@ export default class GpuNodePodsCard extends React.Component {
 
     this.store = new PodStore()
     this.monitorStore = new PodMonitorStore()
+    this.customStore = new CustomStore()
+    this.cluster = props.detail.cluster
+    this.gpuData = ''
 
     const selectCluster = props.isFederated
       ? get(props, 'clusters[0]')
@@ -239,7 +243,7 @@ export default class GpuNodePodsCard extends React.Component {
     }
   }
 
-  fetchMetrics = (params = {}) => {
+  fetchMetrics = async (params = {}) => {
     const { data, isLoading } = this.store.list
 
     if (isEmpty(data) || isLoading || isEmpty(this.state.params)) return false
@@ -251,6 +255,43 @@ export default class GpuNodePodsCard extends React.Component {
       ...this.state.params,
       ...params,
     })
+
+    // GPU 관련 추가 부분 start ======================================
+    const interval = parseFloat('1m') * 30
+    const end = Math.floor(Date.now() / 1000)
+    const start = Math.floor(end - interval)
+
+    const paramsData = {
+      start: start,
+      end: end,
+      step: '1m',
+      times: 30,
+    }
+
+    const gpuUtilData = await this.customStore.fetchMetric({
+      expr: `avg by (pod) (DCGM_FI_DEV_GPU_UTIL{job="nvidia-dcgm-exporter"}) / 100`,
+      ...paramsData,
+      cluster: this.cluster,
+    })
+
+    const gpuRamData = await this.customStore.fetchMetric({
+      expr: `avg by (pod)(DCGM_FI_DEV_FB_USED{job="nvidia-dcgm-exporter"}) * 1000000`,
+      ...paramsData,
+      cluster: this.cluster,
+    })
+
+    this.gpuData = {
+          "pod_gpu_usage": {
+              "metric_name":"pod_gpu_usage",
+              "data": gpuUtilData
+          },
+          "pod_memory_usage_wo_cache": {
+              "metric_name":"pod_memory_usage_wo_cache",
+              "data": gpuRamData
+          }
+
+      }
+    // GPU 관련 추가 부분 end ======================================  
   }
 
   getPagination = () => {
@@ -260,9 +301,9 @@ export default class GpuNodePodsCard extends React.Component {
   }
 
   getPodMetrics = pod => {
-    const data = this.monitorStore.data
+    // const data = this.monitorStore.data
+    const data = this.gpuData
     const metrics = {}
-
     Object.entries(MetricTypes).forEach(([key, value]) => {
       const records = get(data, `${value}.data.result`) || []
       metrics[key] = records.find(item => get(item, 'metric.pod') === pod.name)

@@ -129,11 +129,11 @@ export default class PodItem extends React.PureComponent {
 
   getMonitoringCfgs = metrics => [
     {
-      type: 'cpu',
-      title: 'CPU',
+      type: 'gpu',
+      title: 'GPU',
       unitType: 'cpu',
       legend: ['USED'],
-      data: [metrics.cpu],
+      data: [metrics.gpu],
       bgColor: 'transparent',
     },
     {
@@ -212,7 +212,7 @@ export default class PodItem extends React.PureComponent {
     const { metrics = {}, isExpand, loading } = this.props
 
     if (loading) return <div className={styles.monitors}>{t('LOADING')}</div>
-
+    
     if (isEmpty(metrics.cpu) && isEmpty(metrics.memory))
       return <div className={styles.monitors}>{t('NO_MONITORING_DATA')}</div>
 

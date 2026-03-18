@@ -74,7 +74,7 @@ const DetailGpuDeviceList = (props) => {
 
         const getNodeData = async () => {
             if (!gpuNodeData) return
-
+       
             const statusStr = getNodeStatus(gpuNodeData)  
             const metrics = getRecordMetrics(gpuNodeData, metricField)
             setGpuData({
@@ -251,7 +251,8 @@ const DetailGpuDeviceList = (props) => {
                         </button>
                     </div>
                     {Array.from({ length: gpuData.count}).map((_, index) => {
-                        const obj = migProfileData.gpuTypeDetail[index]
+                        const obj = migProfileData.gpuTypeDetail[index] || migProfileData.gpuTypeDetail[0]
+
                         return (
                             <div
                                 className={classnames(styles.expandItem, "", {

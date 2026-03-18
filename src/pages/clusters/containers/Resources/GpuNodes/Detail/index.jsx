@@ -85,7 +85,7 @@ const GpuNodeDetail = props => {
 
     const getAttrs = () => {
        const detail = toJS(store.detail)
-   
+
        if (isEmpty(detail)) {
          return
        }
