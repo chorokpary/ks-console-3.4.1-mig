@@ -80,7 +80,7 @@ export default class GpuMigProfilesStore extends Base {
     if (namespace) {
       params.project = namespace
     }
-
+    
     // 전체 변환 데이터
     const result = await this.getAllListData()
     const data = get(result, 'data')
@@ -472,7 +472,7 @@ export default class GpuMigProfilesStore extends Base {
 
     const parsed = yaml.load(yamlText)
     const migConfigs = parsed['mig-configs']
-
+    
     const filteredData = Object.keys(migConfigs)
       .filter(key => key === 'all-balanced' || key.startsWith('petasus-'))
       .reduce((acc, key) => {
@@ -573,7 +573,7 @@ export default class GpuMigProfilesStore extends Base {
         const detailKey = `${item['mig-gpuType']}_${
           countValue == 'all' ? countValue : countValue + 1
         }`
-        gpuTypeDetail.push({ [detailKey]: item['mig-devices'] })
+        gpuTypeDetail.push({ [detailKey]: item['mig-devices-index'] })
       }
 
       // totalMemory
@@ -689,15 +689,15 @@ export default class GpuMigProfilesStore extends Base {
       profile.data.forEach(gpu => {
  
         // slices → count per GPU
-        // const migDevices = {}
-        // gpu.slices.forEach(slice => {
-        //   if (!migDevices[slice]) migDevices[slice] = 0
-        //   migDevices[slice] += 1
-        // })
+        const migDevices = {}
+        gpu.slices.forEach(slice => {
+          if (!migDevices[slice]) migDevices[slice] = 0
+          migDevices[slice] += 1
+        })
 
-        const migDevicesJson = {}
+        const migDevicesIndex = {}
         gpu.slices.forEach((v, i) => {
-          migDevicesJson[`${v}_${i}`] = 1
+          migDevicesIndex[`${v}_${i}`] = 1
         })
 
         result.push({
@@ -713,7 +713,8 @@ export default class GpuMigProfilesStore extends Base {
           'mig-enabled': true,
 
           // object 유지
-          'mig-devices': migDevicesJson,
+          'mig-devices': migDevices,
+          'mig-devices-index': migDevicesIndex,
         })
 
       })
