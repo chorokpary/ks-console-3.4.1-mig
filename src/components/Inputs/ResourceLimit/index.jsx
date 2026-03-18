@@ -509,7 +509,6 @@ export default class ResourceLimit extends React.Component {
 
     set(result, 'gpusliceoptions', gpuSliceOption)
     
-    console.log("result : "+ JSON.stringify(result))
     onChange(result)
   }
 
@@ -608,6 +607,7 @@ export default class ResourceLimit extends React.Component {
     const options = Object.entries(result).map(([key, value]) => ({
       label: key.toUpperCase(),
       value: value,
+      disabled: Number(value.split("|")[0]) === 0,
     }));
  
     return options
