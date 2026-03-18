@@ -128,15 +128,15 @@ const ApplyModal = props => {
       // MIG Profile 정보 추출
       const params = {limit: 10000}
       const migProfileAllList = await gpuMigProfilesStore.fetchList(params)
-      
+
       const filterData = migProfileAllList.filter(
-        item => item.gpuCount.length === gpuCount && !item.gpuCount.includes('all')
+        item => item.gpuCount.length === gpuCount || item.gpuCount.includes('all')
       )
       const profileList = filterData.map(item => item.name);
 
       const migOption = profileList.filter(item => item !== 'all-balanced')
       .map(name => ({
-          label: name,
+          label: name.replace('petasus-', ''),
           value: name
       }));
 
