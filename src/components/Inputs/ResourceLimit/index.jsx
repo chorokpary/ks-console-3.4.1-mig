@@ -626,6 +626,26 @@ export default class ResourceLimit extends React.Component {
   }
 
   gpuSliceChange = (data) => {
+    
+    //clear 버튼 클릭
+    if (!data) {
+      this.setState(
+        {
+          gpu: {
+            type: '',
+            value: '',
+            label: '',
+          },
+          gpuSliceValue: '',
+          gpuSliceSelected: false,
+          gpuSliceMaxCount: 0,
+          gpuSliceCount: 0,
+        },
+        this.triggerChange
+      )
+      return
+    }
+
     const [value, keyValue] = data.split("|")
     const maxValue = parseInt(value, 10) || 0;
     const type = keyValue.includes("gpu") ? "gpu" : "mig";
@@ -769,6 +789,7 @@ export default class ResourceLimit extends React.Component {
                     value={this.state.gpuSliceValue}
                     onChange={this.gpuSliceChange}
                     placeholder={t('RESOURCES_SELECT')}
+                    clearable
                   ></Select>
                 </div>
               </div>
