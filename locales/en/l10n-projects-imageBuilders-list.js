@@ -49,7 +49,7 @@ module.exports = {
   S2I_TARGET_IMAGE_REPOSITORY_DESC: 'Select an image registry for storing the image to be created. If no image registry is available, you need to create an image registry secret. <br/><a href={link} target="_blank">Learn More</a>',
   TRIGGER_TOKEN: 'Trigger Token',
   INVALID_TRIGGER_TOKEN_DESC: 'Invalid token. The token can contain only uppercase letters, lowercase letters, and numbers.',
-  TRIGGER_TOKEN_DESC: 'Set a token used to authenticate a client against KubeSphere. You can set a client to automatically trigger image building on KubeSphere over a webhook. The token can contain only uppercase letters, lowercase letters, and numbers.',
+  TRIGGER_TOKEN_DESC: 'Set a token used to authenticate a client against Petasus Kubernetes. You can set a client to automatically trigger image building on Petasus Kubernetes over a webhook. The token can contain only uppercase letters, lowercase letters, and numbers.',
   CODE_RELATIVE_PATH: 'Code Relative Path',
   CODE_RELATIVE_PATH_DESC: 'Set the relative path of the code in the code repository. The default path is /.',
   S2I_ENVIRONMENT_DESC: 'Set environment variables to control the runtime behavior of the image. <a href={link} target="_blank">Learn More</a>',

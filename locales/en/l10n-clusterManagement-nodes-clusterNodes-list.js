@@ -20,7 +20,7 @@ module.exports = {
   // Banner
   CLUSTER_NODE_PL: 'Cluster Nodes',
   CLUSTER_NODE: 'Cluster Node',
-  CLUSTER_NODE_DESC: 'Cluster nodes are basic servers of the KubeSphere cluster. You can manage cluster nodes on this page.',
+  CLUSTER_NODE_DESC: 'Cluster nodes are basic servers of the Petasus Kubernetes cluster. You can manage cluster nodes on this page.',
   NODE_TYPES_Q: 'What are the types of cluster nodes?',
   NODE_TYPES_A: 'Nodes are classified into control plane nodes and worker nodes.',
   WHAT_IS_NODE_TAINTS_Q: 'What are node taints?',

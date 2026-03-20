@@ -38,7 +38,7 @@ export default class ServiceComponents extends React.Component {
     const { type } = parse(location.search.slice(1)) || {}
 
     this.state = {
-      type: type || 'kubesphere',
+      type: type || 'petasus',
     }
 
     this.configs = this.getConfigs()
@@ -65,9 +65,9 @@ export default class ServiceComponents extends React.Component {
 
   getConfigs = () => [
     {
-      type: 'kubesphere',
-      title: 'KubeSphere',
-      icon: '/assets/kubesphere.svg',
+      type: 'petasus',
+      title: 'Petasus',
+      icon: '/assets/petasus.svg',
     },
     {
       type: 'kubernetes',

@@ -21,9 +21,9 @@ module.exports = {
   PLATFORM_ROLE_PL: 'Platform Roles',
   // List
   PLATFORM_ROLE_EMPTY_DESC: 'Please create a platform role.',
-  ROLE_USERS_MANAGER: 'Manage all users on the KubeSphere platform.',
-  ROLE_WORKSPACES_MANAGER: 'Manage all workspaces on the KubeSphere platform.',
-  ROLE_PLATFORM_ADMIN: 'Manage all resources on the KubeSphere platform.',
+  ROLE_USERS_MANAGER: 'Manage all users on the Petasus Kubernetes platform.',
+  ROLE_WORKSPACES_MANAGER: 'Manage all workspaces on the Petasus Kubernetes platform.',
+  ROLE_PLATFORM_ADMIN: 'Manage all resources on the Petasus Kubernetes platform.',
   ROLE_PLATFORM_REGULAR: 'Cannot access any resources before joining a workspace.',
   ROLE_PLATFORM_SELF_PROVISIONER: 'Create workspaces and become an administrator of the created workspaces.',
   CREATION_TIME_TCAP: 'Creation Time',
@@ -60,7 +60,7 @@ module.exports = {
   // List > Create > Edit Permissions > Platform Settings
   PERMIGROUP_PLATFORM_SETTINGS: 'Platform Settings',
   PERMISSION_PLATFORM_SETTINGS_MANAGEMENT: 'Platform Settings Management',
-  PERMISSION_PLATFORM_SETTINGS_MANAGEMENT_DESC: 'View and edit settings of the KubeSphere platform.',
+  PERMISSION_PLATFORM_SETTINGS_MANAGEMENT_DESC: 'View and edit settings of the Petasus Kubernetes platform.',
   // List > Edit Information
   // List > Edit Permissions
   // List > Delete

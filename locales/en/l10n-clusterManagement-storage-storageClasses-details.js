@@ -23,12 +23,12 @@ module.exports = {
   // More > Set as Default Storage Class
   SET_DEFAULT_STORAGE_CLASS_TITLE: 'Set as Default Storage Class',
   SET_AS_DEFAULT_STORAGE_CLASS: 'Set as Default Storage Class',
-  STORAGE_CLASS_SET_DEFAULT_DESC: 'After the default storage class is set, the system will create volumes of this class by default if no special requirement is added. Only one default storage class is allowed in a KubeSphere cluster.',
+  STORAGE_CLASS_SET_DEFAULT_DESC: 'After the default storage class is set, the system will create volumes of this class by default if no special requirement is added. Only one default storage class is allowed in a Petasus Kubernetes cluster.',
   // More > Edit Authorization Rules
   SET_AUTHORIZATION_RULES: 'Set Authorization Rules',
   AUTHORIZATION_RULES: 'Authorization Rules',
   AUTHORIZATION_RULES_DESC: 'Set authorization rules so that the storage class can be accessed only in specific projects and workspaces.',
-  AUTHORIZATION_NOT_SUPPORT: 'The cluster currently does not support this feature. Please upgrade KubeSphere to v3.3.0 or later, or manually install <a href="https://github.com/kubesphere/storageclass-accessor" target="_blank">storageclass-accessor</a>.',
+  AUTHORIZATION_NOT_SUPPORT: 'The cluster currently does not support this feature. Please upgrade Petasus Kubernetes to v3.3.0 or later, or manually install storageclass-accessor.',
   OPERATOR_IN: 'In',
   OPERATOR_NOT_IN: 'Not in',
   // More > Set Volume Permissions

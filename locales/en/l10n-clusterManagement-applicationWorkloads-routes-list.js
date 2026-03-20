@@ -22,7 +22,7 @@ module.exports = {
   PREREQUESTS_FOR_USE_ROUTE_Q: 'What are the prerequisites for using ingresses?',
   PREREQUESTS_FOR_USE_ROUTE_A: 'To use ingresses, you need to contact the project administrator to set the gateway for the project.',
   ACCESS_TYPES_OF_ROUTE_Q: 'What are the external access modes of ingresses?',
-  ACCESS_TYPES_OF_ROUTE_A: 'KubeSphere ingresses support the NodePort and LoadBalancer external access modes.',
+  ACCESS_TYPES_OF_ROUTE_A: 'Petasus Kubernetes ingresses support the NodePort and LoadBalancer external access modes.',
   ROUTE_PL: 'Ingresses',
   // List
   GATEWAY_ADDRESS_TCAP: 'Gateway Address',
