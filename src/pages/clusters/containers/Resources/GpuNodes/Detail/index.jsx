@@ -85,7 +85,7 @@ const GpuNodeDetail = props => {
         {
             key: 'applyMig',
             icon: 'gpu',
-            // disabled: !isMigApply,
+            disabled: !isMigApply,
             text: t('RESOURCES_GPU_MIG_CONFIG'),
             action: 'view',
             onClick: () => {
