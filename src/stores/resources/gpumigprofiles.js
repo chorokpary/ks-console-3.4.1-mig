@@ -36,7 +36,17 @@ export default class GpuMigProfilesStore extends Base {
   
   configMap_namespace = 'nvidia-system'
   configMap_mig_parted_config = 'custom-mig-parted-config'
-  
+  configMap_mig_parted_index_config = 'custom-mig-parted-index-config'  
+
+  configMapWithOutIndexParams = {
+    namespace: this.configMap_namespace,
+    name: this.configMap_mig_parted_config,
+  }
+
+  configMapWithIndexParams = {
+    namespace: this.configMap_namespace,
+    name: this.configMap_mig_parted_index_config,
+  }
   
   getListUrl = (params = {}) =>
     `api/v1/${this.getPath(params)}/${this.moduel_configMap}`
@@ -167,14 +177,9 @@ export default class GpuMigProfilesStore extends Base {
   async create(data, params = {}) {
     const name = `petasus-${data.name}`
 
-    const configMapParams = {
-      namespace: this.configMap_namespace,
-      name: this.configMap_mig_parted_config,
-    }
-
     // 원본 데이터 가져오기
     const resultConfigMap = await request.get(
-      this.getDetailUrl(configMapParams)
+      this.getDetailUrl(this.configMapWithIndexParams)
     )
 
     // config.yaml 추출
@@ -191,28 +196,30 @@ export default class GpuMigProfilesStore extends Base {
     // 수정된 mig-configs 다시 적용
     parsed['mig-configs'] = migConfigs
 
-    // object → YAML 문자열로 변환
-    let newYamlText = yaml.dump(parsed, {
-      indent: 2,
-      noRefs: true,
-      lineWidth: -1,
-      flowLevel: -1,
-    })
+    // index 제외 처리 
+    const parsedWithOutIndex = JSON.parse(
+      JSON.stringify(parsed, (k, v) =>
+        k === 'mig-devices-index' ? undefined : v
+      )
+    )
 
-    newYamlText = await this.convertBlockArrayToFlow(newYamlText, 'device-filter')
-    newYamlText = await this.convertBlockArrayToFlow(newYamlText, 'devices')
-    newYamlText = await this.quoteMigDevicesKeys(newYamlText)
-    newYamlText = await this.addSpacingBetweenConfigs(newYamlText)
+    // object → YAML 문자열로 변환
+    const newYamlTextWithIndex = await this.convertObjectToYaml(parsed)
+    const newYamlTextWithOutIndex = await this.convertObjectToYaml(parsedWithOutIndex)  
 
     // ConfigMap 구조에 다시 넣기
-    resultConfigMap.data['config.yaml'] = newYamlText
+    resultConfigMap.data['config.yaml'] = newYamlTextWithIndex
+    const resultConfigMapWithOutIndex = await this.cloneResultConfigMap(resultConfigMap, newYamlTextWithOutIndex)
 
     try {
       // await this.submitting(new Promise(resolve => setTimeout(resolve, 5000)))
       // return { success: true }
 
       const res = await this.submitting(
-        request.put(this.getDetailUrl(configMapParams), resultConfigMap)
+         Promise.all([
+          request.put(this.getDetailUrl(this.configMapWithIndexParams), resultConfigMap),
+          request.put(this.getDetailUrl(this.configMapWithOutIndexParams), resultConfigMapWithOutIndex)             
+        ])
       )
       return res
     } catch (err) {
@@ -225,14 +232,9 @@ export default class GpuMigProfilesStore extends Base {
 
     const name = `petasus-${data.name}`
 
-    const configMapParams = {
-      namespace: this.configMap_namespace,
-      name: this.configMap_mig_parted_config,
-    }
-
-    // 원본 데이터 가져오기
+    // 원본 데이터 가져오기( Index 있는 데이터 기준 )
     const resultConfigMap = await request.get(
-      this.getDetailUrl(configMapParams)
+      this.getDetailUrl(this.configMapWithIndexParams)
     )
 
     // config.yaml 추출
@@ -250,25 +252,27 @@ export default class GpuMigProfilesStore extends Base {
     // 수정된 mig-configs 다시 적용
     parsed['mig-configs'] = migConfigs
 
-    // object → YAML 문자열로 변환
-    let newYamlText = yaml.dump(parsed, {
-      indent: 2,
-      noRefs: true,
-      lineWidth: -1,
-      flowLevel: -1,
-    })
+    // index 제외 처리 
+    const parsedWithOutIndex = JSON.parse(
+      JSON.stringify(parsed, (k, v) =>
+        k === 'mig-devices-index' ? undefined : v
+      )
+    )
 
-    newYamlText = await this.convertBlockArrayToFlow(newYamlText, 'device-filter')
-    newYamlText = await this.convertBlockArrayToFlow(newYamlText, 'devices')
-    newYamlText = await this.quoteMigDevicesKeys(newYamlText)
-    newYamlText = await this.addSpacingBetweenConfigs(newYamlText)
-    
+    // object → YAML 문자열로 변환
+    const newYamlTextWithIndex = await this.convertObjectToYaml(parsed)
+    const newYamlTextWithOutIndex = await this.convertObjectToYaml(parsedWithOutIndex)    
+
     // ConfigMap 구조에 다시 넣기
-    resultConfigMap.data['config.yaml'] = newYamlText
+    resultConfigMap.data['config.yaml'] = newYamlTextWithIndex
+    const resultConfigMapWithOutIndex = await this.cloneResultConfigMap(resultConfigMap, newYamlTextWithOutIndex)
 
     try {
       const res = await this.submitting(
-        request.put(this.getDetailUrl(configMapParams), resultConfigMap)
+         Promise.all([
+          request.put(this.getDetailUrl(this.configMapWithIndexParams), resultConfigMap),
+          request.put(this.getDetailUrl(this.configMapWithOutIndexParams), resultConfigMapWithOutIndex)          
+        ])
       )
       return res
     } catch (err) {
@@ -309,14 +313,9 @@ export default class GpuMigProfilesStore extends Base {
 
     const name = params.name
 
-    const configMapParams = {
-      namespace: this.configMap_namespace,
-      name: this.configMap_mig_parted_config,
-    }
-
     // 원본 데이터 가져오기
     const resultConfigMap = await request.get(
-      this.getDetailUrl(configMapParams)
+      this.getDetailUrl(this.configMapWithIndexParams)
     )
 
     // config.yaml 추출
@@ -333,27 +332,29 @@ export default class GpuMigProfilesStore extends Base {
     // 수정된 mig-configs 다시 적용
     parsed['mig-configs'] = migConfigs
 
-    // object → YAML 문자열로 변환
-    let newYamlText = yaml.dump(parsed, {
-      indent: 2,
-      noRefs: true,
-      lineWidth: -1,
-      flowLevel: -1,
-    })
+    // index 제외 처리 
+    const parsedWithOutIndex = JSON.parse(
+      JSON.stringify(parsed, (k, v) =>
+        k === 'mig-devices-index' ? undefined : v
+      )
+    )
 
-    newYamlText = await this.convertBlockArrayToFlow(newYamlText, 'device-filter')
-    newYamlText = await this.convertBlockArrayToFlow(newYamlText, 'devices')
-    newYamlText = await this.quoteMigDevicesKeys(newYamlText)
-    newYamlText = await this.addSpacingBetweenConfigs(newYamlText)
+    // object → YAML 문자열로 변환
+    const newYamlTextWithIndex = await this.convertObjectToYaml(parsed)
+    const newYamlTextWithOutIndex = await this.convertObjectToYaml(parsedWithOutIndex)    
 
     // ConfigMap 구조에 다시 넣기
-    resultConfigMap.data['config.yaml'] = newYamlText
+    resultConfigMap.data['config.yaml'] = newYamlTextWithIndex
+    const resultConfigMapWithOutIndex = await this.cloneResultConfigMap(resultConfigMap, newYamlTextWithOutIndex)
 
     try {
       // await this.submitting(new Promise(resolve => setTimeout(resolve, 5000)))
       // return { success: true }
       const res = await this.submitting(
-        request.put(this.getDetailUrl(configMapParams), resultConfigMap)
+         Promise.all([
+          request.put(this.getDetailUrl(this.configMapWithIndexParams), resultConfigMap),
+          request.put(this.getDetailUrl(this.configMapWithOutIndexParams), resultConfigMapWithOutIndex)          
+        ])
       )
       return res
     } catch (err) {
@@ -448,11 +449,46 @@ export default class GpuMigProfilesStore extends Base {
     return result
   }
 
+   async createCustomConfigMapWithIndex() {
+    const configMapParams = {
+      namespace: this.configMap_namespace,
+    }
+    const data = {
+                  "apiVersion":"v1",
+                  "kind":"ConfigMap",
+                  "metadata":{
+                    "namespace":"nvidia-system",
+                    "labels":{
+                    },
+                    "name":"custom-mig-parted-index-config",
+                    "annotations":{
+                      "kubesphere.io/creator":"admin"
+                    }
+                  },
+                  "spec":{
+                    "template":{
+                      "metadata":{
+                        "labels":{
+                        },
+                        "annotations":{
+                          "kubesphere.io/creator":"admin"
+                        }
+                      }
+                    }
+                  },
+                  "data":{
+                    "config.yaml":"version: v1\nmig-configs:\n  all-disabled:\n    - devices: all\n      mig-enabled: false\n\n  all-enabled:\n    - devices: all\n      mig-enabled: true\n      mig-devices: {}\n\n  # A100-40GB, A800-40GB\n  all-1g.5gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.5gb\": 7\n\n  all-1g.5gb.me:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.5gb+me\": 1\n\n  all-2g.10gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"2g.10gb\": 3\n\n  all-3g.20gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"3g.20gb\": 2\n\n  all-4g.20gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"4g.20gb\": 1\n\n  all-7g.40gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"7g.40gb\": 1\n\n  # RTX-PRO-6000-96GB\n  all-1g.24gb.gfx:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.24gb+gfx\": 4\n\n  all-1g.24gb.me.all:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.24gb+me.all\": 1\n  \n  all-1g.24gb-me:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.24gb-me\": 4\n\n  all-2g.48gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"2g.48gb\": 2\n\n  all-2g.48gb.gfx:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"2g.48gb+gfx\": 2\n\n  all-2g.48gb.me.all:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"2g.48gb+me.all\": 1\n\n  all-2g.48gb-me:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"2g.48gb-me\": 2\n\n  all-4g.96gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"4g.96gb\": 1\n\n  all-4g.96gb.gfx:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"4g.96gb+gfx\": 1\n\n  # H100-80GB, H800-80GB, A100-80GB, A800-80GB, A100-40GB, A800-40GB\n  all-1g.10gb:\n    # H100-80GB, H800-80GB, A100-80GB, A800-80GB\n    - device-filter: [\"0x233010DE\", \"0x233110DE\", \"0x232210DE\", \"0x20B210DE\", \"0x20B510DE\", \"0x20F310DE\", \"0x20F510DE\", \"0x232410DE\"]\n      devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.10gb\": 7\n\n    # A100-40GB, A800-40GB\n    - device-filter: [\"0x20B010DE\", \"0x20B110DE\", \"0x20F110DE\", \"0x20F610DE\"]\n      devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.10gb\": 4\n\n  # H100-80GB, H800-80GB, A100-80GB, A800-80GB\n  all-1g.10gb.me:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.10gb+me\": 1\n\n  # H100-80GB, H800-80GB, A100-80GB, A800-80GB\n  all-1g.20gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.20gb\": 4\n\n  # GB200, B200\n  all-1g.23gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.23gb\": 7\n\n  # GB200, B200\n  all-1g.23gb.me:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.23gb+me\": 1\n\n  all-1g.24gb.me:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.24gb+me\": 1\n\n  all-2g.20gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"2g.20gb\": 3\n\n  all-3g.40gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"3g.40gb\": 2\n\n  all-4g.40gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"4g.40gb\": 1\n\n  all-7g.80gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"7g.80gb\": 1\n\n  # A30-24GB\n  all-1g.6gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.6gb\": 4\n\n  all-1g.6gb.me:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.6gb+me\": 1\n\n  all-2g.12gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"2g.12gb\": 2\n\n  all-2g.12gb.me:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"2g.12gb+me\": 1\n\n  all-4g.24gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"4g.24gb\": 1\n\n  # H100 NVL, H800 NVL, GH200\n  all-1g.12gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.12gb\": 7\n\n  all-1g.12gb.me:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.12gb+me\": 1\n\n  all-1g.24gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.24gb\": 4\n\n  all-1g.45gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.45gb\": 4\n\n  all-1g.47gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.47gb\": 4\n\n  all-2g.24gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"2g.24gb\": 3\n\n  all-2g.45gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"2g.45gb\": 3\n\n  all-2g.47gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"2g.47gb\": 3\n\n  # H100 NVL, H800 NVL\n  all-3g.47gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"3g.47gb\": 2\n\n  all-4g.47gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"4g.47gb\": 1\n\n  all-7g.94gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"7g.94gb\": 1\n\n  # H100-96GB, PG506-96GB, GH200\n  all-3g.48gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"3g.48gb\": 2\n\n  all-3g.90gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"3g.90gb\": 2\n\n  all-3g.93gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"3g.93gb\": 2\n\n  all-3g.95gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"3g.95gb\": 2\n\n  all-4g.48gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"4g.48gb\": 1\n\n  all-4g.90gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"4g.90gb\": 1\n\n  all-4g.93gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"4g.93gb\": 1\n\n  all-4g.95gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"4g.95gb\": 1\n\n  all-7g.96gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"7g.96gb\": 1\n\n  all-7g.180gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"7g.180gb\": 1\n\n  all-7g.186gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"7g.186gb\": 1\n\n  all-7g.189gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"7g.189gb\": 1\n\n  # GB200 HGX, B200, GH200 144G HBM3e, H200-141GB, H200 NVL, H100-96GB, GH200, H100 NVL, H800 NVL, H100-80GB, H800-80GB, A800-40GB, A800-80GB, A100-40GB, A100-80GB, A30-24GB, PG506-96GB\n  all-balanced:\n    # GB200 HGX\n    - device-filter: [\"0x294110DE\"]\n      devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.23gb\": 2\n        \"2g.47gb\": 1\n        \"3g.93gb\": 1\n    \n    # RTX-PRO-6000-96GB\n    - device-filter: [\"0x2BB510DE\"]\n      devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.24gb\": 2\n        \"2g.48gb\": 1\n\n    # B200\n    - device-filter: [\"0x290110DE\"]\n      devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.23gb\": 2\n        \"2g.45gb\": 1\n        \"3g.90gb\": 1\n\n    # GH200 144G HBM3e\n    - device-filter: [\"0x234810DE\"]\n      devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.18gb\": 2\n        \"2g.36gb\": 1\n        \"3g.72gb\": 1\n\n    # H200 141GB, H200 NVL\n    - device-filter: [\"0x233510DE\", \"0x233B10DE\"]\n      devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.18gb\": 2\n        \"2g.35gb\": 1\n        \"3g.71gb\": 1\n\n    # H100 NVL, H800 NVL\n    - device-filter: [\"0x232110DE\", \"0x233A10DE\"]\n      devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.12gb\": 2\n        \"2g.24gb\": 1\n        \"3g.47gb\": 1\n\n    # H100-80GB, H800-80GB, A100-80GB, A800-80GB\n    - device-filter: [\"0x233010DE\", \"0x233110DE\", \"0x232210DE\", \"0x20B210DE\", \"0x20B510DE\", \"0x20F310DE\", \"0x20F510DE\", \"0x232410DE\"]\n      devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.10gb\": 2\n        \"2g.20gb\": 1\n        \"3g.40gb\": 1\n\n    # A100-40GB, A800-40GB\n    - device-filter: [\"0x20B010DE\", \"0x20B110DE\", \"0x20F110DE\", \"0x20F610DE\"]\n      devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.5gb\": 2\n        \"2g.10gb\": 1\n        \"3g.20gb\": 1\n\n    # A30-24GB\n    - device-filter: \"0x20B710DE\"\n      devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.6gb\": 2\n        \"2g.12gb\": 1\n\n    # H100-96GB, PG506-96GB, GH200, H20\n    - device-filter: [\"0x234210DE\", \"0x233D10DE\", \"0x20B610DE\", \"0x232910DE\"]\n      devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.12gb\": 2\n        \"2g.24gb\": 1\n        \"3g.48gb\": 1\n\n  # H200-141GB, GH200 144G HBM3e\n  all-1g.18gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.18gb\": 7\n\n  all-1g.18gb.me:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.18gb+me\": 1\n\n  # H200-141GB\n  all-1g.35gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.35gb\": 4\n\n  all-2g.35gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"2g.35gb\": 3\n\n  all-3g.71gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"3g.71gb\": 2\n\n  all-4g.71gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"4g.71gb\": 1\n\n  all-7g.141gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"7g.141gb\": 1\n\n  # GH200 144G HBM3e\n  all-1g.36gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"1g.36gb\": 4\n\n  all-2g.36gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"2g.36gb\": 3\n\n  all-3g.72gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"3g.72gb\": 2\n\n  all-4g.72gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"4g.72gb\": 1\n\n  all-7g.144gb:\n    - devices: all\n      mig-enabled: true\n      mig-devices:\n        \"7g.144gb\": 1\n"
+                    }
+                  }
+
+    const result = await request.post(this.getListUrl(configMapParams),  data)
+    return result
+  }
 
   async getAllListData() {
     const configMapParams = {
       namespace: this.configMap_namespace,
-      name: this.configMap_mig_parted_config,
+      name: this.configMap_mig_parted_index_config,
     }
 
     let resultConfigMap = await request.get(
@@ -465,6 +501,7 @@ export default class GpuMigProfilesStore extends Base {
     // custom-mig-parted-config 이 없으면 신규 생성
     if(!resultConfigMap){
       resultConfigMap = await this.createCustomConfigMap()
+      await this.createCustomConfigMapWithIndex()
     }
 
     const yamlString = get(resultConfigMap, ['data', 'config.yaml'])
@@ -485,8 +522,6 @@ export default class GpuMigProfilesStore extends Base {
     return result
   }
 
-
-
   async getCustomMigConfig() {
     const configMapParams = {
       namespace: this.configMap_namespace,
@@ -506,7 +541,7 @@ export default class GpuMigProfilesStore extends Base {
       name: 'custom-mig-config-templates',
     }
     // /api/v1/namespaces/nvidia/configmaps/custom-mig-config-templates
-    const resultCustomMigConfig = await request.get(  this.getDetailUrl(configMapParams)  )
+    const resultCustomMigConfig = await request.get(this.getDetailUrl(configMapParams))
 
     for (const [name, items] of Object.entries(data)) {
       const gpuType = []
@@ -573,7 +608,7 @@ export default class GpuMigProfilesStore extends Base {
         const detailKey = `${item['mig-gpuType']}_${
           countValue == 'all' ? countValue : countValue + 1
         }`
-        gpuTypeDetail.push({ [detailKey]: item['mig-devices-index'] })
+        gpuTypeDetail.push({ [detailKey]: name === 'all-balanced' ? item['mig-devices'] : item['mig-devices-index'] })
       }
 
       // totalMemory
@@ -596,6 +631,45 @@ export default class GpuMigProfilesStore extends Base {
     }
 
     return result
+  }
+
+  async convertObjectToYaml(parsed) {
+      
+      let newYamlText = yaml.dump(parsed, {
+        indent: 2,
+        noRefs: true,
+        lineWidth: -1,
+        flowLevel: -1,
+      })
+  
+      newYamlText = await this.convertBlockArrayToFlow(newYamlText, 'device-filter')
+      newYamlText = await this.convertBlockArrayToFlow(newYamlText, 'devices')
+      newYamlText = await this.quoteMigDevicesKeys(newYamlText)
+      newYamlText = await this.addSpacingBetweenConfigs(newYamlText)
+  
+      return newYamlText
+  }
+
+  async cloneResultConfigMap(resultConfigMap, newYamlText) {
+
+      const resultConfigMapWithIndex = {
+      ...resultConfigMap,
+      metadata: {
+        ...resultConfigMap.metadata,
+        name: 'custom-mig-parted-config'
+      },
+      data: {
+        ...resultConfigMap.data,
+        ['config.yaml']: newYamlText
+      }
+    }
+
+    delete resultConfigMapWithIndex.metadata.uid
+    delete resultConfigMapWithIndex.metadata.resourceVersion
+    delete resultConfigMapWithIndex.metadata.creationTimestamp
+    delete resultConfigMapWithIndex.metadata.managedFields
+     
+    return resultConfigMapWithIndex
   }
 
   async convertBlockArrayToFlow(yamlText, key) {
