@@ -50,7 +50,7 @@ export default class PodStore extends Base {
 
     // gpuSlice 제외
     const { gpuSlice, ...filterParams } = params
-
+  
     const result = await request.get(
       this.getResourceUrl({ cluster, workspace, namespace, devops }),
       this.getFilterParams(filterParams)
@@ -123,5 +123,56 @@ export default class PodStore extends Base {
     }
 
     return detail
+  }
+
+  @action
+  async checkUsedPod({
+    cluster,
+    workspace,
+    namespace,
+    more,
+    devops,
+    ...params
+  } = {}) {
+    this.list.isLoading = true
+
+    if (!params.sortBy && params.ascending === undefined) {
+      params.sortBy = LIST_DEFAULT_ORDER[this.module] || 'createTime'
+    }
+
+    if (params.limit === Infinity || params.limit === -1) {
+      params.limit = -1
+      params.page = 1
+    }
+
+    params.limit = params.limit || 1000000
+
+    // slicePodList 제외
+    const { gpuSlice, ...filterParams } = params
+
+    const result = await request.get(
+      this.getResourceUrl({ cluster, workspace, namespace, devops }),
+      this.getFilterParams(filterParams)
+    )
+
+    const allData = (get(result, 'items') || []).map(item => ({
+      cluster,
+      namespace,
+      ...this.mapper(item),
+    }))
+
+    const data = allData
+        .map(item => ({
+          ...item,
+          containers: (item.containers || []).filter(container =>
+            Object.keys(container.resources?.limits || {}).some(key =>
+              (gpuSlice || []).some(slice => key.includes(slice))
+            )
+          )
+        })).filter(item => item.containers.length > 0);
+
+    const hasSlice = data.length > 0;
+
+    return hasSlice
   }
 }

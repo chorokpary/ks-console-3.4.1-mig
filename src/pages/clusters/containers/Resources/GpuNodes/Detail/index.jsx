@@ -16,12 +16,14 @@
  * along with KubeSphere Console.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { toJS } from 'mobx';
 import { get, isEmpty } from 'lodash';
 import { Loading } from '@kube-design/components';
 import { observer, inject } from 'mobx-react';
 import GpuNodeStore from 'stores/resources/gpunodes';
+import GpuMigProfilesStore from 'stores/resources/gpumigprofiles'
+
 import DetailPage from 'clusters/containers/Base/Detail';
 import { Status } from 'components/Base'
 
@@ -32,10 +34,37 @@ import { getDisplayName, getLocalTime } from 'utils'
 import routes from './routes';
 
 const store = new GpuNodeStore();
+const gpuMigProfilesStore = new GpuMigProfilesStore()
 
 const GpuNodeDetail = props => {
+
+    const [slicePodList, setSlicePodList] = useState([])
+
     useEffect(() => {
-        fetchData();
+      const getGpuTypes = async () => {
+        if (!store.detail) return
+
+          const profileName = get(store.detail, 'labels["nvidia.com/mig.config"]', '');            
+          const profileParams = { name: profileName }
+          const profileDetail = await gpuMigProfilesStore.fetchDetail(profileParams)
+
+          const gpuTypes = [
+              ...new Set(
+                  profileDetail.result?.gpuTypeDetail?.flatMap(item =>
+                  Object.values(item).flatMap(gpu =>
+                      Object.keys(gpu).map(key => key.split("_")[0])
+                  )
+                  )
+              )
+          ]
+
+          setSlicePodList(gpuTypes)
+        }
+        getGpuTypes()
+    }, [store.detail]);
+
+    useEffect(() => {
+      fetchData();
     }, []);
 
     const fetchData = () => {
@@ -56,7 +85,7 @@ const GpuNodeDetail = props => {
         {
             key: 'applyMig',
             icon: 'gpu',
-            disabled: !isMigApply,
+            // disabled: !isMigApply,
             text: t('RESOURCES_GPU_MIG_CONFIG'),
             action: 'view',
             onClick: () => {
@@ -77,6 +106,8 @@ const GpuNodeDetail = props => {
                 props.rootStore.triggerAction('gpunodemig.apply.remove', {
                   store: store,
                   cluster: props.match.params.cluster,
+                  nodeName: get(store.detail, 'name'),
+                  slicePodList: slicePodList,
                   success: fetchData,
                 });
             },

@@ -25,6 +25,8 @@ const index = props => {
   const cluster = props.match.params.cluster
   const gpuName = props.match.params.name
 
+  const gpuNodeData = props.detailStore.detail
+
   const customStore = new CustomStore()
   const monitorStore = new NodeMonitorStore({ cluster: cluster })
   const gpuMigProfilesStore = new GpuMigProfilesStore()
@@ -32,6 +34,8 @@ const index = props => {
   const [gpuList, setGpuList] = useState([])
   const [selectedGpu, setSelectedGpu] = useState()  
   const [fetchParams, setFetchParams] = useState({})
+
+  const [gpuCount, setGpuCount] = useState()
 
   const [vmGpuUtilData, setVmGpuUtilData] = useState([])
   const [vmGpuRamData, setVmGpuRamData] = useState([])
@@ -78,18 +82,21 @@ const index = props => {
 
     const profileParams = { name: profileName }
     const profileDetail = await gpuMigProfilesStore.fetchDetail(profileParams)
-   
+
     setGpuList(Array.isArray(profileDetail.result?.gpuCount) 
       ? profileDetail.result.gpuCount 
       : []
     )
 
-    profileDetail.result?.gpuCount.length > 0 && setSelectedGpu(`GPU${profileDetail.result?.gpuCount[0]+1}`)
+    const gcount = get(gpuNodeData, ['labels', 'nvidia.com/gpu.count'], 0)
+    setGpuCount(get(gpuNodeData, ['labels', 'nvidia.com/gpu.count'], 0))
+
+    gcount > 0 && setSelectedGpu(`GPU1`)
   }
 
   const fetchData = async params => {
     setFetchParams(params)
-    console.log("params : "+ JSON.stringify(params))
+
     const paramsData = {
       ...params,
       start: params.start,
@@ -103,7 +110,6 @@ const index = props => {
       paramsData.start = timeRange.start
       paramsData.end = timeRange.end
     }
-    console.log("paramsData : "+ JSON.stringify(paramsData))
 
     const metricGpu = Number((selectedGpu || "GPU1").replace("GPU", "")) - 1
   
@@ -161,7 +167,7 @@ const index = props => {
 
   const { isLoading, isRefreshing } = monitorStore
   const configs = getMonitoringCfgs()
-
+  console.log("gpuCount : "+ gpuCount)
   return (
     <MonitoringController
       title={t('RESOURCES_GPU_MONITORING')}
@@ -192,27 +198,28 @@ const index = props => {
                           <td>{t('RESOURCES_NO_DATA')}</td>
                       </tr>
                     }
-                    {gpuList.length > 0 && gpuList.map((item) => (
-                      <tr key={item}>
-                        <td
-                          style={{
-                            backgroundColor:
-                              selectedGpu === 'GPU'+(item+1) ? '#EEF2FF' : '',
-                          }}
-                          onClick={() => {
-                            setSelectedGpu(`GPU${item+1}`)
-                          }}
-                        >
-                          <div
-                            style={{ display: 'flex', alignItems: 'center' }}
+                    {Array.from({ length: gpuCount }).map((_, index) => {
+                      return (
+                        <tr key={index}>
+                          <td
+                            style={{
+                              backgroundColor:
+                                selectedGpu === 'GPU' + (index + 1) ? '#EEF2FF' : '',
+                            }}
+                            onClick={() => {
+                              setSelectedGpu(`GPU${index + 1}`)
+                            }}
                           >
-                            <i className="ico-type-vm"></i>
-                            <span style={{ marginLeft: 8 }}>{`GPU${String(item+1).padStart(2, '0')}`}</span>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                              <i className="ico-type-vm"></i>
+                              <span style={{ marginLeft: 8 }}>
+                                {`GPU${String(index + 1)}`}
+                              </span>
+                            </div>
+                          </td>
+                        </tr>
+                      )
+                    })}
                   </tbody>
                 </table>
               </div>

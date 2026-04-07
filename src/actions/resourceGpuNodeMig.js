@@ -20,7 +20,10 @@ import { toJS } from 'mobx'
 import { Notify } from '@kube-design/components'
 import { Modal } from 'components/Base'
 
+import AlertModal from 'clusters/containers/Resources/components/Modals/Alert'
+
 import GpuNodeStore from 'stores/resources/gpunodes'
+import PodStore from 'stores/pod'
 
 import ApplyModal from 'clusters/containers/Resources/components/Modals/GpuNodeMig/Apply'
 import ApplyRemoveModal from 'clusters/containers/Resources/components/Modals/GpuNodeMig/Remove'
@@ -63,7 +66,7 @@ export default {
     },
   },
   'gpunodemig.apply.remove': {
-    on({
+   async on({
       store,
       rootStore,
       cluster,
@@ -72,8 +75,18 @@ export default {
       success,
       devops,
       nodeName,
+      slicePodList,
+      delName,
       ...props
     }) {
+
+      const podStore = new PodStore();
+      const hasSlice = await podStore.checkUsedPod({
+        gpuSlice : slicePodList,  
+        nodeName,  
+      })
+      console.log("hasSlice : "+ hasSlice)
+
       const gpuNodeStore = new GpuNodeStore();
       const modal = Modal.open({
         onOk: data => {
@@ -85,7 +98,7 @@ export default {
               success && success()
             })
         },
-        modal: ApplyRemoveModal,
+        modal: hasSlice ? AlertModal : ApplyRemoveModal,
         title: t('RESOURCES_GPU_MIG_CONFIG_REMOVE'),
         store,
         rootStore,
@@ -95,8 +108,8 @@ export default {
         namespace,
         devops,
         ...props,
-        resource: nodeName,
-        desc: t('RESOURCES_MIG_RELEAGE_DESC'),
+        resource: delName,
+        desc: hasSlice ? t('RESOURCES_USED_MIG_RELEAGE_TIP') : t('RESOURCES_MIG_RELEAGE_DESC'),
       })
     },
   },

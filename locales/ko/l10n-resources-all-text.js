@@ -1287,4 +1287,6 @@ module.exports = {
   RESOURCES_SELECT_PROFILE_TYPE_GPU_DESC: 'GPU에 적용할 Profile을 선택합니다.',
   RESOURCES_SELECT_MIG_PROFILE_TYPE_TIP: 'MIG Profile 을 선택해 주세요.',
   RESOURCES_MIG_RELEAGE_DESC: '설정된 MIG을 해제 하시겠습니까?',
+  RESOURCES_USED_MIG_RELEAGE_TIP: '해당 MIG Profile 을 사용 중인 애플리케이션이 존재합니다. ' 
+  + '사용 중인 애플리케이션를 삭제 후 해제를 진행해 주세요.',
 }

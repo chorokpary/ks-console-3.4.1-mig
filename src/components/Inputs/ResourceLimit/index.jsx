@@ -580,7 +580,8 @@ export default class ResourceLimit extends React.Component {
 
     nodes
       .filter(node =>
-        node.labels?.["nvidia.com/gpu.product"]?.includes(type)
+        node.labels?.["nvidia.com/gpu.product"]?.includes(type) && 
+        node.labels?.["nvidia.com/mig.config.state"] === "success"
       )
       .forEach(node => {
         const allocatable = node.status?.allocatable || {};
@@ -602,13 +603,14 @@ export default class ResourceLimit extends React.Component {
             }
           }
         });
-      });
+    });
 
-    const options = Object.entries(result).map(([key, value]) => ({
-      label: key.toUpperCase(),
-      value: value,
-      disabled: Number(value.split("|")[0]) === 0,
-    }));
+    const options = Object.entries(result)
+      .filter(([key, value]) => Number(value.split("|")[0]) !== 0)
+      .map(([key, value]) => ({
+        label: key.toUpperCase(),
+        value: value,
+    }))
  
     return options
   }
@@ -765,6 +767,10 @@ export default class ResourceLimit extends React.Component {
   }
   
   renderGpuSelect = () => {    
+    
+    if (!this.state.gpuTypeOption?.length || !this.state.gpuSliceOption?.length) {
+      return false;
+    }
 
     return (
       <Column>

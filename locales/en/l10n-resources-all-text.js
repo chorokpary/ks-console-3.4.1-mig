@@ -1296,7 +1296,7 @@ module.exports = {
   RESOURCES_ALL_DEL: 'Delete All',
   RESOURCES_GPU_TYPE_ADD_TIP: '8 GPU types can be added.',
   RESOURCES_DELETE_GPU_MIG_PROFILE_TIP: 'Enter the gpu mig profile name <strong>{resource}</strong> to confirm your understanding of the risks involved in this operation.',
-  RESOURCES_USED_GPU_MIG_PROFILE_TIP: ' There is a GPU node using the corresponding MIG Profile.' 
+  RESOURCES_USED_GPU_MIG_PROFILE_TIP: 'There is a GPU node using the corresponding MIG Profile.' 
   + 'After disabling the MIG setting of the GPU node in use, proceed with deletion.',
 
   RESOURCES_SLICE_BY_POD_INFO: 'Pod information by slice',
@@ -1304,6 +1304,7 @@ module.exports = {
   RESOURCES_SELECT_PROFILE_TYPE_GPU_DESC: 'Select the Profile to apply to the GPU.',
   RESOURCES_SELECT_MIG_PROFILE_TYPE_TIP: 'Please select a MIG Profile.',
   RESOURCES_MIG_RELEAGE_DESC: 'Do you want to MIG release?',
-
+  RESOURCES_USED_MIG_RELEAGE_TIP: 'There is a Application using the corresponding MIG Profile.' 
+  + 'After delete the MIG setting of the Application in use, proceed with disabling.',
 
 }

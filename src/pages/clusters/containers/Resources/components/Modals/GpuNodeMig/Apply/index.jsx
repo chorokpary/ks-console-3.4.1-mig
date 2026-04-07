@@ -78,8 +78,6 @@ const ApplyModal = props => {
       const { data } = form.current.props
       data.migprofile = selectedMigProfile
 
-      console.log("data : "+ JSON.stringify(data))
-
       onOk( {
         ...data,
         detail: nodeDetailData,
@@ -121,21 +119,13 @@ const ApplyModal = props => {
   useEffect(() => {
 
     const getInitData = async () => {
-      
-      // GPU count 추출
-      const gpuCount = Number(get(props.store.detail, ['labels', 'nvidia.com/gpu.count'], 0))
 
       // MIG Profile 정보 추출
       const params = {limit: 10000}
       const migProfileAllList = await gpuMigProfilesStore.fetchList(params)
 
-      const filterData = migProfileAllList.filter(
-        item => item.gpuCount.length === gpuCount || item.gpuCount.includes('all')
-      )
-      const profileList = filterData.map(item => item.name);
-
-      const migOption = profileList.filter(item => item !== 'all-balanced')
-      .map(name => ({
+      const profileList = migProfileAllList.map(item => item.name);
+      const migOption = profileList.map(name => ({
           label: name.replace('petasus-', ''),
           value: name
       }));
@@ -169,7 +159,7 @@ const ApplyModal = props => {
 
     const getMigProfileDetail = async () => {
       const detailData = migProfileAllData?.filter(item => item.name === selectedMigProfile)[0]
-
+      
       setMigProfileDetail(detailData)
       setSliceSmCount(detailData?.totalSmCount / detailData?.gpuCount.length)
       setSliceMemory(detailData?.totalMemory / detailData?.gpuCount.length)
@@ -180,8 +170,8 @@ const ApplyModal = props => {
 
   },[selectedMigProfile])
 
-  const MIGGpuTypeSlice = ({ gpuName, devices }) => {
-    
+  const MIGGpuTypeSlice = ({ gpuName, devices, gpuType }) => {
+
     const sliceArray = []
     Object.entries(devices ?? {}).forEach(([key, count]) => {
       const [gStr, memoryStr] = key.replace(/_\d+$/, '').split('.')
@@ -204,7 +194,7 @@ const ApplyModal = props => {
          <Loading spinning={isLoading}> 
             <section className="gpu_mig_box">
               <header className="gpu_mig_header">
-                <h2 className="gpu_mig_gpu_title">{gpuName}</h2>
+                <h2 className="gpu_mig_gpu_title">{gpuName} {`(${gpuType})`}</h2>
                 <nav className="gpu_mig_status">
                   <div className="status_item">
                     <span className="label">SM</span>
@@ -348,15 +338,17 @@ const ApplyModal = props => {
                     </div>
                     <div className="create">                      
                         {migProfileDetail && sortByGpuKey(migProfileDetail?.gpuTypeDetail).map((item, index) => {
-                          const key = Object.keys(item)[0]
+                          const key = Object.keys(item)[0] + "_"+ index
                           const devices = Object.values(item)[0]
                           const num = String(key.split('_')[1]).padStart(2, '0')
                           const gpuName = num == 'all' ? 'ALL' : `GPU${num}`
+                          const gpuType = Object.keys(item)[0].split("_")[0]
                           return (
                             <MIGGpuTypeSlice
                               key={key}
                               gpuName={gpuName}
                               devices={devices}
+                              gpuType={gpuType}
                             />
                           )
                         })}
