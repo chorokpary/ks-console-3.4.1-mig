@@ -25,7 +25,6 @@ const Status = props => {
   const { TabPanel } = Tabs
 
   const [sliceSmCount, setSliceSmCount] = useState(0)
-  const [sliceMemory, setSliceMemory] = useState(0)
 
   // 초기 데이터 처리
   useEffect(() => {
@@ -37,7 +36,6 @@ const Status = props => {
       setGpuTypeList(gpuTypeOption)
       setStorageClassTab(gpuTypeOption[0])
       setSliceSmCount(detailData.totalSmCount / detailData.gpuCount.length)
-      setSliceMemory(detailData.totalMemory / detailData.gpuCount.length)
       setLoading(false)
     }
     initData()
@@ -48,7 +46,7 @@ const Status = props => {
     return <Loading className="ks-page-loading" />
   }
 
-  const MIGGpuTypeSlice = ({ gpuName, devices }) => {
+  const MIGGpuTypeSlice = ({ gpuName, devices, memory }) => {
     const sliceArray = []
     Object.entries(devices ?? {}).forEach(([key, count]) => {
       const [gStr, memoryStr] = key.replace(/_\d+$/, '').split('.')
@@ -81,7 +79,7 @@ const Status = props => {
             <div className="status_item">
               <span className="label">{t('MEMORY')}</span>
               <span className="number">
-                <strong>{addMemory}</strong>/<small>{sliceMemory} GB</small>
+                <strong>{addMemory}</strong>/<small>{memory} GB</small>
               </span>
             </div>
           </nav>
@@ -144,12 +142,16 @@ const Status = props => {
                     const devices = Object.values(item)[0]
                     const num = String(key.split('_')[1]).padStart(2, '0')
                     const gpuName = num == 'all' ? 'ALL' : `GPU${num}`        
-           
+
+                    const memory = detailData.gpuTypeSliceMemory
+                                  .filter(o => Object.keys(o)[0].startsWith(`${storageClassTab}_`))
+                                  .flatMap(o => Object.values(o))[0]
                     return (             
                       <MIGGpuTypeSlice
                         key={key}
                         gpuName={gpuName}
                         devices={devices}
+                        memory={memory}
                       />                  
                     )
                   })

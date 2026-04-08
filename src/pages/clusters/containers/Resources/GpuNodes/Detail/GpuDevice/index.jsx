@@ -41,11 +41,26 @@ const GpuDevice = (props) => {
   const fnGetData = async ({ ...params } = {}) => {   
     const profileName = get(store.detail, 'labels["nvidia.com/mig.config"]', '');
 
-    const profileParams = { name: profileName }
-    const profileDetail = await gpuMigProfilesStore.fetchDetail(profileParams)
+    const product = get(store.detail, 'labels["nvidia.com/gpu.product"]', '');
+    const gpuType = (product || '').split('-')[1]
 
-    setGpuData(profileDetail.result)
-    setGpuCount(profileDetail.result?.gpuCount.length)
+    const profileParams = { name: profileName, gpuType }
+    const profileDetail = await gpuMigProfilesStore.fetchDetail(profileParams)
+      
+    const filteredData = {
+      ...profileDetail.result,
+      gpuType: profileDetail.result.gpuType.filter(type => type === gpuType),
+      gpuTypeDetail: profileDetail.result.gpuTypeDetail.filter(v =>
+        Object.keys(v).some(k => k.startsWith(`${gpuType}_`))
+      ),
+      gpuTypeSliceMemory: profileDetail.result.gpuTypeSliceMemory.filter(v =>
+        Object.keys(v).some(k => k.startsWith(`${gpuType}_`))
+      )
+    }
+
+
+    setGpuData(filteredData)
+    setGpuCount(filteredData?.gpuType.length)
   }
 
   const renderGpuDevices = () => {

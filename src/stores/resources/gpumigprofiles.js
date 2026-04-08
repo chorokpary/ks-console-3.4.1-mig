@@ -284,7 +284,7 @@ export default class GpuMigProfilesStore extends Base {
   async fetchDetail({ ...params }) {
     this.isLoading = true
 
-    const resultList = await this.getAllListData()
+    const resultList = await this.getAllListData()  
     const result = resultList.data.filter(item => item.name === params.name)[0]
     const detail = { ...params, result, kind: 'data' }
 
@@ -372,7 +372,7 @@ export default class GpuMigProfilesStore extends Base {
 
     const parsed = yaml.load(yamlText)
     const migConfigTemplates = parsed['mig-config-templates']
-    
+
     const result = migConfigTemplates
       .filter(item => {
         if (params.type === 'N') {
@@ -516,9 +516,9 @@ export default class GpuMigProfilesStore extends Base {
         acc[key] = migConfigs[key]
         return acc
       }, {})
-
+    
     const result = await this.transformData(filteredData)
-
+    
     return result
   }
 
@@ -547,14 +547,17 @@ export default class GpuMigProfilesStore extends Base {
       const gpuType = []
       const gpuCount = []
       const gpuTypeDetail = []
+      const gpuTypeSliceMemory = []
 
       let smCount = 0
       let useMemory = 0
-      let memValue = 0
       let smCountValue = 0
+      let totalMemory = 0
+      let totalSmCount = 0
 
       for (const item of items) {
         const devicedId = await this.getFirstDeviceFilter(item)
+      
         const templateParams = {
           type: 'D',
           name,
@@ -570,9 +573,9 @@ export default class GpuMigProfilesStore extends Base {
         item['mig-gpuType'] = migConfigTemplate.name.split('-')[0].toUpperCase()
         item['mig-sliceCount'] = migConfigTemplate.count
         item['mig-memory'] = migConfigTemplate.memory
-
-        // totalMemory 계산 위한 기본 메모리 값 하나 저장
-        memValue = parseInt(item['mig-memory'], 10)
+        
+        // totalMemory 계산
+        totalMemory += parseInt(item['mig-memory'], 10)
 
         // totalSmCount 계산 위한 기본 slice 값 하나 저장
         smCountValue = parseInt(item['mig-sliceCount'], 10)
@@ -609,13 +612,11 @@ export default class GpuMigProfilesStore extends Base {
           countValue == 'all' ? countValue : countValue + 1
         }`
         gpuTypeDetail.push({ [detailKey]: name === 'all-balanced' ? item['mig-devices'] : item['mig-devices-index'] })
+        gpuTypeSliceMemory.push({ [detailKey]: parseInt(item['mig-memory'], 10)})
       }
-
-      // totalMemory
-      const totalMemory = memValue * items.length
-
+      
       // totalSmCount
-      const totalSmCount = smCountValue * items.length
+      totalSmCount = smCountValue * items.length
 
       result.data.push({
         name,
@@ -627,6 +628,7 @@ export default class GpuMigProfilesStore extends Base {
         totalMemory,
         totalSmCount,
         gpuTypeDetail,
+        gpuTypeSliceMemory,
       })
     }
 

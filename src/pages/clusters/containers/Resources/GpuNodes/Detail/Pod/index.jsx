@@ -44,13 +44,26 @@ const Pod = (props) => {
         const initData = async () => {
         if (!store.detail) return
 
-            const profileName = get(store.detail, 'labels["nvidia.com/mig.config"]', '');            
+            const profileName = get(store.detail, 'labels["nvidia.com/mig.config"]', '');    
+            
+            const product = get(store.detail, 'labels["nvidia.com/gpu.product"]', '');
+            const gpuType = (product || '').split('-')[1]
+
             const profileParams = { name: profileName }
             const profileDetail = await gpuMigProfilesStore.fetchDetail(profileParams)
 
+            const filteredData = {
+                ...profileDetail.result,
+                gpuType: profileDetail.result.gpuType.filter(type => type === gpuType),
+
+                gpuTypeDetail: profileDetail.result.gpuTypeDetail.filter(v =>
+                    Object.keys(v).some(k => k.startsWith(`${gpuType}_`))
+                )
+            }
+            
             const gpuTypes = [
                 ...new Set(
-                    profileDetail.result?.gpuTypeDetail?.flatMap(item =>
+                    filteredData.gpuTypeDetail?.flatMap(item =>
                     Object.values(item).flatMap(gpu =>
                         Object.keys(gpu).map(key => key.split("_")[0])
                     )

@@ -30,7 +30,6 @@ const DetailGpuDeviceList = (props) => {
 
     const [gpuData, setGpuData] = useState({})
     const [sliceSmCount, setSliceSmCount] = useState(0)
-    const [sliceMemory, setSliceMemory] = useState(0)
 
     const MetricTypes = {
         memory_used: 'node_memory_usage_wo_cache',
@@ -91,7 +90,6 @@ const DetailGpuDeviceList = (props) => {
             if (!migProfileData) return
 
             setSliceSmCount(migProfileData.totalSmCount / migProfileData.gpuCount.length)
-            setSliceMemory(migProfileData.totalMemory / migProfileData.gpuCount.length)
             setLoading(false)
         }
 
@@ -100,7 +98,8 @@ const DetailGpuDeviceList = (props) => {
 
     }, [])
     
-    const MIGGpuTypeSlice = ({ gpuName, devices }) => {
+    const MIGGpuTypeSlice = ({ gpuName, devices, memory }) => {
+        console.log("devices : "+ JSON.stringify(devices))
         const sliceArray = []
         Object.entries(devices ?? {}).forEach(([key, count]) => {
             const [gStr, memoryStr] = key.replace(/_\d+$/, '').split('.')
@@ -135,7 +134,7 @@ const DetailGpuDeviceList = (props) => {
                 <div className="status_item">
                     <span className="label">{t('MEMORY')}</span>
                     <span className="number">
-                        <strong>{addMemory}</strong>/<small>{sliceMemory} GB</small>
+                        <strong>{addMemory}</strong>/<small>{memory} GB</small>
                     </span>
                 </div>
                 <div className="status_item">
@@ -197,19 +196,20 @@ const DetailGpuDeviceList = (props) => {
         )
     }
 
-    const renderExtraContent = (obj) => {
+    const renderExtraContent = (obj, objSliceMemory) => {
 
         const key = Object.keys(obj)[0]
         const devices = Object.values(obj)[0]
         const num = String(key.split('_')[1]).padStart(2, '0')
         const gpuName = num == 'all' ? 'ALL' : `GPU${num}`    
-
+        const memory = Object.values(objSliceMemory)[0]
+     
         return (
             <div className={styles.itemExtra}>
                 <div className={styles.containers} >
                     <p>{t('RESOURCES_GPU_MIG_SLICE')}</p>
                     <div className="gpu_mig_container mig_profile_view">          
-                        <MIGGpuTypeSlice key={key} gpuName={gpuName} devices={devices}/>  
+                        <MIGGpuTypeSlice key={key} gpuName={gpuName} devices={devices} memory={memory}/>  
                     </div>
                 </div>
             </div>
@@ -252,7 +252,8 @@ const DetailGpuDeviceList = (props) => {
                     </div>
                     {Array.from({ length: gpuData.count}).map((_, index) => {
                         const obj = migProfileData.gpuTypeDetail[index] || migProfileData.gpuTypeDetail[0]
-
+                        const objSliceMemory = migProfileData.gpuTypeSliceMemory[index] || migProfileData.gpuTypeSliceMemory[0]
+                            
                         return (
                             <div
                                 className={classnames(styles.expandItem, "", {
@@ -265,7 +266,7 @@ const DetailGpuDeviceList = (props) => {
                                     </div>
                                     {renderContent(gpuData, index)}
                                 </div>
-                                {renderExtraContent(obj)}
+                                {renderExtraContent(obj, objSliceMemory)}
                             </div>
                         )
                     })}
