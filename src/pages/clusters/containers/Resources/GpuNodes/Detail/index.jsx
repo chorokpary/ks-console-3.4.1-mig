@@ -70,6 +70,13 @@ const GpuNodeDetail = props => {
     const fetchData = () => {
         store.fetchDetail(props.match.params);
     };
+
+    const migApplyFetchData = () => {
+      const timer = setTimeout(() => {
+        store.fetchDetail(props.match.params);
+      }, 1000); 
+      return () => clearTimeout(timer);        
+    };
     
     const listUrl = () => {
         const { cluster } = props.match.params;
@@ -80,7 +87,8 @@ const GpuNodeDetail = props => {
 
     const isMigApply = get(store.detail, 'labels["nvidia.com/mig.config"]') === 'all-disabled';
     const migConfig = get(store.detail, 'labels["nvidia.com/mig.config"]', '');
-
+    const migConfigSate = get(store.detail, 'labels["nvidia.com/mig.config.state"]', '');
+    
     const getOperations = () => [
         {
             key: 'applyMig',
@@ -92,7 +100,7 @@ const GpuNodeDetail = props => {
                 props.rootStore.triggerAction('gpunodemig.apply', {
                   store: store,
                   cluster: props.match.params.cluster,
-                  success: fetchData,
+                  success: migApplyFetchData,
                 });
             },
         },
@@ -108,7 +116,7 @@ const GpuNodeDetail = props => {
                   cluster: props.match.params.cluster,
                   nodeName: get(store.detail, 'name'),
                   slicePodList: slicePodList,
-                  success: fetchData,
+                  success: migApplyFetchData,
                 });
             },
         },
@@ -181,6 +189,12 @@ const GpuNodeDetail = props => {
            name: t('MIG Config'),
            value: isMigApply ? "" : migConfig.replace('petasus-', ''),
          },
+         {
+           name: t('RESOURCES_MIG_APPLY_STATE'),
+           value: migConfigSate == "success" ? t('COMPLETED') : 
+                  migConfigSate == "pending" ? t('PROGRESSING') : t('FAILED') ,
+         },
+         
          {
            name: t('CREATION_TIME_TCAP'),
            value: getLocalTime(detail.createTime).format('YYYY-MM-DD HH:mm:ss'),

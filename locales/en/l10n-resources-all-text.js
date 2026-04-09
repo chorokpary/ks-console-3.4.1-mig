@@ -1306,5 +1306,6 @@ module.exports = {
   RESOURCES_MIG_RELEAGE_DESC: 'Do you want to MIG release?',
   RESOURCES_USED_MIG_RELEAGE_TIP: 'There is a Application using the corresponding MIG Profile.' 
   + 'After delete the MIG setting of the Application in use, proceed with disabling.',
+  RESOURCES_MIG_APPLY_STATE: 'MIG Apply State',
 
 }
