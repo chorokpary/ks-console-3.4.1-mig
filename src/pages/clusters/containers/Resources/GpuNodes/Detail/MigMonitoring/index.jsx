@@ -114,7 +114,7 @@ const index = props => {
     const metricGpu = Number((selectedGpu || "GPU1").replace("GPU", "")) - 1
   
     const getVmGpuUtilData = async () => {
-      const gpuUtilDataExpr = `avg by (GPU_I_PROFILE) (DCGM_FI_PROF_GR_ENGINE_ACTIVE{job="nvidia-dcgm-exporter", gpu="${metricGpu}", Hostname="${gpuName}", GPU_I_PROFILE!=""}) / 100`
+      const gpuUtilDataExpr = `avg by (GPU_I_PROFILE, GPU_I_ID) (DCGM_FI_PROF_GR_ENGINE_ACTIVE{job="nvidia-dcgm-exporter", gpu="${metricGpu}", Hostname="${gpuName}", GPU_I_PROFILE!=""}) / 100`
       const gpuUtilData = await customStore.fetchMetric({
         expr: gpuUtilDataExpr,
         ...paramsData,
@@ -125,7 +125,7 @@ const index = props => {
     }
 
     const getVmGpuRamData = async () => {
-      const gpuRamDataExpr = `avg by (GPU_I_PROFILE) (DCGM_FI_DEV_FB_USED{job="nvidia-dcgm-exporter", gpu="${metricGpu}", Hostname="${gpuName}", GPU_I_PROFILE!=""}) * 1000000`
+      const gpuRamDataExpr = `avg by (GPU_I_PROFILE, GPU_I_ID) (DCGM_FI_DEV_FB_USED{job="nvidia-dcgm-exporter", gpu="${metricGpu}", Hostname="${gpuName}", GPU_I_PROFILE!=""}) * 1000000`
       const gpuRamData = await customStore.fetchMetric({
         expr: gpuRamDataExpr,
         ...paramsData,
@@ -145,7 +145,7 @@ const index = props => {
         type: 'utilisation',
         title: 'RESOURCES_GPU_UTILIZATION',
         unit: '%',
-        legend: vmGpuUtilData.map(item => (item.metric?.GPU_I_PROFILE ?? (selectedGpu || "GPU1").replace("GPU", ""))),
+        legend: vmGpuUtilData.map(item => (item.metric?.GPU_I_PROFILE +'_'+ item.metric?.GPU_I_ID ?? (selectedGpu || "GPU1").replace("GPU", ""))),
         data: vmGpuUtilData,
       },
       {
@@ -153,7 +153,7 @@ const index = props => {
         title: 'RESOURCES_GPU_RAM_USAGE',
         unit: '%',
         unitType: 'memory',
-        legend: vmGpuRamData.map(item => (item.metric?.GPU_I_PROFILE ?? (selectedGpu || "GPU1").replace("GPU", ""))),
+        legend: vmGpuRamData.map(item => (item.metric?.GPU_I_PROFILE +'_'+ item.metric?.GPU_I_ID  ?? (selectedGpu || "GPU1").replace("GPU", ""))),
         data: vmGpuRamData,
       },
     ]
