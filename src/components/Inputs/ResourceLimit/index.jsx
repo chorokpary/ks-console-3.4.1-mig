@@ -580,8 +580,7 @@ export default class ResourceLimit extends React.Component {
 
     nodes
       .filter(node =>
-        node.labels?.["nvidia.com/gpu.product"]?.includes(type) && 
-        node.labels?.["nvidia.com/mig.config.state"] === "success"
+        node.labels?.["nvidia.com/gpu.product"]?.includes(type) 
       )
       .forEach(node => {
         const allocatable = node.status?.allocatable || {};
