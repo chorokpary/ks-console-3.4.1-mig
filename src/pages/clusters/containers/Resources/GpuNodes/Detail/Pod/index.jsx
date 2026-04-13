@@ -52,16 +52,18 @@ const Pod = (props) => {
             const profileParams = { name: profileName }
             const profileDetail = await gpuMigProfilesStore.fetchDetail(profileParams)
 
+            const result = profileDetail?.result || {}
+        
             const filteredData = {
-                ...profileDetail.result,
-                gpuType: profileDetail.result.gpuType.filter(type => type === gpuType),
+                ...result,
+                gpuType: (result.gpuType || []).filter(type => type === gpuType),
 
-                gpuTypeDetail: profileDetail.result.gpuTypeDetail.filter(v =>
+                gpuTypeDetail: (result.gpuTypeDetail || []).filter(v =>
                     Object.keys(v).some(k => k.startsWith(`${gpuType}_`))
                 )
             }
-            
-            const gpuTypes = [
+   
+            const gpuTypesTmp = [
                 ...new Set(
                     filteredData.gpuTypeDetail?.flatMap(item =>
                     Object.values(item).flatMap(gpu =>
@@ -74,7 +76,10 @@ const Pod = (props) => {
                 const bNum = parseInt(b.split("g")[0])
                 return aNum - bNum
             })
-            
+
+            // 기본값 먼저 넣고 뒤에 추가 (중복 제거)
+            const gpuTypes = ['nvidia.com/gpu', ...gpuTypesTmp.filter(v => v !== 'nvidia.com/gpu')]
+
             setSlicePodTab(gpuTypes[0])
             setSlicePodList(gpuTypes)
         }
@@ -111,7 +116,7 @@ const Pod = (props) => {
         {slicePodTab && (
             <GpuNodePodsCard
                 detail={store.detail}
-                limit={6}
+                limit={100000}
                 prefix={`/clusters/${cluster}`}
                 hideHeader={true}
                 gpuSlice={slicePodTab}

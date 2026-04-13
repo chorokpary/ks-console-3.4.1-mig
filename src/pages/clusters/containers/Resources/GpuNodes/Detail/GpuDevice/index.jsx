@@ -32,13 +32,18 @@ const GpuDevice = (props) => {
   const gpuMigProfilesStore = new GpuMigProfilesStore()
 
   const [gpuData, setGpuData] = useState()
-  const [gpuCount, setGpuCount] = useState()
+  const [loading, setLoading] = useState(true)
+
+  const gpuCount = get(store.detail, 'labels["nvidia.com/gpu.count"]', 0);
 
   useEffect(() => {
     fnGetData()
   }, [])
 
   const fnGetData = async ({ ...params } = {}) => {   
+    
+    setLoading(true)
+
     const profileName = get(store.detail, 'labels["nvidia.com/mig.config"]', '');
 
     const product = get(store.detail, 'labels["nvidia.com/gpu.product"]', '');
@@ -47,24 +52,28 @@ const GpuDevice = (props) => {
     const profileParams = { name: profileName, gpuType }
     const profileDetail = await gpuMigProfilesStore.fetchDetail(profileParams)
       
+    const result = profileDetail?.result || {}
+
     const filteredData = {
-      ...profileDetail.result,
-      gpuType: profileDetail.result.gpuType.filter(type => type === gpuType),
-      gpuTypeDetail: profileDetail.result.gpuTypeDetail.filter(v =>
+      ...result,
+      gpuType: (result.gpuType || []).filter(type => type === gpuType),
+      gpuTypeDetail: (result.gpuTypeDetail || []).filter(v =>
         Object.keys(v).some(k => k.startsWith(`${gpuType}_`))
       ),
-      gpuTypeSliceMemory: profileDetail.result.gpuTypeSliceMemory.filter(v =>
+      gpuTypeSliceMemory: (result.gpuTypeSliceMemory || []).filter(v =>
         Object.keys(v).some(k => k.startsWith(`${gpuType}_`))
       )
-    }
-
+    }    
 
     setGpuData(filteredData)
-    setGpuCount(filteredData?.gpuType.length)
+    setLoading(false)
   }
 
   const renderGpuDevices = () => {
     const cluster = props.match.params.cluster
+
+    if (loading) return null
+
     if (gpuCount > 0) {
       return (
         <DetailGpuDeviceList

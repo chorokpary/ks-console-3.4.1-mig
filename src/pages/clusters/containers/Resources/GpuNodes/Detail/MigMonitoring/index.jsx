@@ -167,7 +167,7 @@ const index = props => {
 
   const { isLoading, isRefreshing } = monitorStore
   const configs = getMonitoringCfgs()
-  console.log("gpuCount : "+ gpuCount)
+
   return (
     <MonitoringController
       title={t('RESOURCES_GPU_MONITORING')}

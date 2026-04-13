@@ -89,7 +89,7 @@ const DetailGpuDeviceList = (props) => {
         const getProfileData = async () => {
             if (!migProfileData) return
 
-            setSliceSmCount(migProfileData.totalSmCount / migProfileData.gpuCount.length)
+            setSliceSmCount(migProfileData.totalSmCount / migProfileData.gpuCount?.length)
             setLoading(false)
         }
 
@@ -99,7 +99,7 @@ const DetailGpuDeviceList = (props) => {
     }, [])
     
     const MIGGpuTypeSlice = ({ gpuName, devices, memory }) => {
-        console.log("devices : "+ JSON.stringify(devices))
+
         const sliceArray = []
         Object.entries(devices ?? {}).forEach(([key, count]) => {
             const [gStr, memoryStr] = key.replace(/_\d+$/, '').split('.')
@@ -166,7 +166,7 @@ const DetailGpuDeviceList = (props) => {
     }
 
     const renderContent = (obj, index) => {
-
+     
         return (
             <>
                 <div className={styles.content}>
@@ -242,14 +242,16 @@ const DetailGpuDeviceList = (props) => {
         <>
             <Panel title={t('RESOURCES_GPU_DEVICE')} >
                 <div className={styles.wrapper}>
-                    <div className={styles.right}>
-                        <button id="closeAll" onClick={() => closeAll()}>
-                        <i className="ico-fold-all"></i>
-                        </button>
-                        <button id="openAll" onClick={() => openAll()}>
-                        <i className="ico-fold-unfold-all"></i>
-                        </button>
-                    </div>
+                    {gpuData.mig &&
+                        <div className={styles.right}>
+                            <button id="closeAll" onClick={() => closeAll()}>
+                            <i className="ico-fold-all"></i>
+                            </button>
+                            <button id="openAll" onClick={() => openAll()}>
+                            <i className="ico-fold-unfold-all"></i>
+                            </button>
+                        </div>
+                    }
                     {Array.from({ length: gpuData.count}).map((_, index) => {
                         const obj = migProfileData.gpuTypeDetail[index] || migProfileData.gpuTypeDetail[0]
                         const objSliceMemory = migProfileData.gpuTypeSliceMemory[index] || migProfileData.gpuTypeSliceMemory[0]
@@ -266,7 +268,7 @@ const DetailGpuDeviceList = (props) => {
                                     </div>
                                     {renderContent(gpuData, index)}
                                 </div>
-                                {renderExtraContent(obj, objSliceMemory)}
+                                {gpuData.mig && renderExtraContent(obj, objSliceMemory)}
                             </div>
                         )
                     })}
