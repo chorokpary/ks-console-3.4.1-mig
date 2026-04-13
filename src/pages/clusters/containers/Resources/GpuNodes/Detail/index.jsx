@@ -100,6 +100,7 @@ const GpuNodeDetail = props => {
                 props.rootStore.triggerAction('gpunodemig.apply', {
                   store: store,
                   cluster: props.match.params.cluster,
+                  nodeName: get(store.detail, 'name'),
                   success: migApplyFetchData,
                 });
             },

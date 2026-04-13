@@ -31,7 +31,7 @@ import ApplyRemoveModal from 'clusters/containers/Resources/components/Modals/Gp
 
 export default {
   'gpunodemig.apply': {
-    on({
+    async on({
       store,
       rootStore,
       cluster,
@@ -39,8 +39,18 @@ export default {
       namespace,
       success,
       devops,
+      nodeName,
       ...props
     }) {
+    
+      // 통 gpu 사용 여부 쳋크
+      const slicePodList = ['gpu'];
+      const podStore = new PodStore();
+      const hasSlice = await podStore.checkUsedPod({
+        gpuSlice : slicePodList,  
+        nodeName,  
+      })
+
       const gpuNodeStore = new GpuNodeStore();
       const modal = Modal.open({
         onOk: data => {
@@ -53,7 +63,7 @@ export default {
             })
         },
         title: t('RESOURCES_GPU_MIG_CONFIG'),
-        modal: ApplyModal,
+        modal: hasSlice ? AlertModal : ApplyModal,
         store,
         rootStore,
         gpuNodeStore,
@@ -61,6 +71,7 @@ export default {
         workspace,
         namespace,
         devops,
+        desc: hasSlice ? t('RESOURCES_USED_MIG_APPLY_TIP') : '',
         ...props,
       })
     },
@@ -85,7 +96,6 @@ export default {
         gpuSlice : slicePodList,  
         nodeName,  
       })
-      console.log("hasSlice : "+ hasSlice)
 
       const gpuNodeStore = new GpuNodeStore();
       const modal = Modal.open({

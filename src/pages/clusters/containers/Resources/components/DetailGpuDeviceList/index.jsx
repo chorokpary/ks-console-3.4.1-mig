@@ -73,7 +73,7 @@ const DetailGpuDeviceList = (props) => {
 
         const getNodeData = async () => {
             if (!gpuNodeData) return
-       
+            
             const statusStr = getNodeStatus(gpuNodeData)  
             const metrics = getRecordMetrics(gpuNodeData, metricField)
             setGpuData({
@@ -83,6 +83,7 @@ const DetailGpuDeviceList = (props) => {
                 memory: `${metrics.memory_used} / ${metrics.memory_total} GiB`,
                 status: statusStr,
                 mig: !(get(gpuNodeData, ['labels', 'nvidia.com/mig.config']) === 'all-disabled')
+                    && get(gpuNodeData, ['labels', 'nvidia.com/mig.config.state']) === 'success'
             })
         }
 

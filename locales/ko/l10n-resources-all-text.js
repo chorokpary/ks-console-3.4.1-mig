@@ -1290,4 +1290,6 @@ module.exports = {
   RESOURCES_USED_MIG_RELEAGE_TIP: '해당 MIG Profile 을 사용 중인 애플리케이션이 존재합니다. ' 
   + '사용 중인 애플리케이션를 삭제 후 해제를 진행해 주세요.',
   RESOURCES_MIG_APPLY_STATE: 'MIG 적용 상태',
+  RESOURCES_USED_MIG_APPLY_TIP: '해당 MIG Profile 을 사용 중인 애플리케이션이 존재합니다. ' 
+  + '사용 중인 애플리케이션를 삭제 후 설정를 진행해 주세요.',
 }
