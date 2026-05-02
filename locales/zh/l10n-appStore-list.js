@@ -32,6 +32,10 @@ module.exports = {
   APP_CATE_NETWORKING: '网络',
   APP_CATE_DATABASE_CACHE: '数据库和缓存',
   APP_CATE_STORAGE: '存储',
+  APP_CATE_SECURITY: '安全',
+  APP_CATE_CMS: '内容管理系统',
+  APP_CATE_MONITORING_LOGGING: '监控与日志',
+  APP_CATE_BIG_DATA: '大数据',
   // List
   MAINTAINER_VALUE: '维护者：{value}',
   LATEST_VALUE: '最新：{value}',

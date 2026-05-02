@@ -33,6 +33,10 @@ module.exports = {
   APP_CATE_NETWORKING: 'Networking',
   APP_CATE_DATABASE_CACHE: 'Database & Cache',
   APP_CATE_STORAGE: 'Storage',
+  APP_CATE_SECURITY: 'Security',
+  APP_CATE_CMS: 'CMS',
+  APP_CATE_MONITORING_LOGGING: 'Monitoring & Logging',
+  APP_CATE_BIG_DATA: 'Big Data',
   // List
   MAINTAINER_VALUE: 'Maintainer: {value}',
   LATEST_VALUE: 'Latest: {value}',
