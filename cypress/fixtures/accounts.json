@@ -2,7 +2,7 @@
   "items": [
     {
       "username": "admin",
-      "email": "admin@kubesphere.io",
+      "email": "admin@petasus.io",
       "lang": "zh",
       "description": "",
       "create_time": "2019-04-18T14:03:07Z",
@@ -43,7 +43,7 @@
     },
     {
       "username": "hongming",
-      "email": "hongming@kubesphere.io",
+      "email": "hongming@petasus.io",
       "lang": "zh",
       "description": "",
       "create_time": "2019-03-25T06:43:39Z",
@@ -54,7 +54,7 @@
     },
     {
       "username": "jeff",
-      "email": "jeff@kubesphere.io",
+      "email": "jeff@petasus.io",
       "description": "",
       "create_time": "2019-04-23T05:32:56Z",
       "avatar_url": "",
