@@ -24,11 +24,9 @@ import DeploymentCard from './DeploymentCard'
 
 import DetailGpuResource from 'pages/clusters/containers/Resources/components/DetailGpuResource'
 
-import VmStore from 'stores/resources/vms'
-
 import styles from './index.scss'
 import { get, join } from 'lodash';
-import { namespace } from 'd3-selection';
+
 
 @inject('detailStore')
 @observer
@@ -37,11 +35,10 @@ export default class Status extends React.Component {
     super(props)
 
     this.store = props.detailStore
-    this.vmStore = new VmStore({ cluster: this.cluster })
 
     this.state = {
       gpuIndex: '',
-      namespace: ''     
+      namespace: ''
     }
   }
 
@@ -52,8 +49,8 @@ export default class Status extends React.Component {
   fnGetData = async () => {
     const gpuCount = Number(get(this.store.detail, ['labels', 'nvidia.com/gpu.count'], 0))
     const gpuIndex = _.join(_.range(gpuCount), '|')
-  
-    this.setState({ gpuIndex, namespace : this.store.detail.cluster });
+
+    this.setState({ gpuIndex, namespace: this.store.detail.cluster });
   }
 
   renderDeployments() {
@@ -73,31 +70,31 @@ export default class Status extends React.Component {
 
     return (
       <>
-      <Panel title={t('RESOURCES_GPU_CONTAINER_DEPLOYMENT_STATUS')}>
-        <div className={styles.deployments}>
-          <DeploymentCard key="container_toolkit" data={container_toolkit} />
-          <DeploymentCard key="dcgm" data={dcgm} />
-          <DeploymentCard key="dcgm_exporter" data={dcgm_exporter} />
-          <DeploymentCard key="device_plugin" data={device_plugin} />
-          <DeploymentCard key="operator_validator" data={operator_validator} />
-          <DeploymentCard key="mig_manager" data={mig_manager} />
-        </div>
-      </Panel>
-      <Panel title={t('RESOURCES_GPU_VM_PASSTHROUGH_DEPLOYMENT_STATUS')}>
-        <div className={styles.deployments}>
-          <DeploymentCard key="vfio_manager" data={vfio_manager} />
-          <DeploymentCard key="sandbox_device_plugin" data={sandbox_device_plugin} />
-          <DeploymentCard key="sandbox_validator" data={sandbox_validator} />
-        </div>
-      </Panel>
-      <Panel title={t('RESOURCES_GPU_VM_VGPU_DEPLOYMENT_STATUS')}>
-        <div className={styles.deployments}>
-          <DeploymentCard key="vgpu_manager" data={vgpu_manager} />
-          <DeploymentCard key="vgpu_device_manager" data={vgpu_device_manager} />
-          <DeploymentCard key="sandbox_device_plugin" data={sandbox_device_plugin} />
-          <DeploymentCard key="sandbox_validator" data={sandbox_validator} />
-        </div>
-      </Panel>
+        <Panel title={t('RESOURCES_GPU_CONTAINER_DEPLOYMENT_STATUS')}>
+          <div className={styles.deployments}>
+            <DeploymentCard key="container_toolkit" data={container_toolkit} />
+            <DeploymentCard key="dcgm" data={dcgm} />
+            <DeploymentCard key="dcgm_exporter" data={dcgm_exporter} />
+            <DeploymentCard key="device_plugin" data={device_plugin} />
+            <DeploymentCard key="operator_validator" data={operator_validator} />
+            <DeploymentCard key="mig_manager" data={mig_manager} />
+          </div>
+        </Panel>
+        <Panel title={t('RESOURCES_GPU_VM_PASSTHROUGH_DEPLOYMENT_STATUS')}>
+          <div className={styles.deployments}>
+            <DeploymentCard key="vfio_manager" data={vfio_manager} />
+            <DeploymentCard key="sandbox_device_plugin" data={sandbox_device_plugin} />
+            <DeploymentCard key="sandbox_validator" data={sandbox_validator} />
+          </div>
+        </Panel>
+        <Panel title={t('RESOURCES_GPU_VM_VGPU_DEPLOYMENT_STATUS')}>
+          <div className={styles.deployments}>
+            <DeploymentCard key="vgpu_manager" data={vgpu_manager} />
+            <DeploymentCard key="vgpu_device_manager" data={vgpu_device_manager} />
+            <DeploymentCard key="sandbox_device_plugin" data={sandbox_device_plugin} />
+            <DeploymentCard key="sandbox_validator" data={sandbox_validator} />
+          </div>
+        </Panel>
       </>
     )
   };
@@ -106,7 +103,7 @@ export default class Status extends React.Component {
 
     return (
       <div className={styles.main}>
-        {this.state.gpuIndex && 
+        {this.state.gpuIndex &&
           <DetailGpuResource
             {...this.props}
             cluster={this.store.detail.cluster}
