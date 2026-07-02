@@ -160,7 +160,7 @@ const MigGpuTypeProfileRegist = props => {
               </span>
             </div>
             <div className="status_item">
-              <span className="label">메모리</span>
+              <span className="label">{t('RESOURCES_MEMORY')}</span>
               <span className="number">
                 <strong>{memory}</strong>/<small>{totalMemory}</small>
               </span>
@@ -183,7 +183,7 @@ const MigGpuTypeProfileRegist = props => {
               <div className="mig_slice_dropdown show">
                 <div className="mig_slice_dropdown_header">
                   <div className="mig_slice_dropdown_title">
-                    <span className="title_text">슬라이스 선택</span>
+                    <span className="title_text">{t('RESOURCES_SELECT_SLICE')}</span>
                     <span className="gpu_tag">{gpuName || 'GPU'}</span>
                   </div>
                   <button

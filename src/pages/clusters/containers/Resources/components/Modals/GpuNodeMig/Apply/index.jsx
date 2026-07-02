@@ -203,7 +203,7 @@ const ApplyModal = props => {
                     </span>
                   </div>
                   <div className="status_item">
-                    <span className="label">메모리</span>
+                    <span className="label">{t('RESOURCES_MEMORY')}</span>
                     <span className="number">
                       <strong>{addMemory}</strong>/<small>{sliceMemory} GB</small>
                     </span>

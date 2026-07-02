@@ -1,6 +1,19 @@
 @charset "UTF-8";
 @import './custom_icon.css';
 
+button {
+  appearance: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  -ms-box-shadow: none;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  -ms-box-shadow: none;
+  box-shadow: none;
+}
+
 /* gpu mig profile */
 .gpu_mig_container {
   display: -webkit-box;

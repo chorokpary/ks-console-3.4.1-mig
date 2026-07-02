@@ -97,6 +97,7 @@ module.exports = {
   RESOURCES_MIG_PROFILE: 'MIG Profile',
   RESOURCES_BATCH_PROCESS: '일괄적용',
   RESOURCES_GPU_NODE_IN_USE: '사용중인 GPU 노드',
+  RESOURCES_CREATE_MIG_PROFILE: 'MIG Profile 생성',
   RESOURCES_SELECT_GPU_TYPE_DESC: 'MIG Profile을 구성할 GPU타입을 선택합니다.',
   RESOURCES_SELECT_GPU_TYPE_TIP: 'GPU 타입을 선택해 주세요.',
   RESOURCES_ADD_GPU_TYPE_TIP: 'GPU 타입을 추가해 주세요.',
@@ -118,4 +119,9 @@ module.exports = {
   RESOURCES_EDIT_GPU_CLUSTER: 'GPU 클러스터 수정',
   RESOURCES_EDIT_SUCCESSFUL: '수정 되었습니다.',
   RESOURCES_CREATE_SUCCESSFUL: '생성 되었습니다.',
+  RESOURCES_CREATE_DIFINE_MIG_PROFILE_GPU: 'GPU에 생성할 MIG Profile을 정의합니다.',
+  RESOURCES_MIXED_SETTINGS: '혼합설정',
+  RESOURCES_SELECT_SLICE: '슬라이스 선택',
+  RESOURCES_APPLY_SUCCESS_DESC: '설정이 정상적으로 적용되었습니다.',
+  RESOURCES_RELEASE_SUCCESSFULLY: '해제 되었습니다.',
 };

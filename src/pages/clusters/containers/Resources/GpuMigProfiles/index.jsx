@@ -260,7 +260,7 @@ export default class gpumigprofiles extends React.Component {
               })
 
               configrationText =
-                gpuTypeDetail.length > 1 ? '혼합설정' : output.join(', ')
+                gpuTypeDetail.length > 1 ? t('RESOURCES_MIXED_SETTINGS') : output.join(', ')
 
               return (
                 <div key={idx} className={styles.configRow}>

@@ -106,7 +106,7 @@ const GpuMigProfileDetail = props => {
         })
 
         configrationText =
-          gpuTypeDetail.length > 1 ? 'Mixed' : output.join(', ')
+          gpuTypeDetail.length > 1 ? t('RESOURCES_MIXED_SETTINGS') : output.join(', ')
 
         return (
           <div key={idx} className={styles.configRow}>

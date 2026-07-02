@@ -324,7 +324,7 @@ const RegistModal = props => {
                     MIG Profile<span className="form-item-required">*</span>
                   </label>
                   <p className="sub_title">
-                    GPU에 생성할 MIG Profile을 정의합니다.
+                    {t('RESOURCES_CREATE_DIFINE_MIG_PROFILE_GPU')}
                   </p>
                   <div className={styles.wrapperError}>
                     <div
