@@ -22,8 +22,7 @@ import { Modal } from 'components/Base'
 
 import AlertModal from 'clusters/containers/Resources/components/Modals/Alert'
 import ConfirmModal from 'clusters/containers/Resources/components/Modals/Confirm'
-import RegistModal from 'clusters/containers/Resources/components/Modals/GpuMigProfiles/Regist'
-import ModifyModal from 'clusters/containers/Resources/components/Modals/GpuMigProfiles/Modify'
+import GpuMigProfileModal from 'clusters/containers/Resources/components/Modals/GpuMigProfiles/Manage'
 
 import EditYamlModal from 'components/Modals/EditYaml'
 import DeleteModal from 'components/Modals/Delete'
@@ -46,14 +45,15 @@ export default {
         onOk: data => {
           store
             .create(data, { cluster, workspace, namespace, devops })
-            .then(res => {
+            .then(() => {
               Modal.close(modal)
               Notify.success({ content: t('RESOURCES_CREATE_SUCCESSFUL') })
               success && success()
             })
         },
         title: t('RESOURCES_CREATE_MIG_PROFILE'),
-        modal: RegistModal,
+        modal: GpuMigProfileModal,
+        mode: 'create',
         store,
         rootStore,
         cluster,
@@ -87,7 +87,8 @@ export default {
             })
         },
         title: t('RESOURCES_EDIT_GPU_CLUSTER'),
-        modal: ModifyModal,
+        modal: GpuMigProfileModal,
+        mode: 'edit',
         store,
         cluster,
         workspace,
@@ -111,7 +112,7 @@ export default {
 
       const nodeStore = new NodeStore()
       const nodeList = await nodeStore.fetchList({limit: 10000})
-      
+
       const isMig = nodeList.some(
         item => item?.labels?.["nvidia.com/mig.config"] === detail.name
       );
@@ -129,8 +130,8 @@ export default {
         modal: isMig ? AlertModal : DeleteModal,
         title: t('RESOURCES_DELETE'),
         desc: isMig ? t.html('RESOURCES_USED_GPU_MIG_PROFILE_TIP') : t.html('RESOURCES_DELETE_GPU_MIG_PROFILE_TIP', {
-          resource: detail.name.replace('petasus-', ''),
-        }),
+              resource: detail.name.replace('petasus-', ''),
+            }),
         resource: detail.name.replace('petasus-', ''),
         store,
         ...props,

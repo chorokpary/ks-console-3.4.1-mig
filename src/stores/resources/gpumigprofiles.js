@@ -34,18 +34,35 @@ export default class GpuMigProfilesStore extends Base {
 
   moduel_configMap = 'configmaps'
   
-  configMap_namespace = 'nvidia-system'
-  configMap_mig_parted_config = 'custom-mig-parted-config'
-  configMap_mig_parted_index_config = 'custom-mig-parted-index-config'  
+  configMap_namespace = ''
+  configMap_mig_layouts = ''
+  configMap_custom_mig_parted_config = ''
+  configMap_custom_mig_parted_index_config = ''
+  configMap_custom_mig_config_templates = ''
 
-  configMapWithOutIndexParams = {
-    namespace: this.configMap_namespace,
-    name: this.configMap_mig_parted_config,
-  }
+  configMapWithOutIndexParams = {}
+  configMapWithIndexParams = {}
 
-  configMapWithIndexParams = {
-    namespace: this.configMap_namespace,
-    name: this.configMap_mig_parted_index_config,
+  constructor() {
+    super('gpumigprofiles')
+
+    const gpuOperatorConfig = get(globals, 'config.gpuOperator') || {}
+
+    this.configMap_namespace = gpuOperatorConfig.namespace || 'nvidia-system'
+    this.configMap_mig_layouts = gpuOperatorConfig.migLayouts || 'mig-layouts'
+    this.configMap_custom_mig_parted_config = gpuOperatorConfig.migPartedConfig || 'custom-mig-parted-config'
+    this.configMap_custom_mig_parted_index_config = gpuOperatorConfig.migPartedIndexConfig || 'custom-mig-parted-index-config'
+    this.configMap_custom_mig_config_templates = gpuOperatorConfig.migConfigTemplates || 'custom-mig-config-templates'
+
+    this.configMapWithOutIndexParams = {
+      namespace: this.configMap_namespace,
+      name: this.configMap_custom_mig_parted_config,
+    }
+
+    this.configMapWithIndexParams = {
+      namespace: this.configMap_namespace,
+      name: this.configMap_custom_mig_parted_index_config,
+    }
   }
   
   getListUrl = (params = {}) =>
@@ -173,111 +190,94 @@ export default class GpuMigProfilesStore extends Base {
     return this.dataList
   }
 
-  @action
-  async create(data, params = {}) {
-    const name = `petasus-${data.name}`
+  async retryUpdateConfigMap(updater, maxRetries = 3) {
+    let retries = 0
 
-    // 원본 데이터 가져오기
-    const resultConfigMap = await request.get(
-      this.getDetailUrl(this.configMapWithIndexParams)
-    )
+    while (retries < maxRetries) {
+      try {
+        // 1. 최신 원본 데이터 가져오기
+        const resultConfigMap = await request.get(
+          this.getDetailUrl(this.configMapWithIndexParams)
+        )
 
-    // config.yaml 추출
-    const yamlString = get(resultConfigMap, ['data', 'config.yaml'])
-    const yamlText = yamlString
+        // 2. config.yaml 추출 및 object로 파싱
+        const yamlString = get(resultConfigMap, ['data', 'config.yaml'])
+        const parsed = yaml.load(yamlString)
 
-    // object로 변환
-    const parsed = yaml.load(yamlText)
-    const migConfigs = parsed['mig-configs']
+        // 3. 전달받은 콜백 함수로 데이터 수정 적용 (예: 추가/수정/삭제)
+        await updater(parsed)
 
-    // 값 추가
-    migConfigs[name] = await this.convertToMigConfigPerDevice(data)
-    
-    // 수정된 mig-configs 다시 적용
-    parsed['mig-configs'] = migConfigs
+        // 4. index 제외 처리 및 YAML 문자열 변환
+        const parsedWithOutIndex = JSON.parse(
+          JSON.stringify(parsed, (k, v) =>
+            k === 'mig-devices-index' ? undefined : v
+          )
+        )
 
-    // index 제외 처리 
-    const parsedWithOutIndex = JSON.parse(
-      JSON.stringify(parsed, (k, v) =>
-        k === 'mig-devices-index' ? undefined : v
-      )
-    )
+        const newYamlTextWithIndex = await this.convertObjectToYaml(parsed)
+        const newYamlTextWithOutIndex = await this.convertObjectToYaml(
+          parsedWithOutIndex
+        )
 
-    // object → YAML 문자열로 변환
-    const newYamlTextWithIndex = await this.convertObjectToYaml(parsed)
-    const newYamlTextWithOutIndex = await this.convertObjectToYaml(parsedWithOutIndex)  
+        // 5. ConfigMap 구조에 다시 적용
+        resultConfigMap.data['config.yaml'] = newYamlTextWithIndex
+        const resultConfigMapWithOutIndex = await this.cloneResultConfigMap(
+          resultConfigMap,
+          newYamlTextWithOutIndex
+        )
 
-    // ConfigMap 구조에 다시 넣기
-    resultConfigMap.data['config.yaml'] = newYamlTextWithIndex
-    const resultConfigMapWithOutIndex = await this.cloneResultConfigMap(resultConfigMap, newYamlTextWithOutIndex)
+        // 6. PUT 요청 수행 (Promise.all)
+        const res = await this.submitting(
+          Promise.all([
+            request.put(
+              this.getDetailUrl(this.configMapWithIndexParams),
+              resultConfigMap
+            ),
+            request.put(
+              this.getDetailUrl(this.configMapWithOutIndexParams),
+              resultConfigMapWithOutIndex
+            ),
+          ])
+        )
 
-    try {
-      // await this.submitting(new Promise(resolve => setTimeout(resolve, 5000)))
-      // return { success: true }
+        return res // 성공 시 결과 반환 후 종료
+      } catch (err) {
+        const status =
+          err.status || (err.response && err.response.status) || err.code
 
-      const res = await this.submitting(
-         Promise.all([
-          request.put(this.getDetailUrl(this.configMapWithIndexParams), resultConfigMap),
-          request.put(this.getDetailUrl(this.configMapWithOutIndexParams), resultConfigMapWithOutIndex)             
-        ])
-      )
-      return res
-    } catch (err) {
-      return { success: false }
+        // 409 Conflict 발생 및 재시도 횟수가 남았을 경우
+        if (status === 409 && retries < maxRetries - 1) {
+          retries++
+          console.warn(
+            `[GpuMigProfilesStore] 409 Conflict 감지. 최신 ConfigMap으로 ${retries}번째 재시도합니다.`
+          )
+          continue
+        }
+
+        // 다른 에러이거나 최대 시도 횟수를 초과했으면 에러를 위로 던짐
+        throw err
+      }
     }
   }
 
   @action
-  async update(data, params = {}) {
-
+  async create(data, params = {}) {
     const name = `petasus-${data.name}`
 
-    // 원본 데이터 가져오기( Index 있는 데이터 기준 )
-    const resultConfigMap = await request.get(
-      this.getDetailUrl(this.configMapWithIndexParams)
-    )
+    return this.retryUpdateConfigMap(async parsed => {
+      const migConfigs = parsed['mig-configs']
+      migConfigs[name] = await this.convertToMigConfigPerDevice(data)
+    })
+  }
 
-    // config.yaml 추출
-    const yamlString = get(resultConfigMap, ['data', 'config.yaml'])
-    const yamlText = yamlString
+  @action
+  async update(data, params = {}) {
+    const name = `petasus-${data.name}`
 
-    // object로 변환
-    const parsed = yaml.load(yamlText)
-    const migConfigs = parsed['mig-configs']
-
-    // 수정 데이터 추가
-    const newConfig = await this.convertToMigConfigPerDevice(data)
-    migConfigs[name] = newConfig
-    
-    // 수정된 mig-configs 다시 적용
-    parsed['mig-configs'] = migConfigs
-
-    // index 제외 처리 
-    const parsedWithOutIndex = JSON.parse(
-      JSON.stringify(parsed, (k, v) =>
-        k === 'mig-devices-index' ? undefined : v
-      )
-    )
-
-    // object → YAML 문자열로 변환
-    const newYamlTextWithIndex = await this.convertObjectToYaml(parsed)
-    const newYamlTextWithOutIndex = await this.convertObjectToYaml(parsedWithOutIndex)    
-
-    // ConfigMap 구조에 다시 넣기
-    resultConfigMap.data['config.yaml'] = newYamlTextWithIndex
-    const resultConfigMapWithOutIndex = await this.cloneResultConfigMap(resultConfigMap, newYamlTextWithOutIndex)
-
-    try {
-      const res = await this.submitting(
-         Promise.all([
-          request.put(this.getDetailUrl(this.configMapWithIndexParams), resultConfigMap),
-          request.put(this.getDetailUrl(this.configMapWithOutIndexParams), resultConfigMapWithOutIndex)          
-        ])
-      )
-      return res
-    } catch (err) {
-      return { success: false }
-    }
+    return this.retryUpdateConfigMap(async parsed => {
+      const migConfigs = parsed['mig-configs']
+      migConfigs[name] = await this.convertToMigConfigPerDevice(data)
+    })
   }
 
   @action
@@ -310,66 +310,26 @@ export default class GpuMigProfilesStore extends Base {
 
   @action
   async delete(params) {
-
     const name = params.name
 
-    // 원본 데이터 가져오기
-    const resultConfigMap = await request.get(
-      this.getDetailUrl(this.configMapWithIndexParams)
-    )
-
-    // config.yaml 추출
-    const yamlString = get(resultConfigMap, ['data', 'config.yaml'])
-    const yamlText = yamlString
-
-    // object로 변환
-    const parsed = yaml.load(yamlText)
-    const migConfigs = parsed['mig-configs']
-
-    // 삭제 처리
-    delete migConfigs[name]
-
-    // 수정된 mig-configs 다시 적용
-    parsed['mig-configs'] = migConfigs
-
-    // index 제외 처리 
-    const parsedWithOutIndex = JSON.parse(
-      JSON.stringify(parsed, (k, v) =>
-        k === 'mig-devices-index' ? undefined : v
-      )
-    )
-
-    // object → YAML 문자열로 변환
-    const newYamlTextWithIndex = await this.convertObjectToYaml(parsed)
-    const newYamlTextWithOutIndex = await this.convertObjectToYaml(parsedWithOutIndex)    
-
-    // ConfigMap 구조에 다시 넣기
-    resultConfigMap.data['config.yaml'] = newYamlTextWithIndex
-    const resultConfigMapWithOutIndex = await this.cloneResultConfigMap(resultConfigMap, newYamlTextWithOutIndex)
-
-    try {
-      // await this.submitting(new Promise(resolve => setTimeout(resolve, 5000)))
-      // return { success: true }
-      const res = await this.submitting(
-         Promise.all([
-          request.put(this.getDetailUrl(this.configMapWithIndexParams), resultConfigMap),
-          request.put(this.getDetailUrl(this.configMapWithOutIndexParams), resultConfigMapWithOutIndex)          
-        ])
-      )
-      return res
-    } catch (err) {
-      return { success: false }
-    }
+    return this.retryUpdateConfigMap(async parsed => {
+      const migConfigs = parsed['mig-configs']
+      delete migConfigs[name]
+    })
   }
 
   async getMigConfigTemplate(params, resultConfigMap) {
 
     const yamlString = get(resultConfigMap, [
       'data',
+      'config.yaml',
+    ]) || get(resultConfigMap, [
+      'data',
       'mig-config-templates.yaml',
     ])
+    
     const yamlText = yamlString
-
+    
     const parsed = yaml.load(yamlText)
     const migConfigTemplates = parsed['mig-config-templates']
 
@@ -386,27 +346,37 @@ export default class GpuMigProfilesStore extends Base {
         count: item.max_instance_num,
         memory: item.memory_size,
       }))[0]
-
+  
     return result
   }
 
   async getMigLayout(params) {
     const configMapParams = {
       namespace: this.configMap_namespace,
-      name: 'mig-layouts',
+      name: this.configMap_mig_layouts,
     }
 
     const resultConfigMap = await request.get(
       this.getDetailUrl(configMapParams)
     )
 
-    const yamlString = get(resultConfigMap, ['data', 'mig-layouts.yaml'])
-    const yamlText = yamlString
+    const yamlString =
+      get(resultConfigMap, ['data', 'mig-layouts.yaml']) ||
+      get(resultConfigMap, ['data', 'config.yaml']) ||
+      get(resultConfigMap, ['data', 'mig-layouts'])
+      
+    if (!yamlString) {
+      return []
+    }
 
-    const parsed = yaml.load(yamlText)
-    const migLayout = parsed['mig-layouts']
+    const parsed = yaml.load(yamlString)
+    const migLayout = parsed ? parsed['mig-layouts'] : null
 
-    const result = migLayout
+    if (!migLayout || !Array.isArray(migLayout)) {
+      return []
+    }
+
+    let result = migLayout
       .filter(item => item.models.includes(params.name))
       .map(item => item['mig-profiles'])[0]
 
@@ -421,10 +391,10 @@ export default class GpuMigProfilesStore extends Base {
                   "apiVersion":"v1",
                   "kind":"ConfigMap",
                   "metadata":{
-                    "namespace":"nvidia-system",
+                    "namespace": this.configMap_namespace,
                     "labels":{
                     },
-                    "name":"custom-mig-parted-config",
+                    "name": this.configMap_custom_mig_parted_config,
                     "annotations":{
                       "kubesphere.io/creator":"admin"
                     }
@@ -457,10 +427,10 @@ export default class GpuMigProfilesStore extends Base {
                   "apiVersion":"v1",
                   "kind":"ConfigMap",
                   "metadata":{
-                    "namespace":"nvidia-system",
+                    "namespace": this.configMap_namespace,
                     "labels":{
                     },
-                    "name":"custom-mig-parted-index-config",
+                    "name": this.configMap_custom_mig_parted_index_config,
                     "annotations":{
                       "kubesphere.io/creator":"admin"
                     }
@@ -488,7 +458,7 @@ export default class GpuMigProfilesStore extends Base {
   async getAllListData() {
     const configMapParams = {
       namespace: this.configMap_namespace,
-      name: this.configMap_mig_parted_index_config,
+      name: this.configMap_custom_mig_parted_index_config,
     }
 
     let resultConfigMap = await request.get(
@@ -503,29 +473,29 @@ export default class GpuMigProfilesStore extends Base {
       resultConfigMap = await this.createCustomConfigMap()
       await this.createCustomConfigMapWithIndex()
     }
-
+    
     const yamlString = get(resultConfigMap, ['data', 'config.yaml'])
     const yamlText = yamlString
 
     const parsed = yaml.load(yamlText)
     const migConfigs = parsed['mig-configs']
-    
+
     const filteredData = Object.keys(migConfigs)
       .filter(key => key === 'all-balanced' || key.startsWith('petasus-'))
       .reduce((acc, key) => {
         acc[key] = migConfigs[key]
         return acc
       }, {})
-    
+
     const result = await this.transformData(filteredData)
-    
+
     return result
   }
 
   async getCustomMigConfig() {
     const configMapParams = {
       namespace: this.configMap_namespace,
-      name: 'custom-mig-config-templates',
+      name: this.configMap_custom_mig_config_templates,
     }
     // /api/v1/namespaces/nvidia/configmaps/custom-mig-config-templates
     const resultCustomMigConfig = await request.get(this.getDetailUrl(configMapParams))
@@ -538,7 +508,7 @@ export default class GpuMigProfilesStore extends Base {
 
     const configMapParams = {
       namespace: this.configMap_namespace,
-      name: 'custom-mig-config-templates',
+      name: this.configMap_custom_mig_config_templates,
     }
     // /api/v1/namespaces/nvidia/configmaps/custom-mig-config-templates
     const resultCustomMigConfig = await request.get(this.getDetailUrl(configMapParams))
@@ -658,7 +628,7 @@ export default class GpuMigProfilesStore extends Base {
       ...resultConfigMap,
       metadata: {
         ...resultConfigMap.metadata,
-        name: 'custom-mig-parted-config'
+        name: this.configMap_custom_mig_parted_config
       },
       data: {
         ...resultConfigMap.data,
