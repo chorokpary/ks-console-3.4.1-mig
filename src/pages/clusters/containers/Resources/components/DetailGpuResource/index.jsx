@@ -206,7 +206,7 @@ const DetailGpuResource = props => {
               tabs={[
                 {
                   key: 'gpucluster',
-                  icon: 'ico-type-hostgpu',
+                  icon: () => <i className="ico-type-hostgpu" style={{ marginTop: '6px', marginRight: '12px' }}></i>,
                   unit: '%',
                   legend: ['RESOURCES_GPU_UTILIZATION'],
                   title: 'RESOURCES_GPU_UTILIZATION',
@@ -222,7 +222,7 @@ const DetailGpuResource = props => {
                 },            
                 {
                   key: 'temperature',
-                  icon: 'ico-type-temperature',
+                  icon: () => <i className="ico-type-temperature" style={{ marginTop: '6px', marginRight: '12px' }}></i>,
                   unit: '°C',
                   legend: ['RESOURCES_GPU_TEMPERATURE'],
                   title: 'RESOURCES_GPU_TEMPERATURE',
@@ -230,7 +230,7 @@ const DetailGpuResource = props => {
                 },
                 {
                   key: 'power',
-                  icon: 'ico-type-power',
+                  icon: () => <i className="ico-type-power" style={{ marginTop: '6px', marginRight: '12px' }}></i>,
                   unit: 'W',
                   legend: ['RESOURCES_GPU_POWER'],
                   title: 'RESOURCES_GPU_POWER',
@@ -238,7 +238,7 @@ const DetailGpuResource = props => {
                 },
                 {
                   key: 'inbound',
-                  icon: 'ico-type-inbound',
+                  icon: () => <i className="ico-type-inbound" style={{ marginTop: '6px', marginRight: '12px' }}></i>,
                   type: 'bandwidth',
                   unit: getSuitableUnit(flatten(vmGpuInboundData?.map(result => get(result, 'values') || [])), 'bandwidth'),
                   legend: ['RESOURCES_GPU_IB_INBOUND'],
@@ -247,7 +247,7 @@ const DetailGpuResource = props => {
                 },
                 {
                   key: 'outbound',
-                  icon: 'ico-type-outbound',
+                  icon: () => <i className="ico-type-outbound" style={{ marginTop: '6px', marginRight: '12px' }}></i>,
                   type: 'bandwidth',
                   unit: getSuitableUnit(flatten(vmGpuOutboundData?.map(result => get(result, 'values') || [])), 'bandwidth'),
                   legend: ['RESOURCES_GPU_IB_OUTBOUND'],
