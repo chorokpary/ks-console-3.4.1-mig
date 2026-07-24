@@ -31,22 +31,6 @@ server:
     url: http://ks-apiserver
     wsUrl: ws://ks-apiserver
 
-    # 개발_가산
-    # url: http://172.16.200.203:30833
-    # wsUrl: ws://172.16.200.203:30833
-
-    # # 개발_내부
-    # url: http://ks-apiserver:32573
-    # wsUrl: ws://ks-apiserver:32573
-
-     # # 개발_내부
-    # url: http://192.168.15.157:32573
-    # wsUrl: ws://192.168.15.157:32573
-
-    # 개발_Kaas_console
-    # url: http://172.16.2.152:30881
-    # wsUrl: ws://172.16.2.152:30881
-
   # docker image search default url
   dockerHubUrl: https://hub.docker.com
 
@@ -54,6 +38,13 @@ client:
   title: Petasus Kubernetes Grid
   description: "Petasus Kubernetes Grid (PKG)"
   encryptKey: kubesphere
+
+  gpuOperator:
+    namespace: "nvidia-system"
+    migLayouts: "mig-layouts"
+    migPartedConfig: "custom-mig-parted-config"
+    migPartedIndexConfig: "custom-mig-parted-index-config"
+    migConfigTemplates: "custom-mig-config-templates"
 
   version:
     kubesphere: 3.1.0
