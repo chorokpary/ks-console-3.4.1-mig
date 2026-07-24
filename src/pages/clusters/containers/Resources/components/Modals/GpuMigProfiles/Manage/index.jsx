@@ -1,51 +1,44 @@
-import { get, find } from 'lodash'
+import { find } from 'lodash'
 import React, { useState, useRef, useEffect, useMemo } from 'react'
-
 import { observer, inject } from 'mobx-react'
-
 import {
   Form,
   Input,
   Select,
-  Checkbox,
-  TextArea,
   Button,
-  Loading,
   Column,
   Columns,
-  Icon,
-  Toggle,
 } from '@kube-design/components'
 import { Modal } from 'components/Base'
 import classnames from 'classnames'
-
 import { PATTERN_USER_NAME } from 'utils/constants'
 import styles from './index.scss'
+import MigGpuTypeProfile from './MigGpuTypeProfile'
 
-import MigGpuTypeProfileModify from './MigGpuTypeProfileModify'
+const GpuMigProfileModal = props => {
+  const { store, mode = 'create' } = props
 
-const ModifyModal = props => {
-  const store = props.store
+  const existedNames = useMemo(() => {
+    return store.dataList ? store.dataList.map(item => item.name) : []
+  }, [store.dataList])
 
   const form = useRef()
 
   const [modelView, setModalView] = useState(true)
-  const [formData, setFormData] = useState({})
+  const [formData] = useState({})
 
   const [isDisabled, setIsDisabled] = useState(false)
 
-  const [projectName, setProjectName] = useState(
-    props.namespace ? props.namespace : 'default'
-  )
-
   const [gpuTypeOption, setGpuTypeOption] = useState([])
   const [selectedGpuType, setSelectedGpuType] = useState(
-    store.detail.result.gpuType[0]
+    mode === 'edit' ? store.detail.result.gpuType[0] : ''
   )
 
   const [nodeList, setNodeList] = useState([])
 
-  const [gpuTypeList, setGpuTypeList] = useState(store.detail.result.gpuType)
+  const [gpuTypeList, setGpuTypeList] = useState(
+    mode === 'edit' ? store.detail.result.gpuType : []
+  )
   const [gpuTypeError, setGpuTypeError] = useState('')
 
   const [migProfileData, setMigProfileData] = useState([])
@@ -55,7 +48,7 @@ const ModifyModal = props => {
     const onOk = props.onOk
 
     form.current.validator(() => {
-      if (gpuTypeList.length == 0) {
+      if (gpuTypeList.length === 0) {
         setGpuTypeError(t('RESOURCES_SELECT_GPU_TYPE_TIP'))
         return false
       }
@@ -73,7 +66,7 @@ const ModifyModal = props => {
       const { data } = form.current.props
       delete data.gputype
       data.migprofile = migProfileData
-      // console.log("data : "+ JSON.stringify(data))
+
       onOk({
         ...data,
       })
@@ -85,8 +78,10 @@ const ModifyModal = props => {
   }
 
   const fnGetModalFooter = () => {
-    let elements = ''
-    elements = (
+    const isSubmitting = store.isSubmitting
+    const okText = mode === 'edit' ? t('RESOURCES_EDIT') : t('RESOURCES_CREATE')
+
+    return (
       <>
         <Button
           onClick={() => closeModal()}
@@ -99,21 +94,20 @@ const ModifyModal = props => {
             handleOk()
           }}
           className={classnames(styles['btn'], styles['btn-control'])}
-          loading={props.store.isSubmitting}
-          disabled={props.store.isSubmitting}
+          loading={isSubmitting}
+          disabled={isSubmitting}
         >
-          {t('RESOURCES_EDIT')}
+          {okText}
         </Button>
       </>
     )
-    return elements
   }
 
   useEffect(() => {
     const getGputype = async () => {
-      const nodeList = await request.get('/gpucatalog/all')
+      const catalogData = await request.get('/gpucatalog/all')
 
-      const nodeListConvert = await nodeList.map(item => {
+      const nodeListConvert = catalogData.map(item => {
         const [gpuType, memory] = item.alias.split(' ')
         return {
           name: item.name,
@@ -124,12 +118,12 @@ const ModifyModal = props => {
         }
       })
 
-      const uniqueData = await nodeListConvert.filter(
+      let uniqueData = nodeListConvert.filter(
         (item, index, self) =>
           index === self.findIndex(obj => obj.name === item.name)
       )
 
-      const gpuTypeOption = uniqueData.map(el => {
+      const options = uniqueData.map(el => {
         return {
           label: el.gpuType,
           value: el.gpuType,
@@ -137,7 +131,7 @@ const ModifyModal = props => {
       })
 
       setNodeList(uniqueData)
-      setGpuTypeOption(gpuTypeOption)
+      setGpuTypeOption(options)
     }
     getGputype()
   }, [])
@@ -227,9 +221,32 @@ const ModifyModal = props => {
 
   const getName = name => {
     const prefix = 'petasus-'
-    const nameText = name.startsWith(prefix) ? name.slice(prefix.length) : name
-    return nameText
+    return name.startsWith(prefix) ? name.slice(prefix.length) : name
   }
+
+  const nameRules = useMemo(() => {
+    const rules = [
+      { required: true, message: t('NAME_EMPTY_DESC') },
+      {
+        pattern: PATTERN_USER_NAME,
+        message: t('RESOURCES_INVALID_NAME_DESC'),
+      },
+    ]
+    if (mode === 'create') {
+      rules.push({
+        validator: (_, value) => {
+          if (!value) return Promise.resolve()
+          const nameText = `petasus-${value.trim()}`
+          const isDuplicated = existedNames.includes(nameText)
+
+          return isDuplicated
+            ? Promise.reject(new Error(t('RESOURCES_DUPLICATE_NAME')))
+            : Promise.resolve()
+        },
+      })
+    }
+    return rules
+  }, [mode, existedNames])
 
   return (
     <>
@@ -250,13 +267,7 @@ const ModifyModal = props => {
                 <Column>
                   <Form.Item
                     label={t('RESOURCES_GPU_MIG_PROFILE_NAME')}
-                    rules={[
-                      { required: true, message: t('NAME_EMPTY_DESC') },
-                      {
-                        pattern: PATTERN_USER_NAME,
-                        message: t('RESOURCES_INVALID_NAME_DESC'),
-                      },
-                    ]}
+                    rules={nameRules}
                     desc={t('NAME_DESC')}
                   >
                     <Input
@@ -264,8 +275,10 @@ const ModifyModal = props => {
                       autoFocus={true}
                       maxLength={63}
                       style={{ maxWidth: 'none' }}
-                      defaultValue={getName(store.detail.name)}
-                      disabled={true}
+                      defaultValue={
+                        mode === 'edit' ? getName(store.detail.name) : undefined
+                      }
+                      disabled={mode === 'edit' ? true : isDisabled}
                     />
                   </Form.Item>
                 </Column>
@@ -283,10 +296,18 @@ const ModifyModal = props => {
                       >
                         <Select
                           name="gputype"
-                          defaultValue={store?.detail.result.gpuType[0]}
+                          defaultValue={
+                            mode === 'edit'
+                              ? store?.detail.result.gpuType[0]
+                              : undefined
+                          }
                           placeholder={t('RESOURCES_SELECT')}
                           style={{ maxWidth: 'none' }}
                           options={gpuTypeOption}
+                          onChange={value => {
+                            setSelectedGpuType(value)
+                            setGpuTypeError('')
+                          }}
                         />
                       </Form.Item>
                       <div className={styles.wrapperError}>
@@ -339,7 +360,7 @@ const ModifyModal = props => {
                   </button>
                 )}
               </div>
-                
+
               <div
                 className="gpu_mig_container create_wrap"
                 style={{ minHeight: '495px' }}
@@ -359,12 +380,12 @@ const ModifyModal = props => {
                 gpuTypeList.length > 0 &&
                   nodeList.length > 0 &&
                   gpuTypeList.map(gpuType => {
-                    const { name, count, memory, deviceID } = find(nodeList, {
-                      gpuType,
-                    })
+                    const foundNode = find(nodeList, { gpuType })
+                    if (!foundNode) return null
+                    const { name, count, deviceID } = foundNode
 
                     return (
-                      <MigGpuTypeProfileModify
+                      <MigGpuTypeProfile
                         key={gpuType}
                         name={name}
                         gpuType={gpuType}
@@ -373,7 +394,10 @@ const ModifyModal = props => {
                         totalGpuCount={count}
                         deviceId={deviceID}
                         sliceType={gpuTypeOption.length > 1 ? 'B' : 'M'}
-                        modifyData={store.detail.result}
+                        mode={mode}
+                        modifyData={
+                          mode === 'edit' ? store.detail.result : undefined
+                        }
                       />
                     )
                   })}
@@ -391,4 +415,4 @@ const ModifyModal = props => {
   )
 }
 
-export default inject('store')(observer(ModifyModal))
+export default inject('store')(observer(GpuMigProfileModal))
