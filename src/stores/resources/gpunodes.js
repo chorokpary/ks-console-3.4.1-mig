@@ -19,13 +19,17 @@
 import { get } from 'lodash'
 import { action } from 'mobx'
 
-import Base from '../basemm3'
+import Base from '../base'
 import List from '../base.list'
 
 import { LIST_DEFAULT_ORDER } from 'utils/constants'
 
 export default class GpuNodeStore extends Base {
   records = new List()
+
+  dataList = []
+
+  searchList = []
 
   module = 'nodes'
 
@@ -38,7 +42,7 @@ export default class GpuNodeStore extends Base {
   //   `kapis/edgestack.kubesphere.io/v1alpha1${this.getPath(
   //     params
   //   )}/edgetron/resources/kubevirt/gpunodes`
-    
+
   getGpuNodeUrl = (params = {}) =>
     `kapis/edgestack.kubesphere.io/v1alpha1${this.getPath(
       params
@@ -89,24 +93,33 @@ export default class GpuNodeStore extends Base {
       this.getFilterParams(params)
     )
 
-    const data = (get(result, 'items') || []).filter(
-        item => item.metadata.labels?.hasOwnProperty('nvidia.com/gpu.present')
-      ).map(item => ({
-      cluster,
-      namespace,
-      ...this.mapper(item),
-      name: get(item, 'metadata.name'),
-      creation_timestamp: get(item, 'metadata.creationTimestamp'),
-      gpu_count: get(item, ['metadata', 'labels', 'nvidia.com/gpu.count'], 0),
-      gpu_product: get(item, ['metadata', 'labels', 'nvidia.com/gpu.product'], ''),
-      gpu_mode: get(item, ['metadata', 'labels', 'nvidia.com/gpu.mode'], ''),
-      gpu_machine: get(item, ['metadata', 'labels', 'nvidia.com/gpu.machine'], ''),
-    }))
+    const data = (get(result, 'items') || [])
+      .filter(item =>
+        item.metadata.labels?.hasOwnProperty('nvidia.com/gpu.present')
+      )
+      .map(item => ({
+        cluster,
+        namespace,
+        ...this.mapper(item),
+        name: get(item, 'metadata.name'),
+        creation_timestamp: get(item, 'metadata.creationTimestamp'),
+        gpu_count: get(item, ['metadata', 'labels', 'nvidia.com/gpu.count'], 0),
+        gpu_product: get(
+          item,
+          ['metadata', 'labels', 'nvidia.com/gpu.product'],
+          ''
+        ),
+        gpu_mode: get(item, ['metadata', 'labels', 'nvidia.com/gpu.mode'], ''),
+        gpu_machine: get(
+          item,
+          ['metadata', 'labels', 'nvidia.com/gpu.machine'],
+          ''
+        ),
+      }))
 
     const total = get(result, 'totalItems') || 0
 
     // console.log("data : "+ JSON.stringify(data))
-
 
     // 초기 정렬 처리
     data.sort((a, b) => {
@@ -119,7 +132,6 @@ export default class GpuNodeStore extends Base {
 
     // 초기 데이터 처리
     this.dataList = data
-
 
     // namespace(project) 있는 경우
     if (namespace) {
@@ -149,7 +161,6 @@ export default class GpuNodeStore extends Base {
 
     return this.dataList
   }
-
 
   @action
   async fetchDetail(params) {
@@ -207,40 +218,35 @@ export default class GpuNodeStore extends Base {
     return response
   }
 
-  
   @action
   async applyMig(data, params) {
     const newObject = {
-                        metadata: {
-                          labels: {
-                            'nvidia.com/mig.config': data.migprofile,
-                          },
-                        },
-                      }
-    const url =`/api/v1/nodes/${data.nodeName}`
-    const res = await this.submitting(
-      request.patch(url, newObject)
-    )
+      metadata: {
+        labels: {
+          'nvidia.com/mig.config': data.migprofile,
+        },
+      },
+    }
+    const url = `/api/v1/nodes/${data.nodeName}`
+    const res = await this.submitting(request.patch(url, newObject))
 
-    return res;
+    return res
   }
 
   @action
   async applyMigRemove(data, params) {
     const newObject = {
-                        metadata: {
-                          labels: {
-                            'nvidia.com/mig.config': "all-disabled",
-                          },
-                        },
-                      }
+      metadata: {
+        labels: {
+          'nvidia.com/mig.config': 'all-disabled',
+        },
+      },
+    }
 
-    const url =`/api/v1/nodes/${data.nodeName}`
-    const res = await this.submitting(
-      request.patch(url, newObject)
-    )
+    const url = `/api/v1/nodes/${data.nodeName}`
+    const res = await this.submitting(request.patch(url, newObject))
 
-    return res;
+    return res
   }
 
   @action
@@ -258,5 +264,4 @@ export default class GpuNodeStore extends Base {
     this.vgpuConfigList = response.vgpu_configs
     return response
   }
-
 }
