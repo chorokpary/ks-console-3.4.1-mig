@@ -390,8 +390,6 @@ const handlePostGpuCatalog = async ctx => {
     const gpuCatalogs = []
 
     if (response && response.items) {
-      console.log(`[Scheduler] Found ${response.items.length} GPU nodes`)
-
       // 노드 정보 처리 및 결과 수집
       for (let index = 0; index < response.items.length; index++) {
         const catalogInfo = await processGpuNode(
@@ -408,8 +406,6 @@ const handlePostGpuCatalog = async ctx => {
           }
         }
       }
-    } else {
-      console.log('[Scheduler] No GPU nodes found')
     }
 
     ctx.body = gpuCatalogs
@@ -429,52 +425,11 @@ async function processGpuNode(node, index, token) {
   const labels = (node.metadata && node.metadata.labels) || {}
   const annotations = (node.metadata && node.metadata.annotations) || {}
 
-  console.log(`[Scheduler] ===== GPU Node ${index + 1}: ${nodeName} =====`)
-  console.log(
-    `[Scheduler]   nvidia.com/gpu.present: ${labels['nvidia.com/gpu.present'] ||
-      'N/A'}`
-  )
-  console.log(
-    `[Scheduler]   nvidia.com/gpu.product: ${labels['nvidia.com/gpu.product'] ||
-      'N/A'}`
-  )
-  console.log(
-    `[Scheduler]   nvidia.com/gpu.count: ${labels['nvidia.com/gpu.count'] ||
-      'N/A'}`
-  )
-  console.log(
-    `[Scheduler]   nvidia.com/gpu.replicas: ${labels[
-      'nvidia.com/gpu.replicas'
-    ] || 'N/A'}`
-  )
-  console.log(
-    `[Scheduler]   nvidia.com/mig.config: ${labels['nvidia.com/mig.config'] ||
-      'N/A'}`
-  )
-  console.log(
-    `[Scheduler]   nvidia.com/mig.config.state: ${labels[
-      'nvidia.com/mig.config.state'
-    ] || 'N/A'}`
-  )
-  console.log(
-    `[Scheduler]   nvidia.com/mig.strategy: ${labels[
-      'nvidia.com/mig.strategy'
-    ] || 'N/A'}`
-  )
-  console.log(
-    `[Scheduler]   petasus.io/gpu.origin.catalog: ${annotations[
-      'petasus.io/gpu.origin.catalog'
-    ] || 'N/A'}`
-  )
-
   // petasus.io/gpu.origin.catalog annotation이 있으면 파싱해서 반환
   if (annotations['petasus.io/gpu.origin.catalog']) {
     try {
       const catalogData = JSON.parse(
         annotations['petasus.io/gpu.origin.catalog']
-      )
-      console.log(
-        `[Scheduler]   ✅ Found existing GPU catalog annotation for ${nodeName}`
       )
 
       // 배열이든 객체든 그대로 반환
@@ -494,43 +449,18 @@ async function processGpuNode(node, index, token) {
   // const deviceLabels = Object.keys(labels).filter(key =>
   //   devicePattern.test(key)
   // )
-  
-  const devicePattern = /^feature\.node\.kubernetes\.io\/pci-([0-9a-f]{4})_([0-9a-f]{4})\.present$/
-  const deviceLabels = Object.keys(labels).filter(key => devicePattern.test(key) && labels[key] === 'true')
 
-  if (deviceLabels.length > 0) {
-    console.log(`[Scheduler]   Device feature labels:`)
-    deviceLabels.forEach(labelKey => {
-      const match = labelKey.match(devicePattern)
-      if (match) {
-        console.log(
-          `[Scheduler]     ${labelKey}: ${labels[labelKey]} (vendor: ${match[1]}, device: ${match[2]})`
-        )
-      }
-    })
-  }
+  const devicePattern = /^feature\.node\.kubernetes\.io\/pci-([0-9a-f]{4})_([0-9a-f]{4})\.present$/
+  const deviceLabels = Object.keys(labels).filter(
+    key => devicePattern.test(key) && labels[key] === 'true'
+  )
 
   // petasus.io annotation이 없으면 새로 생성
   if (!annotations['petasus.io/gpu.origin.catalog']) {
-    console.log(
-      `[Scheduler] ⚠️  WARNING: Node ${nodeName} has nvidia.com/gpu.present=true but missing petasus.io annotation!`
-    )
-    console.log(
-      `[Scheduler]   petasus.io/gpu.origin.catalog: ${annotations[
-        'petasus.io/gpu.origin.catalog'
-      ] || 'MISSING'}`
-    )
-
     // device feature labels에서 deviceId 추출
     const deviceIds = extractDeviceIds(labels, devicePattern)
 
     if (deviceIds.length > 0) {
-      console.log(
-        `[Scheduler]   Collected ${
-          deviceIds.length
-        } device IDs: ${deviceIds.join(', ')}`
-      )
-
       // ConfigMap에서 MIG 설정 조회
       const catalogInfo = await fetchMigConfigs(
         deviceIds,
@@ -557,9 +487,6 @@ function extractDeviceIds(labels, devicePattern) {
         const device = match[2].toLowerCase()
         const deviceId = `0x${device.toUpperCase()}${vendor.toUpperCase()}`
         deviceIds.push(deviceId)
-        console.log(
-          `[Scheduler]     Found device_id: "${deviceId}" from ${labelKey}`
-        )
       }
     }
   })
@@ -572,7 +499,6 @@ async function fetchMigConfigs(deviceIds, nodeName, labels, token) {
   try {
     const configMapUrl =
       '/api/v1/namespaces/nvidia-system/configmaps/custom-mig-config-templates'
-    console.log(`[Scheduler]   Fetching MIG config from ConfigMap...`)
 
     const configMapResponse = await send_gateway_request({
       method: 'GET',
@@ -583,18 +509,16 @@ async function fetchMigConfigs(deviceIds, nodeName, labels, token) {
     if (
       configMapResponse &&
       configMapResponse.data &&
-      configMapResponse.data['mig-config-templates.yaml']
+      (configMapResponse.data['config.yaml'] ||
+        configMapResponse.data['mig-config-templates.yaml'])
     ) {
       const yaml = require('js-yaml')
-      const migConfigs = yaml.load(
+      const yamlContent =
+        configMapResponse.data['config.yaml'] ||
         configMapResponse.data['mig-config-templates.yaml']
-      )
+      const migConfigs = yaml.load(yamlContent)
 
       if (migConfigs && migConfigs['mig-config-templates']) {
-        console.log(
-          `[Scheduler]   Found ${migConfigs['mig-config-templates'].length} MIG config templates`
-        )
-
         const matchedConfigs = []
 
         // deviceIds와 매칭되는 설정 찾기
@@ -606,32 +530,7 @@ async function fetchMigConfigs(deviceIds, nodeName, labels, token) {
           )
 
           if (matchedConfig) {
-            console.log(
-              `[Scheduler]   ✅ Found MIG config for device_id: "${deviceId}"`
-            )
-            console.log(`[Scheduler]     - Name: ${matchedConfig.name}`)
-            console.log(`[Scheduler]     - Alias: ${matchedConfig.alias}`)
-            console.log(
-              `[Scheduler]     - Architecture: ${matchedConfig.architecture}`
-            )
-            console.log(
-              `[Scheduler]     - Memory: ${matchedConfig.memory_size}`
-            )
-            console.log(
-              `[Scheduler]     - Max Instances: ${matchedConfig.max_instance_num}`
-            )
-            console.log(
-              `[Scheduler]     - Available configs: ${matchedConfig.configs.length}`
-            )
-            console.log(
-              `[Scheduler]     - device_id: ${matchedConfig.device_id}`
-            )
-
             matchedConfigs.push(matchedConfig)
-          } else {
-            console.log(
-              `[Scheduler]   ⚠️  No MIG config found for device_id: "${deviceId}"`
-            )
           }
         })
 
@@ -656,8 +555,6 @@ async function fetchMigConfigs(deviceIds, nodeName, labels, token) {
             : catalogObjects
         }
       }
-    } else {
-      console.log(`[Scheduler]   ConfigMap data not found or invalid format`)
     }
   } catch (configError) {
     console.error(
@@ -683,13 +580,8 @@ async function updateNodeAnnotation(nodeName, matchedConfigs, labels, token) {
       }
     })
 
-    // JSON 배열로 변환 (예쁘게 포맷팅)
+    // JSON 배열로 변환
     const catalogValue = JSON.stringify(catalogObjects, null, 2)
-
-    console.log(
-      `[Scheduler]   Preparing to update node annotation for ${nodeName}`
-    )
-    console.log(`[Scheduler]   petasus.io/gpu.origin.catalog:\n${catalogValue}`)
 
     // 노드 패치 요청
     const patchUrl = `/api/v1/nodes/${nodeName}`
@@ -710,12 +602,6 @@ async function updateNodeAnnotation(nodeName, matchedConfigs, labels, token) {
         'content-type': 'application/strategic-merge-patch+json',
       },
     })
-
-    if (patchResponse) {
-      console.log(
-        `[Scheduler]   ✅ Successfully updated node annotation for ${nodeName}`
-      )
-    }
   } catch (patchError) {
     console.error(
       `[Scheduler]   Failed to update node annotation for ${nodeName}:`,
