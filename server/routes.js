@@ -42,9 +42,12 @@ const {
   handleLogout,
   handleOAuthLogin,
   handleLoginConfirm,
+} = require('./controllers/session')
+
+const {
   handlePostGpuCatalog,
   handleGetGpuCatalog,
-} = require('./controllers/session')
+} = require('./controllers/gpucategory')
 
 const {
   renderView,
