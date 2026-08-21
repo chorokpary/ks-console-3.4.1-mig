@@ -29,6 +29,28 @@ import DeleteModal from 'components/Modals/Delete'
 
 import NodeStore from 'stores/node'
 
+const handleActionError = (err, modal) => {
+  if (modal) {
+    Modal.close(modal)
+  }
+
+  const status = err?.status || err?.code || err?.response?.status
+
+  if (status === 409) {
+    Notify.error({
+      content: t('RESOURCES_MIG_PROFILE_CONFLICT_DESC'),
+    })
+  } else if (status === 403) {
+    Notify.error({
+      content: t('RESOURCES_MIG_PROFILE_FORBIDDEN_DESC'),
+    })
+  } else {
+    Notify.error({
+      content: err?.message || t('RESOURCES_MIG_PROFILE_OPERATION_FAILED_DESC'),
+    })
+  }
+}
+
 export default {
   'gpumigprofiles.regist': {
     on({
@@ -50,6 +72,7 @@ export default {
               Notify.success({ content: t('RESOURCES_CREATE_SUCCESSFUL') })
               success && success()
             })
+            .catch(err => handleActionError(err, modal))
         },
         title: t('RESOURCES_CREATE_MIG_PROFILE'),
         modal: GpuMigProfileModal,
@@ -85,6 +108,7 @@ export default {
               Notify.success({ content: t('RESOURCES_EDIT_SUCCESSFUL') })
               success && success()
             })
+            .catch(err => handleActionError(err, modal))
         },
         title: t('RESOURCES_EDIT_GPU_CLUSTER'),
         modal: GpuMigProfileModal,
@@ -126,6 +150,7 @@ export default {
               Notify.success({ content: t('RESOURCES_DELETE_SUCCESSFUL') })
               success && success()
             })
+            .catch(err => handleActionError(err, modal))
         },
         modal: isMig ? AlertModal : DeleteModal,
         title: t('RESOURCES_DELETE'),

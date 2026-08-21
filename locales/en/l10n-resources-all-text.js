@@ -124,6 +124,7 @@ module.exports = {
   RESOURCES_SELECT_SLICE: 'Select Slice',
   RESOURCES_APPLY_SUCCESS_DESC: 'Configs have been successfully applied.',
   RESOURCES_RELEASE_SUCCESSFULLY: 'Released successfully.',
-  MIG_PROFILE_CONFLICT_DESC: 'A concurrent modification conflict occurred.',
-  MIG_PROFILE_FORBIDDEN_DESC: 'You do not have permission to perform this operation.',
+  RESOURCES_MIG_PROFILE_CONFLICT_DESC: 'A concurrent modification conflict occurred.',
+  RESOURCES_MIG_PROFILE_FORBIDDEN_DESC: 'You do not have permission to perform this operation.',
+  RESOURCES_MIG_PROFILE_OPERATION_FAILED_DESC: 'An error occurred while processing the request.',
 };

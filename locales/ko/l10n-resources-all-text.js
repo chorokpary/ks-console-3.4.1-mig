@@ -124,6 +124,7 @@ module.exports = {
   RESOURCES_SELECT_SLICE: '슬라이스 선택',
   RESOURCES_APPLY_SUCCESS_DESC: '설정이 정상적으로 적용되었습니다.',
   RESOURCES_RELEASE_SUCCESSFULLY: '해제 되었습니다.',
-  MIG_PROFILE_CONFLICT_DESC: '동시 수정 충돌이 발생했습니다.',
-  MIG_PROFILE_FORBIDDEN_DESC: '해당 작업을 수행할 권한이 없습니다.',
+  RESOURCES_MIG_PROFILE_CONFLICT_DESC: '다른 사용자가 동시에 수정 중입니다.',
+  RESOURCES_MIG_PROFILE_FORBIDDEN_DESC: '해당 작업을 수행할 권한이 없습니다.',
+  RESOURCES_MIG_PROFILE_OPERATION_FAILED_DESC: '작업 처리 중 오류가 발생했습니다.',
 };
