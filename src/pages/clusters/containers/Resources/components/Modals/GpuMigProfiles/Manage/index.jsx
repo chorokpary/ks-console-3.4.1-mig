@@ -262,7 +262,7 @@ const GpuMigProfileModal = props => {
       >
         <Form data={formData} ref={form}>
           <div className={styles.pop_overflow_y}>
-            <div className={styles.cont_boxwrap}>
+            <div className={`${styles.cont_boxwrap} gpu_mig_container`}>
               <Columns>
                 <Column>
                   <Form.Item

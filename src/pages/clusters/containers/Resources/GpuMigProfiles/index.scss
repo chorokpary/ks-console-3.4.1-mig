@@ -1,7 +1,7 @@
 @charset "utf-8";
 
-@import "~scss/variables";
-@import "~scss/mixins";
+@import '~scss/variables';
+@import '~scss/mixins';
 
 .avatar {
   display: flex;
@@ -85,4 +85,32 @@
 
 .configItem7g {
   background-color: #013d59;
+}
+
+.gpu_mig_container {
+  button {
+    appearance: none;
+    border: none;
+    outline: none;
+  }
+
+  i {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .sub_title_area {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ico-close {
+    background: url('/assets/resources/images/icons/ico-close.svg') center
+      no-repeat;
+    width: 16px;
+    height: 16px;
+  }
 }

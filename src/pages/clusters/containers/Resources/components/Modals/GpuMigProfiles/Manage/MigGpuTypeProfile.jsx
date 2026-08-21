@@ -66,7 +66,7 @@ const MigGpuTypeProfile = props => {
         id: profile.id,
         slices: profile['mig-devices'].map(item => item.name),
       }))
-      console.log("migLayoutData : "+ JSON.stringify(migLayoutData))
+
       setSliceLayout(migLayoutData)
     }
 
@@ -315,7 +315,7 @@ const MigGpuTypeProfile = props => {
   }
 
   return (
-    <div className="gpu_mig_secter">
+    <div className="gpu_mig_secter gpu_mig_container">
       <div className="header_area">
         <div className="title">
           <span>{gpuType}</span>

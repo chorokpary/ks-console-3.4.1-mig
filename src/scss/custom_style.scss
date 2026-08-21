@@ -1,18 +1,7 @@
 @charset "UTF-8";
 @import 'custom_icon';
 
-button {
-  appearance: none;
-  border: none;
-  outline: none;
-  box-shadow: none;
-  -webkit-box-shadow: none;
-  -ms-box-shadow: none;
-  box-shadow: none;
-  -webkit-box-shadow: none;
-  -ms-box-shadow: none;
-  box-shadow: none;
-}
+// Global button styling moved to .gpu_mig_container
 
 /* gpu mig profile */
 .gpu_mig_container {
@@ -27,6 +16,68 @@ button {
   border-radius: 4px;
   background: #f9fbfd;
   padding: 12px;
+
+  button {
+    appearance: none;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -ms-box-shadow: none;
+    box-shadow: none;
+  }
+
+  .sub_title_area {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px !important;
+
+    .sub_title {
+      font-size: 12px;
+      margin: 0;
+      color: #79879c;
+    }
+
+    & > .delete_all_btn {
+      height: 25px;
+      margin-left: auto;
+      border-radius: 32px;
+      background: #5680ec;
+      color: #fff;
+      padding: 2px 16px;
+      font-weight: normal;
+    }
+  }
+
+  .ico-btn-trash {
+    width: 38px;
+    height: 24px;
+    margin-left: 4px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    border-radius: 24px;
+    cursor: pointer;
+    opacity: 0.7;
+
+    &:hover {
+      width: 38px;
+      height: 24px;
+      background-color: #e3e9ef;
+      opacity: 1;
+    }
+  }
 }
 .gpu_mig_container.create_wrap {
   background: none;
@@ -89,51 +140,7 @@ button {
   height: 32px;
 }
 
-.sub_title_area {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 10px !important;
-}
-.sub_title_area .sub_title {
-  font-size: 12px;
-  margin: 0;
-  color: #79879c;
-}
-.sub_title_area > .delete_all_btn {
-  height: 25px;
-  margin-left: auto;
-  border-radius: 32px;
-  background: #5680ec;
-  color: #fff;
-  padding: 2px 16px;
-  font-weight: normal;
-}
-
-.ico-btn-trash {
-  width: 38px;
-  height: 24px;
-  margin-left: 4px;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  border-radius: 24px;
-}
-.ico-btn-trash:hover {
-  width: 38px;
-  height: 24px;
-  background-color: #e3e9ef;
-}
+// Scoped sub_title_area and ico-btn-trash styling moved inside .gpu_mig_container above
 
 .gpu_mig_box {
   display: -webkit-box;

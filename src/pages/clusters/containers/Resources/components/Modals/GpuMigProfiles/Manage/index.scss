@@ -11,6 +11,12 @@
   min-height: 750px;
   max-height: calc(100vh - 222px);
   overflow-y: auto;
+
+  :global {
+    .select-options {
+      max-height: 300px !important;
+    }
+  }
 }
 
 .divwrap {
@@ -185,4 +191,39 @@ button {
 
 .migSliceRow:hover .textHover {
   display: inline;
+}
+
+/* 모달 내 MIG 컨테이너 스타일 스코핑 */
+:global(.gpu_mig_container) {
+  button {
+    cursor: pointer;
+    appearance: none;
+    border: none;
+    outline: none;
+  }
+
+  i {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .sub_title_area {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px !important;
+  }
+
+  .ico-close {
+    background: url('/assets/resources/images/icons/ico-close.svg') center
+      no-repeat;
+    width: 16px;
+    height: 16px;
+  }
+
+  .ico-btn-trash {
+    cursor: pointer;
+  }
 }

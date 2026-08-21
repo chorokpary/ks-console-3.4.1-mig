@@ -1,9 +1,4 @@
-i {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-shrink: 0;
-}
+// Global i styling moved to .gpu_mig_container
 
 .ico-type-vm {
   background: url('/assets/resources/images/icons/ico-type-vm.svg') center
@@ -89,9 +84,20 @@ i {
   height: 20px;
 }
 
-.ico-close {
-  background: url('/assets/resources/images/icons/ico-close.svg') center
-    no-repeat;
-  width: 16px;
-  height: 16px;
+// Scoped ico-close styling moved to .gpu_mig_container
+
+.gpu_mig_container {
+  i {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .ico-close {
+    background: url('/assets/resources/images/icons/ico-close.svg') center
+      no-repeat;
+    width: 16px;
+    height: 16px;
+  }
 }

@@ -343,23 +343,25 @@ export default class gpumigprofiles extends React.Component {
   render() {
     const { bannerProps, tableProps } = this.props
     return (
-      <ListPage {...this.props}>
-        <Banner
-          {...bannerProps}
-          icon={this.getBanner}
-          title={t('RESOURCES_GPU_MIG_PROFILE')}
-          description={t('RESOURCES_GPU_MIG_PROFILE_DESC')}
-        />
-        <Table
-          {...tableProps}
-          emptyProps={this.emptyProps}
-          className={'table-2-6 table-4-3'}
-          itemActions={this.itemActions}
-          tableActions={this.tableActions}
-          columns={this.getColumns()}
-          // columnSearch={this.columnSearch}
-        />
-      </ListPage>
+      <div className="gpu_mig_container">
+        <ListPage {...this.props}>
+          <Banner
+            {...bannerProps}
+            icon={this.getBanner}
+            title={t('RESOURCES_GPU_MIG_PROFILE')}
+            description={t('RESOURCES_GPU_MIG_PROFILE_DESC')}
+          />
+          <Table
+            {...tableProps}
+            emptyProps={this.emptyProps}
+            className={'table-2-6 table-4-3'}
+            itemActions={this.itemActions}
+            tableActions={this.tableActions}
+            columns={this.getColumns()}
+            // columnSearch={this.columnSearch}
+          />
+        </ListPage>
+      </div>
     )
   }
 }
