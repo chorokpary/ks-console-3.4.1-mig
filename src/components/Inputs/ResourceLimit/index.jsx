@@ -89,41 +89,73 @@ export default class ResourceLimit extends React.Component {
   }
 
   fetchGpuTypeListData = async () => {
-    const gpuTypeList =  await request.get('/gpucatalog/all')
+    try {
+      const gpuTypeList = await request.get('/gpucatalog/all')
 
-    const gpuTypeListConvert = await gpuTypeList.map(item => {
-      const [gpuType, memory] = item.alias.split(' ')
-      return {
-        name: item.name,
-        gpuType,
-        memory,
-        count: item.count,
-        deviceID: item.deviceID,
-        nodeName: item.nodeName
+      // 응답 데이터가 배열이 아니거나 비어있는 경우(GPU 미설치 클러스터 등) 안전하게 초기화 후 종료
+      if (!Array.isArray(gpuTypeList) || gpuTypeList.length === 0) {
+        this.setState({
+          gpuTypeList: [],
+          gpuTypeOption: [],
+          gpuSliceOption: [],
+        })
+        return
       }
-    })
-        
-    const uniqueData = await  gpuTypeListConvert.filter(
-      (item, index, self) =>
-        index === self.findIndex(obj => obj.name === item.name)
-    )
 
-    const gpuTypeOption = uniqueData.map(el => {
-      return {
+      const gpuTypeListConvert = gpuTypeList.map(item => {
+        const [gpuType, memory] = (item.alias || '').split(' ')
+        return {
+          name: item.name,
+          gpuType,
+          memory,
+          count: item.count,
+          deviceID: item.deviceID,
+          nodeName: item.nodeName,
+        }
+      })
+
+      const uniqueData = gpuTypeListConvert.filter(
+        (item, index, self) =>
+          index === self.findIndex(obj => obj.name === item.name)
+      )
+
+      // 고유 GPU 데이터가 없는 경우 안전 처리
+      if (uniqueData.length === 0) {
+        this.setState({
+          gpuTypeList: [],
+          gpuTypeOption: [],
+          gpuSliceOption: [],
+        })
+        return
+      }
+
+      const gpuTypeOption = uniqueData.map(el => ({
         label: el.gpuType,
         value: el.gpuType,
-      }
-    })
+      }))
 
-    const gpuSliceOption = await this.getGpuSliceOption(uniqueData[0].gpuType)
+      // 첫 번째 GPU 타입 안전한 접근 (옵셔널 체이닝 및 기본값 지정)
+      const firstGpuType = uniqueData[0]?.gpuType || ''
+      const gpuSliceOption = firstGpuType
+        ? await this.getGpuSliceOption(firstGpuType)
+        : []
 
-    this.setState({
-      gpuType: uniqueData[0].gpuType,
-      gpuTypeList: uniqueData,
-      gpuTypeOption: gpuTypeOption,
-      gpuTypeDefaultOption: uniqueData[0].gpuType,
-      gpuSliceOption: gpuSliceOption
-    });
+      this.setState({
+        gpuType: firstGpuType,
+        gpuTypeList: uniqueData,
+        gpuTypeOption: gpuTypeOption,
+        gpuTypeDefaultOption: firstGpuType,
+        gpuSliceOption: gpuSliceOption,
+      })
+    } catch (error) {
+      // API 호출 실패(권한 부족, 네트워크 에러 등) 시 UI가 깨지지 않도록 예외 처리 후 빈 상태값 설정
+      console.warn('[ResourceLimit] Failed to fetch GPU catalog:', error)
+      this.setState({
+        gpuTypeList: [],
+        gpuTypeOption: [],
+        gpuSliceOption: [],
+      })
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
