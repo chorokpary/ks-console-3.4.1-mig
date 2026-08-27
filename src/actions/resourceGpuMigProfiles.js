@@ -29,11 +29,7 @@ import DeleteModal from 'components/Modals/Delete'
 
 import NodeStore from 'stores/node'
 
-const handleActionError = (err, modal) => {
-  if (modal) {
-    Modal.close(modal)
-  }
-
+const handleActionError = err => {
   const status = err?.status || err?.code || err?.response?.status
 
   if (status === 409) {
@@ -72,7 +68,7 @@ export default {
               Notify.success({ content: t('RESOURCES_CREATE_SUCCESSFUL') })
               success && success()
             })
-            .catch(err => handleActionError(err, modal))
+            .catch(err => handleActionError(err))
         },
         title: t('RESOURCES_CREATE_MIG_PROFILE'),
         modal: GpuMigProfileModal,
@@ -108,7 +104,7 @@ export default {
               Notify.success({ content: t('RESOURCES_EDIT_SUCCESSFUL') })
               success && success()
             })
-            .catch(err => handleActionError(err, modal))
+            .catch(err => handleActionError(err))
         },
         title: t('RESOURCES_EDIT_GPU_CLUSTER'),
         modal: GpuMigProfileModal,
@@ -150,7 +146,7 @@ export default {
               Notify.success({ content: t('RESOURCES_DELETE_SUCCESSFUL') })
               success && success()
             })
-            .catch(err => handleActionError(err, modal))
+            .catch(err => handleActionError(err))
         },
         modal: isMig ? AlertModal : DeleteModal,
         title: t('RESOURCES_DELETE'),
