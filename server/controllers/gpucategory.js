@@ -74,21 +74,6 @@ async function processGpuNode(node, index, token) {
   const annotations = (node.metadata && node.metadata.annotations) || {}
   const existingAnnotation = annotations['petasus.io/gpu.origin.catalog']
 
-  // petasus.io/gpu.origin.catalog annotation이 이미 존재하면 파싱하여 반환
-  if (existingAnnotation) {
-    try {
-      const catalogData = JSON.parse(existingAnnotation)
-      if (catalogData !== null && catalogData !== undefined) {
-        return catalogData
-      }
-    } catch (parseError) {
-      console.error(
-        `[Scheduler] Failed to parse GPU catalog annotation for ${nodeName}:`,
-        parseError.message
-      )
-    }
-  }
-
   const devicePattern = /^feature\.node\.kubernetes\.io\/pci-([0-9a-f]{4})_([0-9a-f]{4})\.present$/
   const deviceIds = extractDeviceIds(labels, devicePattern)
 
@@ -101,7 +86,24 @@ async function processGpuNode(node, index, token) {
       token,
       existingAnnotation
     )
-    return catalogInfo
+    if (catalogInfo) {
+      return catalogInfo
+    }
+  }
+
+  // Fallback: fetchMigConfigs 실패 또는 미매칭 시 기존 annotation이 존재하면 파싱하여 반환
+  if (existingAnnotation) {
+    try {
+      const catalogData = JSON.parse(existingAnnotation)
+      if (catalogData !== null && catalogData !== undefined) {
+        return catalogData
+      }
+    } catch (parseError) {
+      console.error(
+        `[Scheduler] Failed to parse GPU catalog annotation fallback for ${nodeName}:`,
+        parseError.message
+      )
+    }
   }
 
   return null
